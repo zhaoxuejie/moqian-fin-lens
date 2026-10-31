@@ -1,0 +1,120 @@
+import time
+from pathlib import Path
+
+import pytest
+from fastapi.testclient import TestClient
+
+from app.main import create_app
+from core.config import Settings
+
+EVAL_PDF = Path(__file__).resolve().parents[1] / "eval" / "pdf" / "002230_科大讯飞" / "002230_科大讯飞_2024年年度报告.pdf"
+
+
+def _client(tmp_path) -> TestClient:
+    settings = Settings(
+        database_path=str(tmp_path / "app.db"),
+        data_dir=str(tmp_path),
+        max_upload_mb=5,
+        max_pages=10,
+        _env_file=None,
+    )
+    return TestClient(create_app(settings))
+
+
+def test_upload_rejects_non_pdf(tmp_path):
+    with _client(tmp_path) as client:
+        response = client.post(
+            "/api/v1/uploads",
+            files={"file": ("a.txt", b"hello", "text/plain")},
+        )
+
+    assert response.status_code == 400
+    assert response.json()["code"] == 40001
+
+
+def test_upload_rejects_too_many_pages(tmp_path):
+    if not EVAL_PDF.exists():
+        pytest.skip("缺少评估集 PDF")
+    settings = Settings(
+        database_path=str(tmp_path / "app.db"),
+        data_dir=str(tmp_path),
+        max_upload_mb=50,
+        max_pages=10,
+        _env_file=None,
+    )
+    with TestClient(create_app(settings)) as client:
+        response = client.post(
+            "/api/v1/uploads",
+            files={"file": ("big.pdf", EVAL_PDF.read_bytes(), "application/pdf")},
+        )
+
+    assert response.status_code == 400
+    assert response.json()["code"] == 40003
+
+
+def test_upload_rejects_oversize(tmp_path):
+    with _client(tmp_path) as client:
+        payload = b"%PDF-1.4\n" + b"0" * (6 * 1024 * 1024)
+        response = client.post(
+            "/api/v1/uploads",
+            files={"file": ("big.pdf", payload, "application/pdf")},
+        )
+
+    assert response.status_code == 400
+    assert response.json()["code"] == 40002
+
+
+def test_job_not_found(tmp_path):
+    with _client(tmp_path) as client:
+        response = client.get("/api/v1/jobs/j_nope")
+
+    assert response.status_code == 404
+    assert response.json()["code"] == 40402
+
+
+def test_upload_and_parse_to_dashboard(tmp_path):
+    if not EVAL_PDF.exists():
+        pytest.skip("缺少评估集 PDF")
+    settings = Settings(
+        database_path=str(tmp_path / "app.db"),
+        data_dir=str(tmp_path),
+        max_pages=400,
+        _env_file=None,
+    )
+    application = create_app(settings)
+    with TestClient(application) as client:
+        created = client.post(
+            "/api/v1/uploads",
+            files={"file": (EVAL_PDF.name, EVAL_PDF.read_bytes(), "application/pdf")},
+        )
+        assert created.status_code == 202
+        payload = created.json()["data"]
+        job_id = payload["job"]["job_id"]
+        session_id = payload["session_id"]
+
+        deadline = time.time() + 90
+        job = {}
+        while time.time() < deadline:
+            job = client.get(f"/api/v1/jobs/{job_id}").json()["data"]
+            if job["state"] in {"done", "failed"}:
+                break
+            time.sleep(0.5)
+
+        assert job["state"] == "done", job
+        page = client.get(f"/s/{session_id}")
+        assert page.status_code == 200
+        charts = client.get(f"/api/v1/sessions/{session_id}/charts").json()["data"]["charts"]
+        assert len(charts) == 7
+
+def test_upload_rate_limited_after_ten(tmp_path):
+    with _client(tmp_path) as client:
+        statuses = []
+        for _ in range(11):
+            response = client.post(
+                "/api/v1/uploads",
+                files={"file": ("x.txt", b"not a pdf", "text/plain")},
+            )
+            statuses.append(response.status_code)
+
+    assert statuses[:10] == [400] * 10
+    assert statuses[10] == 429

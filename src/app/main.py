@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 import sys
 import time
 import uuid
@@ -20,9 +21,11 @@ from core.errors import AppError, ErrorCode, http_status
 from core.logging import get_logger, log_event, setup_logging
 from core.response import fail, ok
 from dashboard.build import build_anomaly_payload, build_charts
-from dashboard.session import filter_rows_by_statement
+from dashboard.session import SessionData, build_filing, filter_rows_by_statement
 from export.markdown import write_markdown
 from export.xlsx import render_xlsx
+from jobs.manager import Job, JobManager, RateLimiter
+from parse import PdfDoc
 from traceability.service import trace_entry
 from store.db import Database
 
@@ -54,6 +57,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.exports = {}
     app.state.export_dir = Path(settings.data_dir) / "exports"
     app.state.export_dir.mkdir(parents=True, exist_ok=True)
+    app.state.tmp_dir = Path(settings.data_dir) / "tmp"
+    app.state.tmp_dir.mkdir(parents=True, exist_ok=True)
+    app.state.jobs = JobManager(max_workers=5)
+    app.state.limiter = RateLimiter(limit=10, window_seconds=3600)
 
     app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
@@ -215,6 +222,114 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def anomalies_api(session_id: str):
         session = _session(session_id)
         return ok({"items": build_anomaly_payload(session.latest.anomalies)})
+
+    @app.post("/api/v1/uploads")
+    async def uploads(request: Request):
+        client_ip = request.client.host if request.client else "unknown"
+        allowed, retry_after = app.state.limiter.allow(client_ip)
+        if not allowed:
+            return JSONResponse(
+                status_code=429,
+                content=fail(
+                    int(ErrorCode.RATE_LIMITED),
+                    "上传过于频繁，请稍后再试",
+                    {"retry_after": retry_after},
+                ),
+                headers={"Retry-After": str(retry_after)},
+            )
+
+        form = await request.form()
+        upload = form.get("file")
+        if upload is None:
+            raise AppError(ErrorCode.INVALID_PARAMS, "缺少上传文件", {})
+
+        filename = str(getattr(upload, "filename", "") or "upload.pdf")
+        data = await upload.read()
+        if len(data) > settings.max_upload_mb * 1024 * 1024:
+            raise AppError(
+                ErrorCode.FILE_TOO_LARGE,
+                "文件超过大小上限",
+                {"size": len(data), "max_mb": settings.max_upload_mb},
+            )
+        if not data[:5].startswith(b"%PDF"):
+            raise AppError(ErrorCode.INVALID_FILE_TYPE, "仅支持 PDF 文件", {"filename": filename})
+
+        job_id = f"j_{uuid.uuid4().hex[:8]}"
+        temp_path = app.state.tmp_dir / f"{job_id}.pdf"
+        temp_path.write_bytes(data)
+        try:
+            with PdfDoc(str(temp_path)) as doc:
+                page_count = doc.page_count
+        except Exception as exc:
+            temp_path.unlink(missing_ok=True)
+            raise AppError(ErrorCode.PARSE_FAILED, "PDF 无法打开", {"filename": filename}) from exc
+        if page_count > settings.max_pages:
+            temp_path.unlink(missing_ok=True)
+            raise AppError(
+                ErrorCode.TOO_MANY_PAGES,
+                "页数超过上限",
+                {"pages": page_count, "max_pages": settings.max_pages},
+            )
+
+        session_id = str(form.get("session_id") or f"s_{uuid.uuid4().hex[:8]}")
+        report_type = "annual" if "年度" in filename else "semi"
+        match = re.search(r"(20\d{2})", filename)
+        period = match.group(1) if match else "unknown"
+        company = filename.rsplit(".", 1)[0]
+
+        job = Job(job_id=job_id, filing_id="f_01", session_id=session_id)
+        position = app.state.jobs.create(job)
+
+        def task(progress):
+            progress("parsing", 0.15)
+            filing = build_filing(temp_path, period, "f_01")
+            progress("computing", 0.8)
+            return SessionData(
+                session_id=session_id,
+                company_name=company,
+                stock_code="",
+                filings=[filing],
+                created_at=datetime.now().astimezone().isoformat(timespec="seconds"),
+            )
+
+        def on_success(session: SessionData) -> None:
+            app.state.sessions[session.session_id] = session
+            temp_path.unlink(missing_ok=True)
+
+        app.state.jobs.submit(job_id, task, on_success, lambda exc: None)
+
+        return JSONResponse(
+            status_code=202,
+            content=ok(
+                {
+                    "session_id": session_id,
+                    "filing": {
+                        "filing_id": "f_01",
+                        "report_type": report_type,
+                        "period": period,
+                        "status": "queued",
+                    },
+                    "job": {"job_id": job_id, "state": "queued", "queue_position": position},
+                }
+            ),
+        )
+
+    @app.get("/api/v1/jobs/{job_id}")
+    async def job_status(job_id: str):
+        job = app.state.jobs.get(job_id)
+        if job is None:
+            raise AppError(ErrorCode.JOB_NOT_FOUND, "任务不存在", {"job_id": job_id})
+        return ok(
+            {
+                "job_id": job.job_id,
+                "state": job.state,
+                "progress": job.progress,
+                "stage": job.stage,
+                "queue_position": job.queue_position,
+                "error": job.error,
+                "started_at": job.started_at,
+            }
+        )
 
     @app.get("/api/v1/sessions/{session_id}/trace/{entry_id}")
     async def trace_api(session_id: str, entry_id: str):

@@ -62,3 +62,27 @@ body {
   font-size: 12px;
   margin: 24px 0 40px;
 }
+
+.uploader h2 { margin: 0 0 6px; font-size: 15px; }
+.uploader .hint { margin: 0 0 12px; color: var(--ink3); font-size: 12px; }
+.uploader form { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.uploader input[type="file"] {
+  border: 1.5px dashed #cfd6dd;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  background: #fbfcfd;
+}
+.btn {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
+.btn.primary:disabled { opacity: .6; cursor: default; }
+.status { margin-top: 12px; font-size: 13px; color: var(--ink2); }
+.status.ok { color: #15803d; }
+.status.error { color: #b91c1c; }

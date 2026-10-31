@@ -14,21 +14,24 @@
   <main class="wrap">
     <section class="hero">
       <h1>上传 A 股年报，把财报整理成可核对的财务视图</h1>
-      <p>三表结构化、关键指标、8 组图表、异常项提示，每个数字都能回到原文页码。</p>
+      <p>三表结构化、20 项指标、7 组图表、异常项提示，每个数字都能回到原文页码。</p>
     </section>
 
-    <section class="card placeholder">
-      <h2>上传入口建设中</h2>
-      <p>当前版本为工程骨架：解析、指标与看板由后续任务卡交付。此页面用于验证服务可访问。</p>
-      <ul>
-        <li>三表解析与科目对齐：TASK-002 ～ TASK-005</li>
-        <li>指标计算、图表与溯源：后续批次任务卡</li>
-      </ul>
+    <section class="card uploader">
+      <h2>上传年报 PDF</h2>
+      <p class="hint">仅支持 PDF；单份 ≤ 50MB、≤ 400 页。解析完成后自动跳转看板。</p>
+      <form id="upload-form">
+        <input type="file" id="file" accept="application/pdf" required>
+        <button class="btn primary" type="submit">开始解析</button>
+      </form>
+      <div id="status" class="status"></div>
     </section>
 
     <footer class="disclaimer">
       <strong>免责声明</strong>：本工具仅对用户上传的财报文档做信息提取与整理，所呈现内容均来自原文并标注页码，不构成任何投资建议。数据请以公司在指定媒体披露的正式报告为准，使用前请自行核验。
     </footer>
   </main>
+
+  <script src="/static/upload.js"></script>
 </body>
 </html>
