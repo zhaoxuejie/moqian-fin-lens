@@ -23,7 +23,7 @@
 | TASK-004 | 标准科目 Schema 与别名映射表 | v1.0 | TASK-001 | P0 | ✅ done | [task-004-account-schema-and-alias.md](task-004-account-schema-and-alias.md) |
 | TASK-005 | 规则匹配与未对齐显式化 | v1.0 | TASK-003、TASK-004 | P0 | ✅ done | [task-005-rule-matching-and-unaligned.md](task-005-rule-matching-and-unaligned.md) |
 | TASK-006 | 表格结构还原 | v1.0 | TASK-005 | P0 | ✅ done | [task-006-table-structure-recovery.md](task-006-table-structure-recovery.md) |
-| TASK-007 | 指标计算与三表勾稽 | v1.0 | TASK-006 | P0 | ⬜ todo | [task-007-metrics-and-checks.md](task-007-metrics-and-checks.md) |
+| TASK-007 | 指标计算与三表勾稽 | v1.0 | TASK-006 | P0 | ✅ done | [task-007-metrics-and-checks.md](task-007-metrics-and-checks.md) |
 | TASK-008 | 看板与 8 组图表 | v1.0 | TASK-007 | P0 | ⬜ todo | [task-008-dashboard-and-charts.md](task-008-dashboard-and-charts.md) |
 | TASK-009 | 溯源与导出 | v1.0 | TASK-008 | P0 | ⬜ todo | [task-009-trace-and-export.md](task-009-trace-and-export.md) |
 
