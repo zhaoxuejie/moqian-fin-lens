@@ -21,7 +21,7 @@
 | TASK-002 | 解析器骨架与三表定位 | v1.0 | TASK-001 | P0 | ✅ done | [task-002-parser-and-statement-locating.md](task-002-parser-and-statement-locating.md) |
 | TASK-003 | 数值归一（单位 / 符号 / 空值） | v1.0 | TASK-002 | P0 | ✅ done | [task-003-number-normalization.md](task-003-number-normalization.md) |
 | TASK-004 | 标准科目 Schema 与别名映射表 | v1.0 | TASK-001 | P0 | ✅ done | [task-004-account-schema-and-alias.md](task-004-account-schema-and-alias.md) |
-| TASK-005 | 规则匹配与未对齐显式化 | v1.0 | TASK-003、TASK-004 | P0 | ⬜ todo | [task-005-rule-matching-and-unaligned.md](task-005-rule-matching-and-unaligned.md) |
+| TASK-005 | 规则匹配与未对齐显式化 | v1.0 | TASK-003、TASK-004 | P0 | ✅ done | [task-005-rule-matching-and-unaligned.md](task-005-rule-matching-and-unaligned.md) |
 
 ## 规则
 1. 任务存储模式：**一个任务单独一个文件**，不把多个任务混在同一个文件。

@@ -35,7 +35,7 @@ testpaths = ["tests"]
 addopts = "-q --strict-markers"
 
 [tool.coverage.run]
-source = ["core", "store", "app", "parse", "schema"]
+source = ["core", "store", "app", "parse", "schema", "align"]
 omit = [
   "src/app/templates/*",
   "src/app/static/*",

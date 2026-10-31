@@ -1,0 +1,722 @@
+[
+  {
+    "raw": "其中：营业收入",
+    "statement": "income",
+    "expected": "revenue",
+    "source": "auto",
+    "report": "002230_科大讯飞_2024年年度报告",
+    "page": 119
+  },
+  {
+    "raw": "利息收入",
+    "statement": "income",
+    "expected": "interest_income",
+    "source": "auto",
+    "report": "002230_科大讯飞_2024年年度报告",
+    "page": 119
+  },
+  {
+    "raw": "其中：营业成本",
+    "statement": "income",
+    "expected": "cost_of_sales",
+    "source": "auto",
+    "report": "002230_科大讯飞_2024年年度报告",
+    "page": 119
+  },
+  {
+    "raw": "税金及附加",
+    "statement": "income",
+    "expected": "taxes_surcharges",
+    "source": "auto",
+    "report": "002230_科大讯飞_2024年年度报告",
+    "page": 120
+  },
+  {
+    "raw": "销售费用",
+    "statement": "income",
+    "expected": "selling_expenses",
+    "source": "auto",
+    "report": "002230_科大讯飞_2024年年度报告",
+    "page": 120
+  },
+  {
+    "raw": "管理费用",
+    "statement": "income",
+    "expected": "admin_expenses",
+    "source": "auto",
+    "report": "002230_科大讯飞_2024年年度报告",
+    "page": 120
+  },
+  {
+    "raw": "其中：营业收入",
+    "statement": "income",
+    "expected": "revenue",
+    "source": "auto",
+    "report": "002230_科大讯飞_2025年年度报告",
+    "page": 115
+  },
+  {
+    "raw": "利息收入",
+    "statement": "income",
+    "expected": "interest_income",
+    "source": "auto",
+    "report": "002230_科大讯飞_2025年年度报告",
+    "page": 115
+  },
+  {
+    "raw": "其中：营业成本",
+    "statement": "income",
+    "expected": "cost_of_sales",
+    "source": "auto",
+    "report": "002230_科大讯飞_2025年年度报告",
+    "page": 115
+  },
+  {
+    "raw": "税金及附加",
+    "statement": "income",
+    "expected": "taxes_surcharges",
+    "source": "auto",
+    "report": "002230_科大讯飞_2025年年度报告",
+    "page": 115
+  },
+  {
+    "raw": "销售费用",
+    "statement": "income",
+    "expected": "selling_expenses",
+    "source": "auto",
+    "report": "002230_科大讯飞_2025年年度报告",
+    "page": 115
+  },
+  {
+    "raw": "管理费用",
+    "statement": "income",
+    "expected": "admin_expenses",
+    "source": "auto",
+    "report": "002230_科大讯飞_2025年年度报告",
+    "page": 115
+  },
+  {
+    "raw": "减：营业成本",
+    "statement": "income",
+    "expected": "cost_of_sales",
+    "source": "auto",
+    "report": "002415_海康威视_2024年年度报告",
+    "page": 161
+  },
+  {
+    "raw": "税金及附加",
+    "statement": "income",
+    "expected": "taxes_surcharges",
+    "source": "auto",
+    "report": "002415_海康威视_2024年年度报告",
+    "page": 161
+  },
+  {
+    "raw": "销售费用",
+    "statement": "income",
+    "expected": "selling_expenses",
+    "source": "auto",
+    "report": "002415_海康威视_2024年年度报告",
+    "page": 161
+  },
+  {
+    "raw": "管理费用",
+    "statement": "income",
+    "expected": "admin_expenses",
+    "source": "auto",
+    "report": "002415_海康威视_2024年年度报告",
+    "page": 161
+  },
+  {
+    "raw": "研发费用",
+    "statement": "income",
+    "expected": "rd_expenses",
+    "source": "auto",
+    "report": "002415_海康威视_2024年年度报告",
+    "page": 161
+  },
+  {
+    "raw": "财务费用",
+    "statement": "income",
+    "expected": "finance_expenses",
+    "source": "auto",
+    "report": "002415_海康威视_2024年年度报告",
+    "page": 161
+  },
+  {
+    "raw": "减：营业成本",
+    "statement": "income",
+    "expected": "cost_of_sales",
+    "source": "auto",
+    "report": "002415_海康威视_2025年年度报告",
+    "page": 151
+  },
+  {
+    "raw": "税金及附加",
+    "statement": "income",
+    "expected": "taxes_surcharges",
+    "source": "auto",
+    "report": "002415_海康威视_2025年年度报告",
+    "page": 151
+  },
+  {
+    "raw": "销售费用",
+    "statement": "income",
+    "expected": "selling_expenses",
+    "source": "auto",
+    "report": "002415_海康威视_2025年年度报告",
+    "page": 151
+  },
+  {
+    "raw": "管理费用",
+    "statement": "income",
+    "expected": "admin_expenses",
+    "source": "auto",
+    "report": "002415_海康威视_2025年年度报告",
+    "page": 151
+  },
+  {
+    "raw": "研发费用",
+    "statement": "income",
+    "expected": "rd_expenses",
+    "source": "auto",
+    "report": "002415_海康威视_2025年年度报告",
+    "page": 151
+  },
+  {
+    "raw": "财务费用",
+    "statement": "income",
+    "expected": "finance_expenses",
+    "source": "auto",
+    "report": "002415_海康威视_2025年年度报告",
+    "page": 151
+  },
+  {
+    "raw": "其中：营业收入",
+    "statement": "income",
+    "expected": "revenue",
+    "source": "auto",
+    "report": "002475_立讯精密_2024年年度报告",
+    "page": 126
+  },
+  {
+    "raw": "利息收入",
+    "statement": "income",
+    "expected": "interest_income",
+    "source": "auto",
+    "report": "002475_立讯精密_2024年年度报告",
+    "page": 126
+  },
+  {
+    "raw": "其中：营业成本",
+    "statement": "income",
+    "expected": "cost_of_sales",
+    "source": "auto",
+    "report": "002475_立讯精密_2024年年度报告",
+    "page": 127
+  },
+  {
+    "raw": "税金及附加",
+    "statement": "income",
+    "expected": "taxes_surcharges",
+    "source": "auto",
+    "report": "002475_立讯精密_2024年年度报告",
+    "page": 127
+  },
+  {
+    "raw": "销售费用",
+    "statement": "income",
+    "expected": "selling_expenses",
+    "source": "auto",
+    "report": "002475_立讯精密_2024年年度报告",
+    "page": 127
+  },
+  {
+    "raw": "管理费用",
+    "statement": "income",
+    "expected": "admin_expenses",
+    "source": "auto",
+    "report": "002475_立讯精密_2024年年度报告",
+    "page": 127
+  },
+  {
+    "raw": "其中：营业收入",
+    "statement": "income",
+    "expected": "revenue",
+    "source": "auto",
+    "report": "002475_立讯精密_2025年年度报告",
+    "page": 121
+  },
+  {
+    "raw": "利息收入",
+    "statement": "income",
+    "expected": "interest_income",
+    "source": "auto",
+    "report": "002475_立讯精密_2025年年度报告",
+    "page": 121
+  },
+  {
+    "raw": "其中：营业成本",
+    "statement": "income",
+    "expected": "cost_of_sales",
+    "source": "auto",
+    "report": "002475_立讯精密_2025年年度报告",
+    "page": 121
+  },
+  {
+    "raw": "税金及附加",
+    "statement": "income",
+    "expected": "taxes_surcharges",
+    "source": "auto",
+    "report": "002475_立讯精密_2025年年度报告",
+    "page": 121
+  },
+  {
+    "raw": "销售费用",
+    "statement": "income",
+    "expected": "selling_expenses",
+    "source": "auto",
+    "report": "002475_立讯精密_2025年年度报告",
+    "page": 121
+  },
+  {
+    "raw": "管理费用",
+    "statement": "income",
+    "expected": "admin_expenses",
+    "source": "auto",
+    "report": "002475_立讯精密_2025年年度报告",
+    "page": 121
+  },
+  {
+    "raw": "利息收入",
+    "statement": "income",
+    "expected": "interest_income",
+    "source": "auto",
+    "report": "688111_金山办公_2024年年度报告",
+    "page": 130
+  },
+  {
+    "raw": "衍生金融资产",
+    "statement": "balance",
+    "expected": "derivative_financial_assets",
+    "source": "auto",
+    "report": "688111_金山办公_2024年年度报告",
+    "page": 126
+  },
+  {
+    "raw": "应收款项融资",
+    "statement": "balance",
+    "expected": "receivables_financing",
+    "source": "auto",
+    "report": "688111_金山办公_2024年年度报告",
+    "page": 126
+  },
+  {
+    "raw": "其中：应收利息",
+    "statement": "balance",
+    "expected": "interest_receivable",
+    "source": "auto",
+    "report": "688111_金山办公_2024年年度报告",
+    "page": 126
+  },
+  {
+    "raw": "应收股利",
+    "statement": "balance",
+    "expected": "dividend_receivable",
+    "source": "auto",
+    "report": "688111_金山办公_2024年年度报告",
+    "page": 126
+  },
+  {
+    "raw": "持有待售资产",
+    "statement": "balance",
+    "expected": "assets_held_for_sale",
+    "source": "auto",
+    "report": "688111_金山办公_2024年年度报告",
+    "page": 126
+  },
+  {
+    "raw": "利息收入",
+    "statement": "income",
+    "expected": "interest_income",
+    "source": "auto",
+    "report": "688111_金山办公_2025年年度报告",
+    "page": 109
+  },
+  {
+    "raw": "投资收益",
+    "statement": "income",
+    "expected": "investment_income",
+    "source": "auto",
+    "report": "688111_金山办公_2025年年度报告",
+    "page": 110
+  },
+  {
+    "raw": "衍生金融资产",
+    "statement": "balance",
+    "expected": "derivative_financial_assets",
+    "source": "auto",
+    "report": "688111_金山办公_2025年年度报告",
+    "page": 105
+  },
+  {
+    "raw": "应收款项融资",
+    "statement": "balance",
+    "expected": "receivables_financing",
+    "source": "auto",
+    "report": "688111_金山办公_2025年年度报告",
+    "page": 105
+  },
+  {
+    "raw": "其中：应收利息",
+    "statement": "balance",
+    "expected": "interest_receivable",
+    "source": "auto",
+    "report": "688111_金山办公_2025年年度报告",
+    "page": 105
+  },
+  {
+    "raw": "应收股利",
+    "statement": "balance",
+    "expected": "dividend_receivable",
+    "source": "auto",
+    "report": "688111_金山办公_2025年年度报告",
+    "page": 105
+  },
+  {
+    "raw": "利息收入",
+    "statement": "income",
+    "expected": "interest_income",
+    "source": "auto",
+    "report": "688981_中芯国际_2024年年度报告",
+    "page": 120
+  },
+  {
+    "raw": "其中：利息费用",
+    "statement": "income",
+    "expected": "interest_expense",
+    "source": "auto",
+    "report": "688981_中芯国际_2024年年度报告",
+    "page": 120
+  },
+  {
+    "raw": "其中：对联营企业和合营企业的投资收益",
+    "statement": "income",
+    "expected": "invest_income_associates",
+    "source": "auto",
+    "report": "688981_中芯国际_2024年年度报告",
+    "page": 120
+  },
+  {
+    "raw": "应收款项融资",
+    "statement": "balance",
+    "expected": "receivables_financing",
+    "source": "auto",
+    "report": "688981_中芯国际_2024年年度报告",
+    "page": 117
+  },
+  {
+    "raw": "其中：应收利息",
+    "statement": "balance",
+    "expected": "interest_receivable",
+    "source": "auto",
+    "report": "688981_中芯国际_2024年年度报告",
+    "page": 117
+  },
+  {
+    "raw": "应收股利",
+    "statement": "balance",
+    "expected": "dividend_receivable",
+    "source": "auto",
+    "report": "688981_中芯国际_2024年年度报告",
+    "page": 117
+  },
+  {
+    "raw": "利息收入",
+    "statement": "income",
+    "expected": "interest_income",
+    "source": "auto",
+    "report": "688981_中芯国际_2025年年度报告",
+    "page": 127
+  },
+  {
+    "raw": "其中：利息费用",
+    "statement": "income",
+    "expected": "interest_expense",
+    "source": "auto",
+    "report": "688981_中芯国际_2025年年度报告",
+    "page": 127
+  },
+  {
+    "raw": "其中：对联营企业和合营企业的投资收益",
+    "statement": "income",
+    "expected": "invest_income_associates",
+    "source": "auto",
+    "report": "688981_中芯国际_2025年年度报告",
+    "page": 127
+  },
+  {
+    "raw": "应收款项融资",
+    "statement": "balance",
+    "expected": "receivables_financing",
+    "source": "auto",
+    "report": "688981_中芯国际_2025年年度报告",
+    "page": 124
+  },
+  {
+    "raw": "其中：应收利息",
+    "statement": "balance",
+    "expected": "interest_receivable",
+    "source": "auto",
+    "report": "688981_中芯国际_2025年年度报告",
+    "page": 124
+  },
+  {
+    "raw": "流动资产合计",
+    "statement": "balance",
+    "expected": "total_current_assets",
+    "source": "auto",
+    "report": "688981_中芯国际_2025年年度报告",
+    "page": 124
+  },
+  {
+    "raw": "其中：营业收入",
+    "statement": "income",
+    "expected": "revenue",
+    "source": "variant"
+  },
+  {
+    "raw": "减：营业成本",
+    "statement": "income",
+    "expected": "cost_of_sales",
+    "source": "variant"
+  },
+  {
+    "raw": "加：其他收益",
+    "statement": "income",
+    "expected": "other_income",
+    "source": "variant"
+  },
+  {
+    "raw": "营业收入（元）",
+    "statement": "income",
+    "expected": "revenue",
+    "source": "variant"
+  },
+  {
+    "raw": "营业总收入（人民币元）",
+    "statement": "income",
+    "expected": "revenue_total",
+    "source": "variant"
+  },
+  {
+    "raw": "归属于母公司所有者的净利润",
+    "statement": "income",
+    "expected": "net_profit_attributable",
+    "source": "variant"
+  },
+  {
+    "raw": "归属于母公司股东的净利润（元）",
+    "statement": "income",
+    "expected": "net_profit_attributable",
+    "source": "variant"
+  },
+  {
+    "raw": "净利润（元）",
+    "statement": "income",
+    "expected": "net_profit",
+    "source": "variant"
+  },
+  {
+    "raw": "营业利润（元）",
+    "statement": "income",
+    "expected": "operating_profit",
+    "source": "variant"
+  },
+  {
+    "raw": "利润总额（元）",
+    "statement": "income",
+    "expected": "total_profit",
+    "source": "variant"
+  },
+  {
+    "raw": "所得税费用（元）",
+    "statement": "income",
+    "expected": "income_tax",
+    "source": "variant"
+  },
+  {
+    "raw": "研发费用",
+    "statement": "income",
+    "expected": "rd_expenses",
+    "source": "variant"
+  },
+  {
+    "raw": "基本每股收益",
+    "statement": "income",
+    "expected": "basic_eps",
+    "source": "variant"
+  },
+  {
+    "raw": "存货（元）",
+    "statement": "balance",
+    "expected": "inventory",
+    "source": "variant"
+  },
+  {
+    "raw": "商誉（元）",
+    "statement": "balance",
+    "expected": "goodwill",
+    "source": "variant"
+  },
+  {
+    "raw": "资产总计（元）",
+    "statement": "balance",
+    "expected": "total_assets",
+    "source": "variant"
+  },
+  {
+    "raw": "负债合计（元）",
+    "statement": "balance",
+    "expected": "total_liabilities",
+    "source": "variant"
+  },
+  {
+    "raw": "所有者权益合计（元）",
+    "statement": "balance",
+    "expected": "total_equity",
+    "source": "variant"
+  },
+  {
+    "raw": "短期借款（元）",
+    "statement": "balance",
+    "expected": "short_term_borrowings",
+    "source": "variant"
+  },
+  {
+    "raw": "应收账款（元）",
+    "statement": "balance",
+    "expected": "accounts_receivable",
+    "source": "variant"
+  },
+  {
+    "raw": "应付账款（元）",
+    "statement": "balance",
+    "expected": "accounts_payable",
+    "source": "variant"
+  },
+  {
+    "raw": "经营活动产生的现金流量净额（元）",
+    "statement": "cashflow",
+    "expected": "ocf_net",
+    "source": "variant"
+  },
+  {
+    "raw": "销售商品、提供劳务收到的现金（元）",
+    "statement": "cashflow",
+    "expected": "cash_received_from_sales",
+    "source": "variant"
+  },
+  {
+    "raw": "支付其他与经营活动有关的现金（元）",
+    "statement": "cashflow",
+    "expected": "other_cash_paid_operating",
+    "source": "variant"
+  },
+  {
+    "raw": "期末现金及现金等价物余额（元）",
+    "statement": "cashflow",
+    "expected": "ending_cash",
+    "source": "variant"
+  },
+  {
+    "raw": "合并资产负债表",
+    "statement": "balance",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "合并利润表",
+    "statement": "income",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "合并现金流量表",
+    "statement": "cashflow",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "单位：元",
+    "statement": "income",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "项目",
+    "statement": "balance",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "附注",
+    "statement": "income",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "法定代表人",
+    "statement": "balance",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "编制单位",
+    "statement": "balance",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "币种：人民币",
+    "statement": "income",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "流动资产：",
+    "statement": "balance",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "非流动资产：",
+    "statement": "balance",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "流动负债：",
+    "statement": "balance",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "经营活动产生的现金流量：",
+    "statement": "cashflow",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "筹资活动产生的现金流量：",
+    "statement": "cashflow",
+    "expected": null,
+    "source": "negative"
+  },
+  {
+    "raw": "＃＠乱码科目",
+    "statement": "income",
+    "expected": null,
+    "source": "negative"
+  }
+]
