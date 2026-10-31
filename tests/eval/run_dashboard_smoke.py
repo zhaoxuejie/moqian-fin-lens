@@ -41,17 +41,26 @@ def main() -> int:
     metrics = client.get("/api/v1/sessions/s_002230/metrics")
     charts = client.get("/api/v1/sessions/s_002230/charts")
     anomalies = client.get("/api/v1/sessions/s_002230/anomalies")
+    trace = client.get("/api/v1/sessions/s_002230/trace/row:income:0")
+    created = client.post("/api/v1/sessions/s_002230/exports", json={"kind": "markdown"})
+    download = client.get(created.json()["data"]["download_url"]) if created.status_code == 200 else None
 
     print(f"build_session: {build_seconds:.1f}s, pages={session.latest.pages}")
     print(f"page: {page.status_code}, charts={len(charts.json()['data']['charts'])}")
     print(f"metrics={len(metrics.json()['data']['metrics'])}, statements={len(statements.json()['data']['statements'])}")
     print(f"anomalies={len(anomalies.json()['data']['items'])}")
     print("checks:", [item["status"] for item in detail.json()["data"]["checks"]])
+    print(f"trace: {trace.status_code}, page={trace.json()['data']['page']}")
+    print(f"export: {created.status_code}, bytes={len(download.content) if download is not None else 0}")
 
     ok = (
         page.status_code == 200
         and len(charts.json()["data"]["charts"]) == 7
         and len(metrics.json()["data"]["metrics"]) == 20
+        and trace.status_code == 200
+        and created.status_code == 200
+        and download is not None
+        and download.status_code == 200
     )
     return 0 if ok else 1
 

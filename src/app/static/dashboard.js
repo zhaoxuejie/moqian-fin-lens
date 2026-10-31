@@ -1,5 +1,6 @@
 (function () {
   const sessionId = document.body.dataset.session;
+  const mask = document.getElementById("mask");
 
   document.querySelectorAll(".tab").forEach(function (tab) {
     tab.addEventListener("click", function () {
@@ -70,4 +71,49 @@
         el.innerHTML = '<div style="height:100%;display:grid;place-items:center;color:#b91c1c;font-size:12px">图表加载失败</div>';
       });
     });
+
+  function closeModal() {
+    if (mask) mask.classList.remove("on");
+  }
+
+  document.addEventListener("click", function (event) {
+    const trigger = event.target.closest("[data-entry]");
+    if (trigger) {
+      const entryId = trigger.dataset.entry;
+      fetch("/api/v1/sessions/" + encodeURIComponent(sessionId) + "/trace/" + encodeURIComponent(entryId))
+        .then(function (response) { return response.json(); })
+        .then(function (body) {
+          const data = body.data || {};
+          document.getElementById("m-title").textContent = data.label || "原文溯源";
+          document.getElementById("m-meta").textContent = "P." + data.page + (data.account_code ? " · " + data.account_code : "");
+          document.getElementById("m-quote").textContent = data.snippet || "原文片段缺失";
+          document.getElementById("m-note").textContent = data.formula || data.unit_note || "";
+          mask.classList.add("on");
+        })
+        .catch(function () {});
+    }
+    if (event.target === mask) closeModal();
+  });
+
+  const mClose = document.getElementById("m-close");
+  if (mClose) mClose.addEventListener("click", closeModal);
+
+  function exportAs(kind) {
+    fetch("/api/v1/sessions/" + encodeURIComponent(sessionId) + "/exports", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind: kind }),
+    })
+      .then(function (response) { return response.json(); })
+      .then(function (body) {
+        if (body.data && body.data.download_url) {
+          window.location.href = body.data.download_url;
+        }
+      });
+  }
+
+  const md = document.getElementById("export-md");
+  const xlsx = document.getElementById("export-xlsx");
+  if (md) md.addEventListener("click", function () { exportAs("markdown"); });
+  if (xlsx) xlsx.addEventListener("click", function () { exportAs("xlsx"); });
 })();

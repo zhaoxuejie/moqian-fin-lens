@@ -1,0 +1,1 @@
+﻿from traceability.service import trace_entry

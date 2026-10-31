@@ -16,6 +16,7 @@
     <section class="hero">
       <h1>{{ session.company_name }}<span class="code">{{ session.stock_code }}</span></h1>
       <p>{{ filing.period }} 年年度报告 · 共 {{ filing.pages }} 页 · 已解析 {{ session.periods|length }} 期</p>
+      <p class="actions"><button class="btn" id="export-md">导出 Markdown</button><button class="btn" id="export-xlsx">导出 Excel</button></p>
       <p class="checks">勾稽：
         {% for check in filing.checks %}
         <span class="check {{ check.status }}">{{ check.rule }} {{ check.status }}</span>
@@ -26,7 +27,7 @@
     <section class="kpis">
       {% for item in metrics[:8] %}
       <div class="kpi">
-        <div class="k"><span>{{ item.label }}</span></div>
+        <div class="k"><span>{{ item.label }}</span><button class="src" data-entry="metric:{{ item.code }}">溯源</button></div>
         <div class="v">
           {% if item.value is none %}<span class="muted">原文未披露</span>
           {% elif item.unit == "元" %}{{ "%.2f"|format(item.value|float / 100000000) }}<small>亿元</small>
@@ -57,7 +58,7 @@
                 <td class="num">{{ cell.raw }}</td>
                 {% endfor %}
                 {% if row.cells|length == 0 %}<td class="muted">未披露</td><td class="muted">未披露</td>{% endif %}
-                <td><span class="src">P.{{ row.page }}</span></td>
+                <td><button class="src" data-entry="row:{{ kind }}:{{ loop.index0 }}">P.{{ row.page }}</button></td>
               </tr>
               {% endfor %}
             </tbody>
@@ -100,6 +101,15 @@
       <strong>免责声明</strong>：本工具仅对用户上传的财报文档做信息提取与整理，所呈现内容均来自原文并标注页码，不构成任何投资建议。数据请以公司在指定媒体披露的正式报告为准，使用前请自行核验。
     </footer>
   </main>
+
+  <div class="mask" id="mask">
+    <div class="modal">
+      <h4 id="m-title">原文溯源</h4>
+      <div class="meta" id="m-meta"></div>
+      <div class="quote" id="m-quote"></div>
+      <div class="row"><span id="m-note"></span><button class="btn" id="m-close">关闭</button></div>
+    </div>
+  </div>
 
   <script src="/static/echarts.min.js"></script>
   <script src="/static/dashboard.js"></script>

@@ -4,11 +4,12 @@ import logging
 import sys
 import time
 import uuid
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -20,6 +21,9 @@ from core.logging import get_logger, log_event, setup_logging
 from core.response import fail, ok
 from dashboard.build import build_anomaly_payload, build_charts
 from dashboard.session import filter_rows_by_statement
+from export.markdown import write_markdown
+from export.xlsx import render_xlsx
+from traceability.service import trace_entry
 from store.db import Database
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -47,6 +51,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.settings = settings
     app.state.db = db
     app.state.sessions = {}
+    app.state.exports = {}
+    app.state.export_dir = Path(settings.data_dir) / "exports"
+    app.state.export_dir.mkdir(parents=True, exist_ok=True)
 
     app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
@@ -161,13 +168,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     "unit": "元",
                     "rows": [
                         {
+                            "entry_id": f"row:{name}:{index}",
                             "label": row.label,
                             "value": None if not row.cells else str(row.cells[0].value),
                             "page": row.page,
                             "snippet": row.snippet,
                             "missing_reason": None if row.cells else "原文未披露",
                         }
-                        for row in rows
+                        for index, row in enumerate(rows)
                     ],
                 }
             )
@@ -190,6 +198,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                         "missing_reason": item.missing_reason,
                         "yoy": None if item.yoy is None else str(item.yoy),
                         "yoy_unit": item.yoy_unit,
+                        "trace": {"entry_id": f"metric:{item.code}"},
                     }
                     for item in filing.metrics
                 ],
@@ -206,6 +215,73 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def anomalies_api(session_id: str):
         session = _session(session_id)
         return ok({"items": build_anomaly_payload(session.latest.anomalies)})
+
+    @app.get("/api/v1/sessions/{session_id}/trace/{entry_id}")
+    async def trace_api(session_id: str, entry_id: str):
+        session = _session(session_id)
+        return ok(trace_entry(session, entry_id))
+
+    @app.post("/api/v1/sessions/{session_id}/exports")
+    async def create_export(session_id: str, request: Request):
+        session = _session(session_id)
+        try:
+            payload = await request.json()
+        except Exception:
+            payload = {}
+        kind = str(payload.get("kind", "markdown"))
+        if kind not in ("markdown", "xlsx"):
+            raise AppError(ErrorCode.INVALID_PARAMS, "不支持的导出格式", {"kind": kind})
+
+        export_id = f"x_{uuid.uuid4().hex[:8]}"
+        suffix = "md" if kind == "markdown" else "xlsx"
+        target = app.state.export_dir / f"{session_id}-{export_id}.{suffix}"
+        if kind == "markdown":
+            write_markdown(session, target)
+        else:
+            render_xlsx(session, target)
+
+        created = datetime.now().astimezone()
+        app.state.exports[export_id] = {
+            "session_id": session_id,
+            "kind": kind,
+            "path": str(target),
+            "state": "ready",
+            "expires_at": (created + timedelta(hours=1)).isoformat(timespec="seconds"),
+        }
+        return ok(
+            {
+                "export_id": export_id,
+                "state": "ready",
+                "download_url": f"/s/{session_id}/export/{export_id}",
+            }
+        )
+
+    @app.get("/api/v1/exports/{export_id}")
+    async def export_status(export_id: str):
+        record = app.state.exports.get(export_id)
+        if record is None:
+            raise AppError(ErrorCode.NOT_FOUND, "导出不存在", {"export_id": export_id})
+        return ok(
+            {
+                "export_id": export_id,
+                "state": record["state"],
+                "download_url": f"/s/{record['session_id']}/export/{export_id}",
+                "expires_at": record["expires_at"],
+            }
+        )
+
+    @app.get("/s/{session_id}/export/{export_id}")
+    async def download_export(session_id: str, export_id: str):
+        record = app.state.exports.get(export_id)
+        if record is None or record["session_id"] != session_id:
+            raise AppError(ErrorCode.NOT_FOUND, "导出不存在", {"export_id": export_id})
+        media = (
+            "text/markdown"
+            if record["kind"] == "markdown"
+            else "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        suffix = "md" if record["kind"] == "markdown" else "xlsx"
+        return FileResponse(record["path"], media_type=media, filename=f"{session_id}.{suffix}")
 
     @app.exception_handler(AppError)
     async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:

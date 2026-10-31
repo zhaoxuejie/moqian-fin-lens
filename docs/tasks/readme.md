@@ -25,7 +25,7 @@
 | TASK-006 | 表格结构还原 | v1.0 | TASK-005 | P0 | ✅ done | [task-006-table-structure-recovery.md](task-006-table-structure-recovery.md) |
 | TASK-007 | 指标计算与三表勾稽 | v1.0 | TASK-006 | P0 | ✅ done | [task-007-metrics-and-checks.md](task-007-metrics-and-checks.md) |
 | TASK-008 | 看板与 8 组图表 | v1.0 | TASK-007 | P0 | ✅ done | [task-008-dashboard-and-charts.md](task-008-dashboard-and-charts.md) |
-| TASK-009 | 溯源与导出 | v1.0 | TASK-008 | P0 | ⬜ todo | [task-009-trace-and-export.md](task-009-trace-and-export.md) |
+| TASK-009 | 溯源与导出 | v1.0 | TASK-008 | P0 | ✅ done | [task-009-trace-and-export.md](task-009-trace-and-export.md) |
 
 ## 规则
 1. 任务存储模式：**一个任务单独一个文件**，不把多个任务混在同一个文件。
