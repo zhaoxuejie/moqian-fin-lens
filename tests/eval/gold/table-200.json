@@ -1,0 +1,1802 @@
+[
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "租赁负债",
+    "current": "6,059,325.31",
+    "previous": "64,962,842.49",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "递延收益",
+    "current": "856,578,391.09",
+    "previous": "415,933,000.81",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "非流动负债合计",
+    "current": "4,349,124,160.57",
+    "previous": "3,643,648,422.59",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "负债合计",
+    "current": "16,896,995,871.86",
+    "previous": "13,493,948,906.32",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "股本",
+    "current": "2,311,652,413.00",
+    "previous": "2,315,375,793.00",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "资本公积",
+    "current": "11,361,732,670.40",
+    "previous": "11,441,016,118.97",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "减：库存股",
+    "current": "760,000,000.00",
+    "previous": "993,698,579.20",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "其他综合收益",
+    "current": "1,757,680.00",
+    "previous": "1,757,680.00",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "盈余公积",
+    "current": "633,498,719.06",
+    "previous": "485,364,886.46",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "未分配利润",
+    "current": "3,294,222,233.75",
+    "previous": "2,190,335,562.71",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "所有者权益合计",
+    "current": "16,842,863,716.21",
+    "previous": "15,440,151,461.94",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "负债和所有者权益总计",
+    "current": "33,739,859,588.07",
+    "previous": "28,934,100,368.26",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "一、营业总收入",
+    "current": "23,343,093,018.69",
+    "previous": "19,650,329,209.04",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "其中：营业收入",
+    "current": "23,343,093,018.69",
+    "previous": "19,650,329,209.04",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "二、营业总成本",
+    "current": "23,100,303,675.07",
+    "previous": "19,843,922,038.53",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 119,
+    "label": "其中：营业成本",
+    "current": "13,391,165,470.26",
+    "previous": "11,266,545,932.81",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "税金及附加",
+    "current": "143,951,127.88",
+    "previous": "126,447,771.74",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "销售费用",
+    "current": "4,083,416,224.07",
+    "previous": "3,584,043,710.38",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "管理费用",
+    "current": "1,455,408,951.23",
+    "previous": "1,370,348,631.12",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "研发费用",
+    "current": "3,891,601,383.59",
+    "previous": "3,481,185,262.99",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "一年内到期的非流动负债",
+    "current": "1,356,576,898.12",
+    "previous": "1,296,026,172.42",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "其他流动负债",
+    "current": "95,455,030.61",
+    "previous": "116,854,057.73",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "流动负债合计",
+    "current": "13,781,212,160.14",
+    "previous": "12,547,871,711.29",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "长期借款",
+    "current": "1,870,434,742.34",
+    "previous": "3,486,486,444.17",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "租赁负债",
+    "current": "384,476,291.75",
+    "previous": "6,059,325.31",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "递延收益",
+    "current": "782,094,639.30",
+    "previous": "856,578,391.09",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "非流动负债合计",
+    "current": "3,846,481,006.73",
+    "previous": "4,349,124,160.57",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "负债合计",
+    "current": "17,627,693,166.87",
+    "previous": "16,896,995,871.86",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "股本",
+    "current": "2,311,847,493.00",
+    "previous": "2,311,652,413.00",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "资本公积",
+    "current": "11,254,910,583.54",
+    "previous": "11,361,732,670.40",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "减：库存股",
+    "current": "335,435,818.00",
+    "previous": "760,000,000.00",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "其他综合收益",
+    "current": "1,757,680.00",
+    "previous": "1,757,680.00",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "盈余公积",
+    "current": "771,296,289.49",
+    "previous": "633,498,719.06",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "未分配利润",
+    "current": "4,304,070,515.61",
+    "previous": "3,294,222,233.75",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "所有者权益合计",
+    "current": "18,308,446,743.64",
+    "previous": "16,842,863,716.21",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 114,
+    "label": "负债和所有者权益总计",
+    "current": "35,936,139,910.51",
+    "previous": "33,739,859,588.07",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 115,
+    "label": "一、营业总收入",
+    "current": "27,105,390,547.66",
+    "previous": "23,343,093,018.69",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 115,
+    "label": "其中：营业收入",
+    "current": "27,105,390,547.66",
+    "previous": "23,343,093,018.69",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 115,
+    "label": "二、营业总成本",
+    "current": "27,007,499,568.61",
+    "previous": "23,100,303,675.07",
+    "source": "line-based"
+  },
+  {
+    "report": "002230_科大讯飞_2025年年度报告",
+    "statement": "income",
+    "page": 115,
+    "label": "其中：营业成本",
+    "current": "15,624,405,247.68",
+    "previous": "13,391,165,470.26",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "一、营业收入",
+    "current": "92,495,525,118.30",
+    "previous": "89,341,177,610.40",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "减：营业成本",
+    "current": "51,953,857,912.21",
+    "previous": "49,732,768,547.57",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "税金及附加",
+    "current": "692,285,927.36",
+    "previous": "704,641,378.69",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "销售费用",
+    "current": "12,051,218,102.62",
+    "previous": "10,746,788,076.01",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "管理费用",
+    "current": "3,095,939,643.92",
+    "previous": "2,770,781,203.45",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "研发费用",
+    "current": "11,864,013,392.27",
+    "previous": "11,392,948,404.47",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "财务费用",
+    "current": "(114,817,493.16)",
+    "previous": "(749,800,283.79)",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "其中：利息费用",
+    "current": "391,404,187.13",
+    "previous": "457,605,119.59",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "利息收入",
+    "current": "878,035,430.32",
+    "previous": "1,067,169,946.60",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "加：其他收益",
+    "current": "2,653,682,810.87",
+    "previous": "2,559,523,242.99",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "投资收益",
+    "current": "187,021,018.77",
+    "previous": "63,302,304.25",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "其中：对联营企业和合营企业的投资收益(损失)",
+    "current": "30,668,990.87",
+    "previous": "(29,966,477.85)",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "公允价值变动收益",
+    "current": "47,759,102.43",
+    "previous": "22,679,257.89",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "信用减值利得(损失)",
+    "current": "(1,068,789,505.74)",
+    "previous": "(879,922,773.25)",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "资产减值利得(损失)",
+    "current": "(445,914,387.59)",
+    "previous": "(463,382,275.12)",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "资产处置收益(损失)",
+    "current": "(14,539,975.31)",
+    "previous": "(5,674,511.78)",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "二、营业利润",
+    "current": "14,312,246,696.51",
+    "previous": "16,039,575,528.98",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "加：营业外收入",
+    "current": "63,737,582.35",
+    "previous": "87,573,120.04",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "减：营业外支出",
+    "current": "32,490,638.86",
+    "previous": "27,933,016.91",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2024年年度报告",
+    "statement": "income",
+    "page": 161,
+    "label": "三、利润总额",
+    "current": "14,343,493,640.00",
+    "previous": "16,099,215,632.11",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "一、营业收入",
+    "current": "92,507,796,069.94",
+    "previous": "92,495,525,118.30",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "减：营业成本",
+    "current": "50,067,436,550.36",
+    "previous": "51,953,857,912.21",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "税金及附加",
+    "current": "767,498,479.84",
+    "previous": "692,285,927.36",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "销售费用",
+    "current": "12,347,888,877.70",
+    "previous": "12,051,218,102.62",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "管理费用",
+    "current": "2,994,512,052.02",
+    "previous": "3,095,939,643.92",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "研发费用",
+    "current": "11,752,624,736.80",
+    "previous": "11,864,013,392.27",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "财务费用",
+    "current": "(525,631,319.14)",
+    "previous": "(114,817,493.16)",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "其中：利息费用",
+    "current": "200,704,102.53",
+    "previous": "391,404,187.13",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "利息收入",
+    "current": "550,539,471.08",
+    "previous": "878,035,430.32",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "加：其他收益",
+    "current": "2,840,300,144.79",
+    "previous": "2,653,682,810.87",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "投资收益",
+    "current": "247,684,884.36",
+    "previous": "187,021,018.77",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "其中：对联营企业和合营企业的投资收益",
+    "current": "216,251,673.19",
+    "previous": "30,668,990.87",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "公允价值变动收益(损失)",
+    "current": "(17,915,101.74)",
+    "previous": "47,759,102.43",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "信用减值利得(损失)",
+    "current": "(800,561,956.90)",
+    "previous": "(1,068,789,505.74)",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "资产减值利得(损失)",
+    "current": "(436,805,418.06)",
+    "previous": "(445,914,387.59)",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "资产处置收益(损失)",
+    "current": "26,913,929.91",
+    "previous": "(14,539,975.31)",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "二、营业利润",
+    "current": "16,963,083,174.72",
+    "previous": "14,312,246,696.51",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "加：营业外收入",
+    "current": "80,221,086.73",
+    "previous": "63,737,582.35",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "减：营业外支出",
+    "current": "29,865,822.83",
+    "previous": "32,490,638.86",
+    "source": "line-based"
+  },
+  {
+    "report": "002415_海康威视_2025年年度报告",
+    "statement": "income",
+    "page": 151,
+    "label": "三、利润总额",
+    "current": "17,013,438,438.62",
+    "previous": "14,343,493,640.00",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "其他应付款",
+    "current": "7,920,582,369.71",
+    "previous": "6,064,454,178.70",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "一年内到期的非流动负债",
+    "current": "1,363,153,534.40",
+    "previous": "1,975,796,524.14",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "其他流动负债",
+    "current": "5,046,304,840.42",
+    "previous": "804,229,371.60",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "流动负债合计",
+    "current": "28,552,703,592.80",
+    "previous": "16,432,119,563.47",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "长期借款",
+    "current": "17,377,321,891.70",
+    "previous": "9,676,736,000.00",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "应付债券",
+    "current": "2,878,039,451.43",
+    "previous": "2,799,499,850.29",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "租赁负债",
+    "current": "19,970,300.26",
+    "previous": "27,210,286.03",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "递延收益",
+    "current": "2,026,179.60",
+    "previous": "3,619,077.63",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "非流动负债合计",
+    "current": "20,277,357,822.99",
+    "previous": "12,526,571,837.11",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "负债合计",
+    "current": "48,830,061,415.79",
+    "previous": "28,958,691,400.58",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "股本",
+    "current": "7,236,462,142.00",
+    "previous": "7,148,168,213.00",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "其他权益工具",
+    "current": "527,271,028.72",
+    "previous": "527,289,020.28",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "资本公积",
+    "current": "7,445,999,659.85",
+    "previous": "5,304,433,127.03",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "其他综合收益",
+    "current": "4,346,079.89",
+    "previous": "113,696,524.40",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "盈余公积",
+    "current": "1,617,520,044.25",
+    "previous": "1,443,520,185.47",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "未分配利润",
+    "current": "8,429,793,298.42",
+    "previous": "8,981,176,754.23",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "所有者权益合计",
+    "current": "25,261,392,253.13",
+    "previous": "23,518,283,824.41",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "负债和所有者权益总计",
+    "current": "74,091,453,668.92",
+    "previous": "52,476,975,224.99",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "一、营业总收入",
+    "current": "268,794,737,612.58",
+    "previous": "231,905,459,829.83",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2024年年度报告",
+    "statement": "income",
+    "page": 126,
+    "label": "其中：营业收入",
+    "current": "268,794,737,612.58",
+    "previous": "231,905,459,829.83",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "应付票据",
+    "current": "16,018,561,258.35",
+    "previous": "10,175,621,761.24",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "应付账款",
+    "current": "2,305,744,357.73",
+    "previous": "1,610,259,742.70",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "合同负债",
+    "current": "7,709,497.29",
+    "previous": "14,095,687.49",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "应付职工薪酬",
+    "current": "91,670,833.92",
+    "previous": "74,830,682.22",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "应交税费",
+    "current": "94,107,844.38",
+    "previous": "60,995,667.09",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "其他应付款",
+    "current": "5,772,103,720.91",
+    "previous": "7,920,582,369.71",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "一年内到期的非流动负债",
+    "current": "11,989,413,876.21",
+    "previous": "1,363,153,534.40",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "其他流动负债",
+    "current": "6,028,639,881.56",
+    "previous": "5,046,304,840.42",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "流动负债合计",
+    "current": "48,022,099,409.97",
+    "previous": "28,552,703,592.80",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "长期借款",
+    "current": "13,159,316,666.99",
+    "previous": "17,377,321,891.70",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "应付债券",
+    "current": "3,055,651,981.52",
+    "previous": "2,878,039,451.43",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "租赁负债",
+    "current": "10,267,237.68",
+    "previous": "19,970,300.26",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "递延收益",
+    "current": "518,854.42",
+    "previous": "2,026,179.60",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "非流动负债合计",
+    "current": "16,225,754,740.61",
+    "previous": "20,277,357,822.99",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "负债合计",
+    "current": "64,247,854,150.58",
+    "previous": "48,830,061,415.79",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "股本",
+    "current": "7,284,442,534.00",
+    "previous": "7,236,462,142.00",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "其他权益工具",
+    "current": "527,170,634.84",
+    "previous": "527,271,028.72",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "资本公积",
+    "current": "9,316,568,261.02",
+    "previous": "7,445,999,659.85",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "其他综合收益",
+    "current": "48,352,006.35",
+    "previous": "4,346,079.89",
+    "source": "line-based"
+  },
+  {
+    "report": "002475_立讯精密_2025年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "盈余公积",
+    "current": "2,125,232,697.57",
+    "previous": "1,617,520,044.25",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "实收资本（或股本）",
+    "current": "462,525,643.00",
+    "previous": "461,723,327.00",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "资本公积",
+    "current": "5,383,539,692.29",
+    "previous": "5,121,318,277.09",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "盈余公积",
+    "current": "231,262,821.50",
+    "previous": "200,756,553.50",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "未分配利润",
+    "current": "560,642,094.88",
+    "previous": "535,375,696.14",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "益）合计",
+    "current": "6,537,942,083.99",
+    "previous": "6,319,173,853.73",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "（或股东权益）总计",
+    "current": "7,245,992,606.28",
+    "previous": "6,896,133,875.73",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "一、营业总收入",
+    "current": "5,120,838,798.82",
+    "previous": "4,555,968,287.39",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "其中：营业收入",
+    "current": "5,120,838,798.82",
+    "previous": "4,555,968,287.39",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "二、营业总成本",
+    "current": "3,883,672,283.33",
+    "previous": "3,496,100,562.52",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "其中：营业成本",
+    "current": "760,761,917.90",
+    "previous": "669,840,139.18",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "税金及附加",
+    "current": "49,170,364.82",
+    "previous": "37,161,428.30",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "销售费用",
+    "current": "991,332,533.42",
+    "previous": "967,414,538.98",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "管理费用",
+    "current": "402,662,886.67",
+    "previous": "444,227,923.51",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "研发费用",
+    "current": "1,695,556,855.45",
+    "previous": "1,472,295,820.14",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "财务费用",
+    "current": "-15,812,274.93",
+    "previous": "-94,839,287.59",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "其中：利息费用",
+    "current": "8,664,291.30",
+    "previous": "9,274,711.42",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "利息收入",
+    "current": "26,432,907.43",
+    "previous": "105,006,761.01",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "加：其他收益",
+    "current": "176,123,077.15",
+    "previous": "142,202,996.35",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "填列）",
+    "current": "369,932,968.88",
+    "previous": "219,162,630.14",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2024年年度报告",
+    "statement": "income",
+    "page": 130,
+    "label": "业的投资收益",
+    "current": "79,011,534.24",
+    "previous": "34,333,675.01",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "其他非流动负债",
+    "current": "210,109,019.81",
+    "previous": "155,380,604.63",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "非流动负债合计",
+    "current": "242,589,065.51",
+    "previous": "186,480,409.33",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "负债合计",
+    "current": "865,122,612.67",
+    "previous": "708,050,522.29",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "实收资本（或股本）",
+    "current": "463,179,293.00",
+    "previous": "462,525,643.00",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "资本公积",
+    "current": "5,610,863,852.28",
+    "previous": "5,383,539,692.29",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "减：库存股",
+    "current": "44,022,135.18",
+    "previous": "100,028,167.68",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "盈余公积",
+    "current": "231,589,646.50",
+    "previous": "231,262,821.50",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "未分配利润",
+    "current": "702,866,598.07",
+    "previous": "560,642,094.88",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "一、营业总收入",
+    "current": "5,928,744,673.06",
+    "previous": "5,120,838,798.82",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "其中：营业收入",
+    "current": "5,928,744,673.06",
+    "previous": "5,120,838,798.82",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "二、营业总成本",
+    "current": "4,606,892,391.82",
+    "previous": "3,883,672,283.33",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "其中：营业成本",
+    "current": "833,129,464.33",
+    "previous": "760,761,917.90",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "税金及附加",
+    "current": "64,540,796.21",
+    "previous": "49,170,364.82",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "销售费用",
+    "current": "1,139,649,606.97",
+    "previous": "991,332,533.42",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "管理费用",
+    "current": "473,845,013.00",
+    "previous": "402,662,886.67",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "研发费用",
+    "current": "2,095,238,620.57",
+    "previous": "1,695,556,855.45",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "财务费用",
+    "current": "488,890.74",
+    "previous": "-15,812,274.93",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "其中：利息费用",
+    "current": "2,502,681.28",
+    "previous": "8,664,291.30",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "利息收入",
+    "current": "6,387,594.46",
+    "previous": "26,432,907.43",
+    "source": "line-based"
+  },
+  {
+    "report": "688111_金山办公_2025年年度报告",
+    "statement": "income",
+    "page": 109,
+    "label": "加：其他收益",
+    "current": "191,617,589.97",
+    "previous": "176,123,077.15",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "一、营业总收入",
+    "current": "57,795,570",
+    "previous": "45,250,425",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "其中：营业收入",
+    "current": "57,795,570",
+    "previous": "45,250,425",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "二、营业总成本",
+    "current": "55,058,871",
+    "previous": "40,193,364",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "其中：营业成本",
+    "current": "47,051,267",
+    "previous": "35,346,301",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "税金及附加",
+    "current": "276,214",
+    "previous": "222,659",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "销售费用",
+    "current": "281,549",
+    "previous": "254,058",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "管理费用",
+    "current": "3,835,368",
+    "previous": "3,152,891",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "研发费用",
+    "current": "5,447,122",
+    "previous": "4,991,551",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "财务费用",
+    "current": "-1,832,649",
+    "previous": "-3,774,096",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "其中：利息费用",
+    "current": "2,114,276",
+    "previous": "1,479,733",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "利息收入",
+    "current": "3,883,506",
+    "previous": "5,199,334",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "加：其他收益",
+    "current": "2,858,495",
+    "previous": "2,577,275",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "其中：对联营企业和合营企业的投资收益",
+    "current": "222,588",
+    "previous": "246,029",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "加：营业外收入",
+    "current": "16,513",
+    "previous": "11,716",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "减：营业外支出",
+    "current": "23,138",
+    "previous": "77,183",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "减：所得税费用",
+    "current": "918,904",
+    "previous": "444,266",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 120,
+    "label": "六、其他综合收益的税后净额",
+    "current": "2,614,041",
+    "previous": "2,686,327",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 121,
+    "label": "（一）归属母公司所有者的其他综合收益的税后净额",
+    "current": "1,441,518",
+    "previous": "1,492,395",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 121,
+    "label": "（二）归属于少数股东的其他综合收益的税后净额",
+    "current": "1,172,523",
+    "previous": "1,193,932",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2024年年度报告",
+    "statement": "income",
+    "page": 121,
+    "label": "七、综合收益总额",
+    "current": "7,987,159",
+    "previous": "9,082,479",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "一、营业总收入",
+    "current": "67,323,192",
+    "previous": "57,795,570",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "其中：营业收入",
+    "current": "67,323,192",
+    "previous": "57,795,570",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "其中：营业成本",
+    "current": "52,765,123",
+    "previous": "47,051,267",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "销售费用",
+    "current": "304,795",
+    "previous": "281,549",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "管理费用",
+    "current": "3,434,995",
+    "previous": "3,835,368",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "研发费用",
+    "current": "5,518,596",
+    "previous": "5,447,122",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "财务费用",
+    "current": "-370,874",
+    "previous": "-1,832,649",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "其中：利息费用",
+    "current": "2,663,015",
+    "previous": "2,114,276",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "利息收入",
+    "current": "2,845,113",
+    "previous": "3,883,506",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "加：其他收益",
+    "current": "3,367,192",
+    "previous": "2,858,495",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "其中：对联营企业和合营企业的投资收益",
+    "current": "-55,780",
+    "previous": "222,588",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "加：营业外收入",
+    "current": "22,560",
+    "previous": "16,513",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "减：营业外支出",
+    "current": "540,723",
+    "previous": "23,138",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 127,
+    "label": "减：所得税费用",
+    "current": "576,736",
+    "previous": "918,904",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 128,
+    "label": "六、其他综合收益的税后净额",
+    "current": "-3,955,953",
+    "previous": "2,614,041",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 128,
+    "label": "（一）归属母公司所有者的其他综合收益的税后净额",
+    "current": "-2,141,110",
+    "previous": "1,441,518",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 128,
+    "label": "七、综合收益总额",
+    "current": "3,252,957",
+    "previous": "7,987,159",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 128,
+    "label": "（一）归属于母公司所有者的综合收益总额",
+    "current": "2,899,624",
+    "previous": "5,140,183",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 128,
+    "label": "（二）归属于少数股东的综合收益总额",
+    "current": "353,333",
+    "previous": "2,846,976",
+    "source": "line-based"
+  },
+  {
+    "report": "688981_中芯国际_2025年年度报告",
+    "statement": "income",
+    "page": 129,
+    "label": "销售商品、提供劳务收到的现金",
+    "current": "65,323,603",
+    "previous": "56,139,344",
+    "source": "line-based"
+  }
+]
