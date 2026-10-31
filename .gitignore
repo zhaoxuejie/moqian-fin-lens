@@ -14,10 +14,22 @@ venv/
 dist/
 build/
 *.egg-info/
+.coverage
+htmlcov/
 
-# 日志
-*.log
+# 测试与工具缓存
+.pytest_cache/
+pytest-of-*/
+.mypy_cache/
+.ruff_cache/
+
+# 评估集原件：体积大且有版权，不入库
+tests/eval/pdf/**/*.pdf
+
+# 运行时数据（SQLite 与临时原件，不入库）
+data/
 logs/
+*.log
 
 # 编辑器 / 系统
 .idea/
