@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ session.company_name }} · 财报透视</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body data-session="{{ session.session_id }}">
+  <header class="topbar">
+    <div class="wrap brand"><span class="logo">财</span>财报透视</div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>{{ session.company_name }}<span class="code">{{ session.stock_code }}</span></h1>
+      <p>{{ filing.period }} 年年度报告 · 共 {{ filing.pages }} 页 · 已解析 {{ session.periods|length }} 期</p>
+      <p class="checks">勾稽：
+        {% for check in filing.checks %}
+        <span class="check {{ check.status }}">{{ check.rule }} {{ check.status }}</span>
+        {% endfor %}
+      </p>
+    </section>
+
+    <section class="kpis">
+      {% for item in metrics[:8] %}
+      <div class="kpi">
+        <div class="k"><span>{{ item.label }}</span></div>
+        <div class="v">
+          {% if item.value is none %}<span class="muted">原文未披露</span>
+          {% elif item.unit == "元" %}{{ "%.2f"|format(item.value|float / 100000000) }}<small>亿元</small>
+          {% else %}{{ "%.2f"|format(item.value|float) }}<small>{{ item.unit }}</small>{% endif %}
+        </div>
+        <div class="d">{{ item.formula }}</div>
+      </div>
+      {% endfor %}
+    </section>
+
+    <section class="section">
+      <div class="section-hd"><h2>三大报表</h2><span>每个数字来自原文，页码见右侧</span></div>
+      <div class="card">
+        <div class="tabs">
+          <button class="tab on" data-tab="income">利润表</button>
+          <button class="tab" data-tab="balance">资产负债表</button>
+          <button class="tab" data-tab="cashflow">现金流量表</button>
+        </div>
+        {% for kind, label in [("income", "利润表"), ("balance", "资产负债表"), ("cashflow", "现金流量表")] %}
+        <div class="panel {{ 'on' if kind == 'income' else '' }}" id="{{ kind }}">
+          <table>
+            <thead><tr><th>科目</th><th>本期</th><th>上期</th><th>页码</th></tr></thead>
+            <tbody>
+              {% for row in rows.get(kind, [])[:40] %}
+              <tr>
+                <td>{{ row.label }}</td>
+                {% for cell in row.cells[:2] %}
+                <td class="num">{{ cell.raw }}</td>
+                {% endfor %}
+                {% if row.cells|length == 0 %}<td class="muted">未披露</td><td class="muted">未披露</td>{% endif %}
+                <td><span class="src">P.{{ row.page }}</span></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-hd"><h2>财务视图</h2><span>7 组图表 + 异常项；数据全部来自后端计算</span></div>
+      <div class="chart-grid">
+        {% for cid in ["v1", "v2", "v3", "v4", "v5", "v6", "v7"] %}
+        <div class="card chart-card" id="card-{{ cid }}">
+          <div class="chart-title" id="title-{{ cid }}">加载中…</div>
+          <div class="chart" id="chart-{{ cid }}"></div>
+          <div class="chart-meta" id="meta-{{ cid }}"></div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-hd"><h2>异常项</h2><span>只陈列数字之间的矛盾，不做投资评价</span></div>
+      {% if filing.anomalies %}
+      <div class="anom">
+        {% for item in filing.anomalies %}
+        <div class="anom-item">
+          <b>{{ item.title }}</b>
+          <p>{{ item.text }}</p>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="card muted">本期未触发异常规则。</div>
+      {% endif %}
+    </section>
+
+    <footer class="disclaimer">
+      <strong>免责声明</strong>：本工具仅对用户上传的财报文档做信息提取与整理，所呈现内容均来自原文并标注页码，不构成任何投资建议。数据请以公司在指定媒体披露的正式报告为准，使用前请自行核验。
+    </footer>
+  </main>
+
+  <script src="/static/echarts.min.js"></script>
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>
