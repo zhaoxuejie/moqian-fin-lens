@@ -1,0 +1,760 @@
+version: "1.0.3"
+updated_at: "2026-10-31"
+note: "标准科目 Schema：code 一经发布不重命名，新增科目走版本号 PATCH 递增"
+
+accounts:
+  # ---------- 利润表 ----------
+  - code: revenue_total
+    label: 营业总收入
+    statement: income
+    aliases: [营业总收入]
+    required: true
+  - code: revenue
+    label: 营业收入
+    statement: income
+    aliases: [营业收入, 主营业务收入]
+    required: true
+  - code: cost_total
+    label: 营业总成本
+    statement: income
+    aliases: [营业总成本]
+    required: false
+  - code: cost_of_sales
+    label: 营业成本
+    statement: income
+    aliases: [营业成本, 主营业务成本]
+    required: true
+  - code: taxes_surcharges
+    label: 税金及附加
+    statement: income
+    aliases: [税金及附加]
+    required: false
+  - code: selling_expenses
+    label: 销售费用
+    statement: income
+    aliases: [销售费用]
+    required: false
+  - code: admin_expenses
+    label: 管理费用
+    statement: income
+    aliases: [管理费用]
+    required: false
+  - code: rd_expenses
+    label: 研发费用
+    statement: income
+    aliases: [研发费用]
+    required: false
+  - code: finance_expenses
+    label: 财务费用
+    statement: income
+    aliases: [财务费用]
+    required: false
+  - code: interest_expense
+    label: 利息费用
+    statement: income
+    aliases: [利息费用, 其中：利息费用]
+    required: false
+  - code: interest_income
+    label: 利息收入
+    statement: income
+    aliases: [利息收入]
+    required: false
+  - code: other_income
+    label: 其他收益
+    statement: income
+    aliases: [其他收益]
+    required: false
+  - code: investment_income
+    label: 投资收益
+    statement: income
+    aliases: [投资收益]
+    required: false
+  - code: fair_value_change
+    label: 公允价值变动收益
+    statement: income
+    aliases: [公允价值变动收益, 公允价值变动损益]
+    required: false
+  - code: credit_impairment
+    label: 信用减值损失
+    statement: income
+    aliases: [信用减值损失]
+    required: false
+  - code: asset_impairment
+    label: 资产减值损失
+    statement: income
+    aliases: [资产减值损失]
+    required: false
+  - code: asset_disposal
+    label: 资产处置收益
+    statement: income
+    aliases: [资产处置收益]
+    required: false
+  - code: operating_profit
+    label: 营业利润
+    statement: income
+    aliases: [营业利润]
+    required: true
+  - code: non_operating_income
+    label: 营业外收入
+    statement: income
+    aliases: [营业外收入]
+    required: false
+  - code: non_operating_expense
+    label: 营业外支出
+    statement: income
+    aliases: [营业外支出]
+    required: false
+  - code: total_profit
+    label: 利润总额
+    statement: income
+    aliases: [利润总额]
+    required: true
+  - code: income_tax
+    label: 所得税费用
+    statement: income
+    aliases: [所得税费用]
+    required: false
+  - code: net_profit
+    label: 净利润
+    statement: income
+    aliases: [净利润, 净利润（净亏损以“－”号填列）]
+    required: true
+  - code: net_profit_attributable
+    label: 归属于母公司股东的净利润
+    statement: income
+    aliases: [归属于母公司股东的净利润, 归属于母公司所有者的净利润]
+    required: true
+  - code: minority_interest
+    label: 少数股东损益
+    statement: income
+    aliases: [少数股东损益]
+    required: false
+  - code: net_profit_deducted
+    label: 扣除非经常性损益后的净利润
+    statement: income
+    aliases: [扣除非经常性损益后的净利润, 扣除非经常性损益的净利润]
+    required: true
+  - code: basic_eps
+    label: 基本每股收益
+    statement: income
+    aliases: [基本每股收益]
+    required: false
+  - code: diluted_eps
+    label: 稀释每股收益
+    statement: income
+    aliases: [稀释每股收益]
+    required: false
+
+  # ---------- 资产负债表 ----------
+  - code: cash
+    label: 货币资金
+    statement: balance
+    aliases: [货币资金]
+    required: true
+  - code: trading_financial_assets
+    label: 交易性金融资产
+    statement: balance
+    aliases: [交易性金融资产]
+    required: false
+  - code: notes_receivable
+    label: 应收票据
+    statement: balance
+    aliases: [应收票据]
+    required: false
+  - code: accounts_receivable
+    label: 应收账款
+    statement: balance
+    aliases: [应收账款]
+    required: true
+  - code: receivables_financing
+    label: 应收款项融资
+    statement: balance
+    aliases: [应收款项融资]
+    required: false
+  - code: prepayments
+    label: 预付款项
+    statement: balance
+    aliases: [预付款项, 预付账款]
+    required: false
+  - code: other_receivables
+    label: 其他应收款
+    statement: balance
+    aliases: [其他应收款]
+    required: false
+  - code: inventory
+    label: 存货
+    statement: balance
+    aliases: [存货]
+    required: true
+  - code: contract_assets
+    label: 合同资产
+    statement: balance
+    aliases: [合同资产]
+    required: false
+  - code: total_current_assets
+    label: 流动资产合计
+    statement: balance
+    aliases: [流动资产合计]
+    required: true
+  - code: total_non_current_assets
+    label: 非流动资产合计
+    statement: balance
+    aliases: [非流动资产合计]
+    required: false
+  - code: long_term_equity_investment
+    label: 长期股权投资
+    statement: balance
+    aliases: [长期股权投资]
+    required: false
+  - code: fixed_assets
+    label: 固定资产
+    statement: balance
+    aliases: [固定资产]
+    required: false
+  - code: construction_in_progress
+    label: 在建工程
+    statement: balance
+    aliases: [在建工程]
+    required: false
+  - code: right_of_use_assets
+    label: 使用权资产
+    statement: balance
+    aliases: [使用权资产]
+    required: false
+  - code: intangible_assets
+    label: 无形资产
+    statement: balance
+    aliases: [无形资产]
+    required: false
+  - code: development_expenditure
+    label: 开发支出
+    statement: balance
+    aliases: [开发支出]
+    required: false
+  - code: goodwill
+    label: 商誉
+    statement: balance
+    aliases: [商誉]
+    required: true
+  - code: deferred_tax_assets
+    label: 递延所得税资产
+    statement: balance
+    aliases: [递延所得税资产]
+    required: false
+  - code: total_assets
+    label: 资产总计
+    statement: balance
+    aliases: [资产总计, 资产合计]
+    required: true
+  - code: short_term_borrowings
+    label: 短期借款
+    statement: balance
+    aliases: [短期借款]
+    required: true
+  - code: accounts_payable
+    label: 应付账款
+    statement: balance
+    aliases: [应付账款]
+    required: false
+  - code: contract_liabilities
+    label: 合同负债
+    statement: balance
+    aliases: [合同负债, 预收款项]
+    required: false
+  - code: employee_compensation_payable
+    label: 应付职工薪酬
+    statement: balance
+    aliases: [应付职工薪酬]
+    required: false
+  - code: taxes_payable
+    label: 应交税费
+    statement: balance
+    aliases: [应交税费]
+    required: false
+  - code: other_payables
+    label: 其他应付款
+    statement: balance
+    aliases: [其他应付款]
+    required: false
+  - code: total_current_liabilities
+    label: 流动负债合计
+    statement: balance
+    aliases: [流动负债合计]
+    required: true
+  - code: long_term_borrowings
+    label: 长期借款
+    statement: balance
+    aliases: [长期借款]
+    required: false
+  - code: bonds_payable
+    label: 应付债券
+    statement: balance
+    aliases: [应付债券]
+    required: false
+  - code: lease_liabilities
+    label: 租赁负债
+    statement: balance
+    aliases: [租赁负债]
+    required: false
+  - code: total_non_current_liabilities
+    label: 非流动负债合计
+    statement: balance
+    aliases: [非流动负债合计]
+    required: false
+  - code: total_liabilities
+    label: 负债合计
+    statement: balance
+    aliases: [负债合计]
+    required: true
+  - code: paid_in_capital
+    label: 实收资本（或股本）
+    statement: balance
+    aliases: [实收资本, 股本, 实收资本（或股本）]
+    required: false
+  - code: capital_reserve
+    label: 资本公积
+    statement: balance
+    aliases: [资本公积]
+    required: false
+  - code: surplus_reserve
+    label: 盈余公积
+    statement: balance
+    aliases: [盈余公积]
+    required: false
+  - code: retained_earnings
+    label: 未分配利润
+    statement: balance
+    aliases: [未分配利润]
+    required: false
+  - code: total_equity
+    label: 所有者权益合计
+    statement: balance
+    aliases: [所有者权益合计, 股东权益合计, 归属于母公司所有者权益合计]
+    required: true
+  - code: minority_equity
+    label: 少数股东权益
+    statement: balance
+    aliases: [少数股东权益]
+    required: false
+  - code: total_liabilities_and_equity
+    label: 负债和所有者权益总计
+    statement: balance
+    aliases: [负债和所有者权益总计, 负债和股东权益总计]
+    required: true
+
+  # ---------- 现金流量表 ----------
+  - code: cash_received_from_sales
+    label: 销售商品、提供劳务收到的现金
+    statement: cashflow
+    aliases: [销售商品、提供劳务收到的现金]
+    required: true
+  - code: total_cash_inflow_operating
+    label: 经营活动现金流入小计
+    statement: cashflow
+    aliases: [经营活动现金流入小计]
+    required: false
+  - code: cash_paid_for_goods
+    label: 购买商品、接受劳务支付的现金
+    statement: cashflow
+    aliases: [购买商品、接受劳务支付的现金]
+    required: false
+  - code: cash_paid_to_employees
+    label: 支付给职工以及为职工支付的现金
+    statement: cashflow
+    aliases: [支付给职工以及为职工支付的现金]
+    required: false
+  - code: taxes_paid
+    label: 支付的各项税费
+    statement: cashflow
+    aliases: [支付的各项税费]
+    required: false
+  - code: ocf_net
+    label: 经营活动产生的现金流量净额
+    statement: cashflow
+    aliases: [经营活动产生的现金流量净额]
+    required: true
+  - code: capex_paid
+    label: 购建固定资产、无形资产和其他长期资产支付的现金
+    statement: cashflow
+    aliases: [购建固定资产、无形资产和其他长期资产支付的现金]
+    required: false
+  - code: icf_net
+    label: 投资活动产生的现金流量净额
+    statement: cashflow
+    aliases: [投资活动产生的现金流量净额]
+    required: false
+  - code: borrowings_received
+    label: 取得借款收到的现金
+    statement: cashflow
+    aliases: [取得借款收到的现金]
+    required: false
+  - code: borrowings_repaid
+    label: 偿还债务支付的现金
+    statement: cashflow
+    aliases: [偿还债务支付的现金]
+    required: false
+  - code: fcf_net
+    label: 筹资活动产生的现金流量净额
+    statement: cashflow
+    aliases: [筹资活动产生的现金流量净额]
+    required: true
+  - code: net_cash_increase
+    label: 现金及现金等价物净增加额
+    statement: cashflow
+    aliases: [现金及现金等价物净增加额]
+    required: true
+  - code: ending_cash
+    label: 期末现金及现金等价物余额
+    statement: cashflow
+    aliases: [期末现金及现金等价物余额]
+    required: false
+
+  # ---------- 补充：通用三条表的标准行（v1.0.1） ----------
+  - code: notes_payable
+    label: 应付票据
+    statement: balance
+    aliases: [应付票据]
+    required: false
+  - code: dividend_receivable
+    label: 应收股利
+    statement: balance
+    aliases: [应收股利]
+    required: false
+  - code: interest_receivable
+    label: 应收利息
+    statement: balance
+    aliases: [应收利息]
+    required: false
+  - code: other_current_assets
+    label: 其他流动资产
+    statement: balance
+    aliases: [其他流动资产]
+    required: false
+  - code: other_non_current_assets
+    label: 其他非流动资产
+    statement: balance
+    aliases: [其他非流动资产]
+    required: false
+  - code: current_portion_non_current_assets
+    label: 一年内到期的非流动资产
+    statement: balance
+    aliases: [一年内到期的非流动资产]
+    required: false
+  - code: long_term_receivables
+    label: 长期应收款
+    statement: balance
+    aliases: [长期应收款]
+    required: false
+  - code: investment_property
+    label: 投资性房地产
+    statement: balance
+    aliases: [投资性房地产]
+    required: false
+  - code: productive_biological_assets
+    label: 生产性生物资产
+    statement: balance
+    aliases: [生产性生物资产]
+    required: false
+  - code: oil_gas_assets
+    label: 油气资产
+    statement: balance
+    aliases: [油气资产]
+    required: false
+  - code: construction_materials
+    label: 工程物资
+    statement: balance
+    aliases: [工程物资]
+    required: false
+  - code: fixed_assets_disposal
+    label: 固定资产清理
+    statement: balance
+    aliases: [固定资产清理]
+    required: false
+  - code: long_term_deferred_expenses
+    label: 长期待摊费用
+    statement: balance
+    aliases: [长期待摊费用]
+    required: false
+  - code: other_equity_investment
+    label: 其他权益工具投资
+    statement: balance
+    aliases: [其他权益工具投资]
+    required: false
+  - code: derivative_financial_assets
+    label: 衍生金融资产
+    statement: balance
+    aliases: [衍生金融资产]
+    required: false
+  - code: derivative_financial_liabilities
+    label: 衍生金融负债
+    statement: balance
+    aliases: [衍生金融负债]
+    required: false
+  - code: trading_financial_liabilities
+    label: 交易性金融负债
+    statement: balance
+    aliases: [交易性金融负债]
+    required: false
+  - code: current_portion_non_current_liabilities
+    label: 一年内到期的非流动负债
+    statement: balance
+    aliases: [一年内到期的非流动负债]
+    required: false
+  - code: other_current_liabilities
+    label: 其他流动负债
+    statement: balance
+    aliases: [其他流动负债]
+    required: false
+  - code: other_non_current_liabilities
+    label: 其他非流动负债
+    statement: balance
+    aliases: [其他非流动负债]
+    required: false
+  - code: long_term_payables
+    label: 长期应付款
+    statement: balance
+    aliases: [长期应付款]
+    required: false
+  - code: provisions
+    label: 预计负债
+    statement: balance
+    aliases: [预计负债]
+    required: false
+  - code: deferred_income
+    label: 递延收益
+    statement: balance
+    aliases: [递延收益]
+    required: false
+  - code: deferred_tax_liabilities
+    label: 递延所得税负债
+    statement: balance
+    aliases: [递延所得税负债]
+    required: false
+  - code: assets_held_for_sale
+    label: 持有待售资产
+    statement: balance
+    aliases: [持有待售资产]
+    required: false
+  - code: liabilities_held_for_sale
+    label: 持有待售负债
+    statement: balance
+    aliases: [持有待售负债]
+    required: false
+  - code: other_equity_instruments
+    label: 其他权益工具
+    statement: balance
+    aliases: [其他权益工具]
+    required: false
+  - code: treasury_stock
+    label: 库存股
+    statement: balance
+    aliases: [库存股]
+    required: false
+  - code: other_comprehensive_income
+    label: 其他综合收益
+    statement: balance
+    aliases: [其他综合收益]
+    required: false
+  - code: special_reserve
+    label: 专项储备
+    statement: balance
+    aliases: [专项储备]
+    required: false
+  - code: general_risk_reserve
+    label: 一般风险准备
+    statement: balance
+    aliases: [一般风险准备]
+    required: false
+  - code: dividend_payable
+    label: 应付股利
+    statement: balance
+    aliases: [应付股利]
+    required: false
+  - code: interest_payable
+    label: 应付利息
+    statement: balance
+    aliases: [应付利息]
+    required: false
+  - code: cash_received_taxes_refund
+    label: 收到的税费返还
+    statement: cashflow
+    aliases: [收到的税费返还]
+    required: false
+  - code: other_cash_received_operating
+    label: 收到其他与经营活动有关的现金
+    statement: cashflow
+    aliases: [收到其他与经营活动有关的现金]
+    required: false
+  - code: total_cash_outflow_operating
+    label: 经营活动现金流出小计
+    statement: cashflow
+    aliases: [经营活动现金流出小计]
+    required: false
+  - code: other_cash_paid_operating
+    label: 支付其他与经营活动有关的现金
+    statement: cashflow
+    aliases: [支付其他与经营活动有关的现金]
+    required: false
+  - code: cash_received_investment_recovery
+    label: 收回投资收到的现金
+    statement: cashflow
+    aliases: [收回投资收到的现金]
+    required: false
+  - code: cash_received_investment_income
+    label: 取得投资收益收到的现金
+    statement: cashflow
+    aliases: [取得投资收益收到的现金]
+    required: false
+  - code: cash_received_disposal_assets
+    label: 处置固定资产、无形资产和其他长期资产收回的现金净额
+    statement: cashflow
+    aliases: [处置固定资产、无形资产和其他长期资产收回的现金净额]
+    required: false
+  - code: total_cash_inflow_investing
+    label: 投资活动现金流入小计
+    statement: cashflow
+    aliases: [投资活动现金流入小计]
+    required: false
+  - code: cash_paid_investments
+    label: 投资支付的现金
+    statement: cashflow
+    aliases: [投资支付的现金]
+    required: false
+  - code: total_cash_outflow_investing
+    label: 投资活动现金流出小计
+    statement: cashflow
+    aliases: [投资活动现金流出小计]
+    required: false
+  - code: cash_received_capital_injection
+    label: 吸收投资收到的现金
+    statement: cashflow
+    aliases: [吸收投资收到的现金]
+    required: false
+  - code: other_cash_received_financing
+    label: 收到其他与筹资活动有关的现金
+    statement: cashflow
+    aliases: [收到其他与筹资活动有关的现金]
+    required: false
+  - code: total_cash_inflow_financing
+    label: 筹资活动现金流入小计
+    statement: cashflow
+    aliases: [筹资活动现金流入小计]
+    required: false
+  - code: cash_paid_dividends
+    label: 分配股利、利润或偿付利息支付的现金
+    statement: cashflow
+    aliases: [分配股利、利润或偿付利息支付的现金]
+    required: false
+  - code: other_cash_paid_financing
+    label: 支付其他与筹资活动有关的现金
+    statement: cashflow
+    aliases: [支付其他与筹资活动有关的现金]
+    required: false
+  - code: total_cash_outflow_financing
+    label: 筹资活动现金流出小计
+    statement: cashflow
+    aliases: [筹资活动现金流出小计]
+    required: false
+  - code: fx_effect_on_cash
+    label: 汇率变动对现金及现金等价物的影响
+    statement: cashflow
+    aliases: [汇率变动对现金及现金等价物的影响]
+    required: false
+  - code: beginning_cash
+    label: 期初现金及现金等价物余额
+    statement: cashflow
+    aliases: [期初现金及现金等价物余额]
+    required: false
+  - code: long_term_employee_benefits
+    label: 长期应付职工薪酬
+    statement: balance
+    aliases: [长期应付职工薪酬]
+    required: false
+  - code: invest_income_associates
+    label: 对联营企业和合营企业的投资收益
+    statement: income
+    aliases: [对联营企业和合营企业的投资收益]
+    required: false
+core_rows:
+  - revenue_total
+  - revenue
+  - cost_of_sales
+  - taxes_surcharges
+  - selling_expenses
+  - admin_expenses
+  - rd_expenses
+  - finance_expenses
+  - other_income
+  - investment_income
+  - operating_profit
+  - total_profit
+  - income_tax
+  - net_profit
+  - net_profit_attributable
+  - net_profit_deducted
+  - basic_eps
+  - minority_interest
+  - cash
+  - trading_financial_assets
+  - notes_receivable
+  - accounts_receivable
+  - prepayments
+  - other_receivables
+  - inventory
+  - contract_assets
+  - total_current_assets
+  - long_term_equity_investment
+  - fixed_assets
+  - construction_in_progress
+  - right_of_use_assets
+  - intangible_assets
+  - goodwill
+  - deferred_tax_assets
+  - total_assets
+  - short_term_borrowings
+  - accounts_payable
+  - contract_liabilities
+  - employee_compensation_payable
+  - taxes_payable
+  - total_current_liabilities
+  - long_term_borrowings
+  - total_liabilities
+  - total_equity
+  - total_liabilities_and_equity
+  - cash_received_from_sales
+  - cash_received_taxes_refund
+  - total_cash_inflow_operating
+  - cash_paid_for_goods
+  - cash_paid_to_employees
+  - taxes_paid
+  - total_cash_outflow_operating
+  - ocf_net
+  - capex_paid
+  - icf_net
+  - borrowings_received
+  - borrowings_repaid
+  - fcf_net
+  - net_cash_increase
+  - ending_cash
+
+metric_requirements:
+  revenue: [revenue]
+  revenue_total: [revenue_total]
+  net_profit_attributable: [net_profit_attributable]
+  net_profit_deducted: [net_profit_deducted]
+  gross_margin: [revenue_total, cost_of_sales]
+  net_margin: [net_profit, revenue_total]
+  roe: [net_profit_attributable, total_equity]
+  roa: [net_profit, total_assets]
+  operating_cash_flow: [ocf_net]
+  cash_content: [ocf_net, net_profit]
+  accounts_receivable: [accounts_receivable]
+  ar_turnover_days: [accounts_receivable, revenue_total]
+  inventory: [inventory]
+  inventory_turnover_days: [inventory, cost_of_sales]
+  goodwill: [goodwill]
+  interest_bearing_debt: [short_term_borrowings, long_term_borrowings, bonds_payable]
+  debt_ratio: [total_liabilities, total_assets]
+  expense_ratio: [selling_expenses, admin_expenses, finance_expenses, revenue_total]
+  revenue_growth: [revenue_total]
+  net_profit_growth: [net_profit_attributable]
