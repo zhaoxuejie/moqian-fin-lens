@@ -122,6 +122,11 @@ CREATE INDEX IF NOT EXISTS idx_anomaly_session ON anomaly (session_id);
 CREATE INDEX IF NOT EXISTS idx_job_state      ON job (state);
 """
 
+MIGRATION_002 = """
+ALTER TABLE filing ADD COLUMN snapshot TEXT;
+"""
+
 MIGRATIONS: list[tuple[int, str]] = [
     (1, MIGRATION_001),
+    (2, MIGRATION_002),
 ]

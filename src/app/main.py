@@ -28,6 +28,7 @@ from jobs.manager import Job, JobManager, RateLimiter
 from parse import PdfDoc
 from traceability.service import trace_entry
 from store.db import Database
+from store.repo import SessionRepository, cleanup_temp_files
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -53,12 +54,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app = FastAPI(title="财报透视（finance-agent）", version="0.1.0")
     app.state.settings = settings
     app.state.db = db
-    app.state.sessions = {}
-    app.state.exports = {}
     app.state.export_dir = Path(settings.data_dir) / "exports"
     app.state.export_dir.mkdir(parents=True, exist_ok=True)
     app.state.tmp_dir = Path(settings.data_dir) / "tmp"
     app.state.tmp_dir.mkdir(parents=True, exist_ok=True)
+    app.state.repo = SessionRepository(db)
+    removed = cleanup_temp_files(app.state.tmp_dir)
+    if removed:
+        log_event(logger, logging.INFO, "temp_files_cleaned", count=len(removed))
+    app.state.sessions = {session.session_id: session for session in app.state.repo.load_all()}
+    app.state.exports = {}
     app.state.jobs = JobManager(max_workers=5)
     app.state.limiter = RateLimiter(limit=10, window_seconds=3600)
 
@@ -294,6 +299,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
         def on_success(session: SessionData) -> None:
             app.state.sessions[session.session_id] = session
+            app.state.repo.save(session)
             temp_path.unlink(missing_ok=True)
 
         app.state.jobs.submit(job_id, task, on_success, lambda exc: None)
@@ -330,6 +336,17 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "started_at": job.started_at,
             }
         )
+
+    @app.delete("/api/v1/sessions/{session_id}")
+    async def delete_session(session_id: str):
+        session = _session(session_id)
+        app.state.repo.delete(session.session_id)
+        app.state.sessions.pop(session.session_id, None)
+        for export_id, record in list(app.state.exports.items()):
+            if record.get("session_id") == session.session_id:
+                Path(record["path"]).unlink(missing_ok=True)
+                app.state.exports.pop(export_id, None)
+        return ok({"deleted": True})
 
     @app.get("/api/v1/sessions/{session_id}/trace/{entry_id}")
     async def trace_api(session_id: str, entry_id: str):

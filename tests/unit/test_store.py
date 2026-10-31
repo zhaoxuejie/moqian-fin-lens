@@ -1,4 +1,5 @@
 from store.db import Database
+from store.migrations import MIGRATIONS
 
 EXPECTED_TABLES = [
     "anomaly",
@@ -17,9 +18,9 @@ EXPECTED_TABLES = [
 def test_migrate_is_idempotent(tmp_path):
     db = Database(tmp_path / "app.db")
     try:
-        assert db.migrate() == 1
+        assert db.migrate() == len(MIGRATIONS)
         assert db.migrate() == 0
-        assert db.schema_versions() == [1]
+        assert db.schema_versions() == [version for version, _ in MIGRATIONS]
     finally:
         db.close()
 
@@ -67,7 +68,7 @@ def test_delete_session_cascades_to_filings(tmp_path):
 def test_in_memory_database_is_supported():
     db = Database(":memory:")
     try:
-        assert db.migrate() == 1
+        assert db.migrate() == len(MIGRATIONS)
         assert "entry" in db.table_names()
     finally:
         db.close()

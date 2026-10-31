@@ -28,7 +28,7 @@
 | TASK-009 | 溯源与导出 | v1.0 | TASK-008 | P0 | ✅ done | [task-009-trace-and-export.md](task-009-trace-and-export.md) |
 | TASK-010 | 上传与解析入队 | v1.0 | TASK-009 | P0 | ✅ done | [task-010-upload-and-job-queue.md](task-010-upload-and-job-queue.md) |
 | TASK-011 | 多期会话与同比 | v1.0 | TASK-010 | P0 | ⬜ todo | [task-011-multi-period-sessions.md](task-011-multi-period-sessions.md) |
-| TASK-012 | 会话落库与原件生命周期 | v1.0 | TASK-010 | P0 | ⬜ todo | [task-012-session-persistence.md](task-012-session-persistence.md) |
+| TASK-012 | 会话落库与原件生命周期 | v1.0 | TASK-010 | P0 | ✅ done | [task-012-session-persistence.md](task-012-session-persistence.md) |
 | TASK-013 | 部署与可观测 | v1.0 | TASK-012 | P1 | ⬜ todo | [task-013-deployment-and-observability.md](task-013-deployment-and-observability.md) |
 | TASK-014 | 指标与提取缺口修补（PATCH） | v1.0 | TASK-011 | P1 | ⬜ todo | [task-014-metric-extraction-gaps.md](task-014-metric-extraction-gaps.md) |
 
