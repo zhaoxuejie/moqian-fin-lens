@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-md:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 安装 markdownlint
+        run: npm install -g markdownlint-cli
+      - name: 检查所有md文档
+        run: markdownlint '**/*.md' --ignore node_modules
+
+  lint-shell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck 脚本检查
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: ./scripts

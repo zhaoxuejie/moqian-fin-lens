@@ -1,0 +1,29 @@
+# 环境变量与密钥
+.env
+.env.local
+.env.*.local
+
+# 依赖
+node_modules/
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# 构建产物
+dist/
+build/
+*.egg-info/
+
+# 日志
+*.log
+logs/
+
+# 编辑器 / 系统
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.bak
