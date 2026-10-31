@@ -18,7 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
-from parse import PdfDoc, detect_start_pages, normalize  # noqa: E402
+from parse import PdfDoc, compress_whitespace, detect_start_pages  # noqa: E402
 
 PDF_DIR = Path(__file__).resolve().parent / "pdf"
 # 先写到 data/gold（本机可写），再由调用方复制到 tests/eval/gold/
@@ -49,7 +49,7 @@ def from_bookmarks(bookmarks: list[tuple[str, int]]) -> dict[str, int | None]:
 def from_numbered_heading(pages: list[str]) -> dict[str, int | None]:
     found: dict[str, int | None] = dict.fromkeys(KINDS)
     for index, text in enumerate(pages, start=1):
-        flat = normalize(text)
+        flat = compress_whitespace(text)
         if not any(marker in flat for marker in UNIT_MARKERS):
             continue
         for match in NUMBERED_HEADING.finditer(flat):

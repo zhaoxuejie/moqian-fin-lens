@@ -6,7 +6,7 @@ from parse.locate import (
     find_heading,
     is_statement_page,
     locate_statements,
-    normalize,
+    compress_whitespace,
 )
 
 
@@ -35,12 +35,12 @@ def _cashflow_page() -> str:
 
 
 def test_normalize_removes_all_whitespace():
-    assert normalize("合并\n利润表 单位：元\u3000项目") == "合并利润表单位：元项目"
+    assert compress_whitespace("合并\n利润表 单位：元\u3000项目") == "合并利润表单位：元项目"
 
 
 def test_heading_ignores_parent_company_page():
     page = _income_page().replace("合并利润表", "母公司利润表")
-    assert find_heading(normalize(page), "income") is None
+    assert find_heading(compress_whitespace(page), "income") is None
     assert is_statement_page(page, "income") is False
 
 

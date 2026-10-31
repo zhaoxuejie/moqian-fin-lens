@@ -16,7 +16,8 @@ FILLER = "项目2024年度2023年度" * 8
 
 
 def _gold_files() -> list[Path]:
-    return sorted(GOLD_DIR.glob("*.json"))
+    """只取三表金标；numbers-100.json 属于数值归一评估。"""
+    return [p for p in sorted(GOLD_DIR.glob("*.json")) if p.stem.endswith("年度报告")]
 
 
 def _write_contract_pdf(path: Path) -> None:

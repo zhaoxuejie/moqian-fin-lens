@@ -61,8 +61,8 @@ class LocatedStatements:
         }
 
 
-def normalize(text: str) -> str:
-    """去掉所有空白（含全角空格），便于跨行标题匹配。"""
+def compress_whitespace(text: str) -> str:
+    """去掉所有空白（含全角空格），便于跨行标题匹配；与数值归一 normalize 区分。"""
     return re.sub(r"\s+", "", text)
 
 
@@ -83,7 +83,7 @@ def looks_like_toc(normalized: str) -> bool:
 
 
 def is_statement_page(text: str, kind: str, next_text: str | None = None) -> bool:
-    normalized = normalize(text)
+    normalized = compress_whitespace(text)
     if len(normalized) < 50:
         return False
     if looks_like_toc(normalized):
@@ -100,7 +100,7 @@ def is_statement_page(text: str, kind: str, next_text: str | None = None) -> boo
         return True
     # 表格可能刚好在标题页断开：科目行落在下一页
     if next_text is not None:
-        following = normalize(next_text)
+        following = compress_whitespace(next_text)
         if any(account in following for account in REQUIRED_ACCOUNTS[kind]):
             return True
     return False
@@ -123,7 +123,7 @@ def _cashflow_end(pages: Sequence[str], start: int) -> int:
     """现金流量表通常 2～3 页，之后是所有者权益变动表或母公司报表。"""
     limit = min(start + 6, len(pages))
     for page_number in range(start + 1, limit + 1):
-        normalized = normalize(pages[page_number - 1])
+        normalized = compress_whitespace(pages[page_number - 1])
         if "所有者权益变动表" in normalized or "母公司资产负债表" in normalized:
             return page_number - 1
     return min(start + 3, len(pages))

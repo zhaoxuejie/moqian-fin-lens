@@ -35,6 +35,8 @@ def main() -> int:
     print(f"{'file':<44} {'income':>12} {'balance':>12} {'cashflow':>12}")
     for gold_file in gold_files:
         gold = json.loads(gold_file.read_text(encoding="utf-8"))
+        if "statements" not in gold:
+            continue
         stem = gold_file.stem
         pdf = pdf_index.get(stem)
         if pdf is None:
