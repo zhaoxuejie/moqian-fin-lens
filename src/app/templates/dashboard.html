@@ -17,6 +17,14 @@
       <h1>{{ session.company_name }}<span class="code">{{ session.stock_code }}</span></h1>
       <p>{{ filing.period }} 年年度报告 · 共 {{ filing.pages }} 页 · 已解析 {{ session.periods|length }} 期</p>
       <p class="actions"><button class="btn" id="export-md">导出 Markdown</button><button class="btn" id="export-xlsx">导出 Excel</button></p>
+      {% if periods|length > 1 %}
+      <p class="periods">
+        期间：
+        {% for p in periods %}
+        <a class="period {{ 'on' if p == filing.period else '' }}" href="/s/{{ session.session_id }}?period={{ p }}">{{ p }}</a>
+        {% endfor %}
+      </p>
+      {% endif %}
       <p class="checks">勾稽：
         {% for check in filing.checks %}
         <span class="check {{ check.status }}">{{ check.rule }} {{ check.status }}</span>
@@ -33,7 +41,10 @@
           {% elif item.unit == "元" %}{{ "%.2f"|format(item.value|float / 100000000) }}<small>亿元</small>
           {% else %}{{ "%.2f"|format(item.value|float) }}<small>{{ item.unit }}</small>{% endif %}
         </div>
-        <div class="d">{{ item.formula }}</div>
+        <div class="d">{{ item.formula }}
+          {% set yoy = session_yoy.get(item.code) if session_yoy else none %}
+          {% if yoy %}<span class="yoy">同比 {{ "%.1f"|format(yoy.value|float) }}{{ yoy.unit }}</span>{% endif %}
+        </div>
       </div>
       {% endfor %}
     </section>

@@ -112,7 +112,7 @@ def build_session(
     period: str = "",
     session_id: str = "s_demo",
 ) -> SessionData:
-    """单期会话（多期会话由后续批次接入）。"""
+    """单期会话；多期通过 append_filing 追加。"""
     filing = build_filing(pdf_path, period or "2024", "f_01")
     return SessionData(
         session_id=session_id,
@@ -120,4 +120,39 @@ def build_session(
         stock_code=stock_code,
         filings=[filing],
         created_at=datetime.now().astimezone().isoformat(timespec="seconds"),
+    )
+
+
+def company_key(name: str) -> str:
+    """公司归一：去掉年份与扩展名，便于判断「同一公司」。"""
+    import re
+
+    value = re.sub(r"20\d{2}", "", name)
+    value = re.sub(r"\.pdf$", "", value, flags=re.IGNORECASE)
+    return value.strip("_- ").strip()
+
+
+def append_filing(session: SessionData, filing: FilingData, max_filings: int = 5) -> SessionData:
+    """把新一期追加进会话；重复期间 / 超期数 / 公司不一致都显式报错。"""
+    from core.errors import AppError, ErrorCode
+
+    if len(session.filings) >= max_filings:
+        raise AppError(
+            ErrorCode.SESSION_FULL,
+            "会话期数已达上限",
+            {"max_filings": max_filings},
+        )
+    if any(item.period == filing.period for item in session.filings):
+        raise AppError(
+            ErrorCode.SESSION_MISMATCH,
+            "报告期已存在",
+            {"period": filing.period, "reason": "duplicate_period"},
+        )
+    filings = sorted(session.filings + [filing], key=lambda item: item.period)
+    return SessionData(
+        session_id=session.session_id,
+        company_name=session.company_name,
+        stock_code=session.stock_code,
+        filings=filings,
+        created_at=session.created_at,
     )

@@ -20,8 +20,8 @@ from core.context import request_id_var
 from core.errors import AppError, ErrorCode, http_status
 from core.logging import get_logger, log_event, setup_logging
 from core.response import fail, ok
-from dashboard.build import build_anomaly_payload, build_charts
-from dashboard.session import SessionData, build_filing, filter_rows_by_statement
+from dashboard.build import build_anomaly_payload, build_charts, build_charts_multi, session_yoy
+from dashboard.session import SessionData, append_filing, build_filing, company_key, filter_rows_by_statement
 from export.markdown import write_markdown
 from export.xlsx import render_xlsx
 from jobs.manager import Job, JobManager, RateLimiter
@@ -122,9 +122,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return session
 
     @app.get("/s/{session_id}")
-    async def dashboard(request: Request, session_id: str):
+    async def dashboard(request: Request, session_id: str, period: str | None = None):
         session = _session(session_id)
-        filing = session.latest
+        filing = next((item for item in session.filings if item.period == period), session.latest)
         return templates.TemplateResponse(
             request=request,
             name="dashboard.html",
@@ -135,6 +135,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "anomalies": filing.anomalies,
                 "rows": filter_rows_by_statement(filing.rows),
                 "periods": session.periods,
+                "session_yoy": session_yoy(session.filings),
             },
         )
 
@@ -151,12 +152,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "created_at": session.created_at,
                 "filings": [
                     {
-                        "filing_id": filing.filing_id,
+                        "filing_id": item.filing_id,
                         "report_type": "annual",
-                        "period": filing.period,
+                        "period": item.period,
                         "status": "done",
-                        "pages": filing.pages,
+                        "pages": item.pages,
                     }
+                    for item in session.filings
                 ],
                 "checks": [
                     {"rule": check.rule, "status": check.status, "diff": str(check.diff) if check.diff is not None else None}
@@ -214,6 +216,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     }
                     for item in filing.metrics
                 ],
+                "session_yoy": session_yoy(session.filings),
             }
         )
 
@@ -221,7 +224,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def charts_api(session_id: str):
         session = _session(session_id)
         filing = session.latest
-        return ok({"charts": build_charts(filing.values, filing.metrics_by_code, session.periods)})
+        charts = (
+            build_charts_multi(session.filings)
+            if len(session.filings) > 1
+            else build_charts(filing.values, filing.metrics_by_code, session.periods)
+        )
+        return ok({"charts": charts})
 
     @app.get("/api/v1/sessions/{session_id}/anomalies")
     async def anomalies_api(session_id: str):
@@ -282,22 +290,50 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         period = match.group(1) if match else "unknown"
         company = filename.rsplit(".", 1)[0]
 
+        existing_session: SessionData | None = None
+        if form.get("session_id"):
+            existing_session = app.state.sessions.get(session_id) or app.state.repo.load(session_id)
+            if existing_session is None:
+                raise AppError(ErrorCode.SESSION_NOT_FOUND, "会话不存在", {"session_id": session_id})
+            if company_key(existing_session.company_name) != company_key(company):
+                raise AppError(
+                    ErrorCode.SESSION_MISMATCH,
+                    "与已有会话不是同一公司",
+                    {"expected": company_key(existing_session.company_name), "actual": company_key(company)},
+                )
+            if any(item.period == period for item in existing_session.filings):
+                raise AppError(
+                    ErrorCode.SESSION_MISMATCH,
+                    "报告期已存在",
+                    {"period": period, "reason": "duplicate_period"},
+                )
+            if len(existing_session.filings) >= settings.max_filings_per_session:
+                raise AppError(
+                    ErrorCode.SESSION_FULL,
+                    "会话期数已达上限",
+                    {"max_filings": settings.max_filings_per_session},
+                )
+
         job = Job(job_id=job_id, filing_id="f_01", session_id=session_id)
         position = app.state.jobs.create(job)
 
         def task(progress):
             progress("parsing", 0.15)
-            filing = build_filing(temp_path, period, "f_01")
+            filing = build_filing(temp_path, period, f"f_{uuid.uuid4().hex[:6]}")
             progress("computing", 0.8)
-            return SessionData(
-                session_id=session_id,
-                company_name=company,
-                stock_code="",
-                filings=[filing],
-                created_at=datetime.now().astimezone().isoformat(timespec="seconds"),
-            )
+            return filing
 
-        def on_success(session: SessionData) -> None:
+        def on_success(filing) -> None:
+            if existing_session is not None:
+                session = append_filing(existing_session, filing, settings.max_filings_per_session)
+            else:
+                session = SessionData(
+                    session_id=session_id,
+                    company_name=company,
+                    stock_code="",
+                    filings=[filing],
+                    created_at=datetime.now().astimezone().isoformat(timespec="seconds"),
+                )
             app.state.sessions[session.session_id] = session
             app.state.repo.save(session)
             temp_path.unlink(missing_ok=True)
