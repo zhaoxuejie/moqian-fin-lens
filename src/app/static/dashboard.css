@@ -221,3 +221,8 @@ table.compare thead tr:nth-child(2) th { top: 34px; }
 table.compare th.group { border-left: 1px solid var(--line); }
 table.compare th.sub { font-weight: 400; font-size: 11px; color: var(--ink3); }
 .unit.toggle.on { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+
+.raw-table { max-height: 560px; overflow: auto; }
+.raw-table thead th { position: sticky; top: 0; z-index: 2; }
+tr.raw-head td { background: #fafbfc; color: var(--ink3); font-size: 12px; text-align: left; }

@@ -26,3 +26,18 @@ def test_inventory_uses_consolidated_row_not_parent():
     value = filing.values["balance"]["inventory"]["current"]
     # 合并报表存货 802,036.62；母公司存货 79,594.31
     assert value > 700000
+
+def test_statements_keep_consolidated_only():
+    from dashboard.session import filter_rows_by_statement
+    from dashboard.session import build_filing
+
+    filing = build_filing(_pdf("002230_科大讯飞", "2024"), "2024")
+    rows = filter_rows_by_statement(filing.rows)
+
+    balance_labels = [row.label for row in rows["balance"]]
+    income_labels = [row.label for row in rows["income"]]
+
+    assert "负债和所有者权益总计" in balance_labels or "负债和所有者权益（或股东权益）总计" in balance_labels
+    assert income_labels[-1].startswith("（二）稀释每股收益")
+    assert sum(1 for label in balance_labels if label.strip() == "货币资金") == 1
+    assert any("六、其他综合收益的税后净额" in label for label in income_labels)

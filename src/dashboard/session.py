@@ -54,27 +54,60 @@ STATEMENT_ANCHORS = {
 }
 
 
+PARENT_CUT_PATTERNS = {
+    "income": ("营业总收入", "营业收入"),
+    "balance": ("货币资金",),
+    "cashflow": ("销售商品",),
+}
+
+
+def _cut_parent_statement(rows: list[StatementRow], kind: str) -> list[StatementRow]:
+    """合并报表之后若接着母公司报表，按「同一条目第二次出现」截断。"""
+    patterns = PARENT_CUT_PATTERNS.get(kind, ())
+    seen = 0
+    for index, row in enumerate(rows):
+        if not row.cells:
+            continue
+        label = row.label.strip()
+        starts = (
+            label.startswith(("一、", "1、"))
+            or label.startswith(kind)
+            or any(label.startswith(pattern) for pattern in patterns)
+        )
+        if any(pattern in label for pattern in patterns) and starts:
+            seen += 1
+            if seen == 2:
+                return rows[:index]
+    return rows
+
+
 def _trim_to_statement(rows: list[StatementRow], kind: str) -> list[StatementRow]:
     anchors = STATEMENT_ANCHORS.get(kind, ())
     for index, row in enumerate(rows):
         if any(anchor in row.label for anchor in anchors):
-            return rows[index:]
+            return _cut_parent_statement(rows[index:], kind)
     return rows
 
 
 def filter_rows_by_statement(rows_by_kind: dict[str, list[StatementRow]]) -> dict[str, list[StatementRow]]:
-    """按科目归属过滤行：利润表页里的母公司资产负债表尾行不进入利润表。"""
+    """按科目归属重新分桶：三表页范围边界处的行按 Schema 归位，再裁掉母公司报表段。"""
     from align import normalize_label
     from schema import load_accounts
 
     schema = load_accounts()
-    filtered: dict[str, list[StatementRow]] = {}
+    buckets: dict[str, list[StatementRow]] = {kind: [] for kind in rows_by_kind}
+
     for kind, rows in rows_by_kind.items():
-        kept = []
-        for row in _trim_to_statement(rows, kind):
+        for row in rows:
             account = schema.resolve(normalize_label(row.label))
-            if account is not None and account.statement != kind:
-                continue
+            target = account.statement if account is not None and account.statement in buckets else kind
+            buckets[target].append(row)
+
+    filtered: dict[str, list[StatementRow]] = {}
+    for kind, rows in buckets.items():
+        rows.sort(key=lambda row: row.page)
+        kept: list[StatementRow] = []
+        for row in _trim_to_statement(rows, kind):
             if not row.cells and row.label.endswith("："):
                 continue
             kept.append(row)
@@ -87,11 +120,7 @@ DEDUCTED_AMOUNT = re.compile(r"\(?-?[\d,]+\.\d{2}\)?")
 
 
 def _add_deducted_fallback(rows: dict[str, list[StatementRow]], pages: list[str]) -> dict[str, list[StatementRow]]:
-    """扣非净利润通常披露在「主要财务指标」而非三表页，缺省时全文兜底抓取一次。
-
-    A 股年报的写法是「归属于上市公司股东的扣除非经常性损益的净利润」，
-    且标签常被 PDF 拆成多段，因此在扁平化文本上定位标签，再取其后前两个金额。
-    """
+    """扣非净利润通常披露在「主要财务指标」而非三表页，缺省时全文兜底抓取一次。"""
     if any("扣除非经常性损益" in row.label for row in rows.get("income", [])):
         return rows
     for index, text in enumerate(pages, start=1):
