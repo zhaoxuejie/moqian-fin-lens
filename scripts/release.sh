@@ -45,6 +45,12 @@ if ! grep -q "^## \[Unreleased\]" "$CHANGELOG_FILE"; then
   exit 1
 fi
 
+UNRELEASED_BODY=$(awk '/^## \[Unreleased\]/{flag=1;next}/^## \[/{flag=0}flag' "$CHANGELOG_FILE")
+if ! printf '%s\n' "$UNRELEASED_BODY" | grep -q "^- "; then
+  echo "CHANGELOG.md 的 [Unreleased] 为空：请先写入本次变更再发布"
+  exit 1
+fi
+
 if [[ "$DRY_RUN" -eq 1 ]]; then
   echo "[dry-run] 将执行："
   echo "  1) 在 CHANGELOG.md 的 [Unreleased] 之后插入 ## [${NEW_VERSION}] - ${DATE}"
