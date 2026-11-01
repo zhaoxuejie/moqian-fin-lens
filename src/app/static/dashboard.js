@@ -254,7 +254,7 @@
     const trigger = event.target.closest("[data-entry]");
     if (trigger) {
       const entryId = trigger.dataset.entry;
-      fetch("/api/v1/sessions/" + encodeURIComponent(sessionId) + "/trace/" + encodeURIComponent(entryId))
+      fetch("/api/v1/sessions/" + encodeURIComponent(sessionId) + "/trace/" + encodeURIComponent(entryId) + "?period=" + encodeURIComponent(document.body.dataset.period || ""))
         .then(function (response) { return response.json(); })
         .then(function (body) {
           const data = body.data || {};

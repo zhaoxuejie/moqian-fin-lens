@@ -21,9 +21,9 @@ def _resolve_row(row):
     return account
 
 
-def _row_trace(session: SessionData, entry_id: str) -> dict[str, Any]:
+def _row_trace(session: SessionData, entry_id: str, filing=None) -> dict[str, Any]:
     _, kind, index_text = entry_id.split(":", 2)
-    filing = session.latest
+    filing = filing or session.latest
     try:
         row = filing.rows[kind][int(index_text)]
     except (KeyError, IndexError, ValueError) as exc:
@@ -42,9 +42,9 @@ def _row_trace(session: SessionData, entry_id: str) -> dict[str, Any]:
     }
 
 
-def _metric_trace(session: SessionData, entry_id: str) -> dict[str, Any]:
+def _metric_trace(session: SessionData, entry_id: str, filing=None) -> dict[str, Any]:
     code = entry_id.split(":", 1)[1]
-    filing = session.latest
+    filing = filing or session.latest
     metric = filing.metrics_by_code.get(code)
     if metric is None:
         raise AppError(ErrorCode.NOT_FOUND, "指标不存在", {"entry_id": entry_id})
@@ -78,9 +78,9 @@ def _metric_trace(session: SessionData, entry_id: str) -> dict[str, Any]:
     }
 
 
-def trace_entry(session: SessionData, entry_id: str) -> dict[str, Any]:
+def trace_entry(session: SessionData, entry_id: str, filing=None) -> dict[str, Any]:
     if entry_id.startswith("row:"):
-        return _row_trace(session, entry_id)
+        return _row_trace(session, entry_id, filing)
     if entry_id.startswith("metric:"):
-        return _metric_trace(session, entry_id)
+        return _metric_trace(session, entry_id, filing)
     raise AppError(ErrorCode.NOT_FOUND, "未知的溯源类型", {"entry_id": entry_id})
