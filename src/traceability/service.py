@@ -4,7 +4,7 @@ from typing import Any
 
 from align import normalize_label
 from core.errors import AppError, ErrorCode
-from dashboard.session import SessionData
+from dashboard.session import SessionData, filter_rows_by_statement
 from metrics.compute import _suffix_account
 from metrics.registry import METRIC_BY_CODE
 from schema import load_accounts
@@ -24,8 +24,9 @@ def _resolve_row(row):
 def _row_trace(session: SessionData, entry_id: str, filing=None) -> dict[str, Any]:
     _, kind, index_text = entry_id.split(":", 2)
     filing = filing or session.latest
+    rows = filter_rows_by_statement(filing.rows).get(kind, [])
     try:
-        row = filing.rows[kind][int(index_text)]
+        row = rows[int(index_text)]
     except (KeyError, IndexError, ValueError) as exc:
         raise AppError(ErrorCode.NOT_FOUND, "溯源记录不存在", {"entry_id": entry_id}) from exc
     cell = row.cells[0] if row.cells else None

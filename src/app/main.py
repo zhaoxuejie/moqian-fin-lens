@@ -474,9 +474,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return ok({"deleted": True})
 
     @app.get("/api/v1/sessions/{session_id}/trace/{entry_id}")
-    async def trace_api(session_id: str, entry_id: str):
+    async def trace_api(session_id: str, entry_id: str, period: str | None = None):
         session = _session(session_id)
-        return ok(trace_entry(session, entry_id))
+        filing = next((item for item in session.filings if item.period == period), None)
+        return ok(trace_entry(session, entry_id, filing))
 
     @app.post("/api/v1/sessions/{session_id}/exports")
     async def create_export(session_id: str, request: Request):
