@@ -82,8 +82,9 @@ def test_xlsx_export_is_numeric(settings, dashboard_session):
 
     assert downloaded.status_code == 200
     workbook = load_workbook(io.BytesIO(downloaded.content))
-    assert "关键指标" in workbook.sheetnames
-    sheet = workbook["关键指标"]
+    period = dashboard_session.latest.period
+    assert f"{period} 指标" in workbook.sheetnames
+    sheet = workbook[f"{period} 指标"]
     revenue_row = next(row for row in sheet.iter_rows(min_row=2) if row[0].value == "营业总收入")
     assert isinstance(revenue_row[1].value, (int, float))
     assert revenue_row[1].value == 1000.0
@@ -95,3 +96,22 @@ def test_export_unknown_kind_is_rejected(settings, dashboard_session):
 
     assert response.status_code == 400
     assert response.json()["code"] == 40006
+
+def test_export_covers_all_periods(settings, dashboard_session):
+    from dataclasses import replace
+
+    first = dashboard_session.latest
+    second = replace(first, filing_id="f_second", period="2025")
+    session = replace(dashboard_session, filings=[first, second])
+
+    with _client(settings, session) as client:
+        md = client.post("/api/v1/sessions/s_test/exports", json={"kind": "markdown"}).json()["data"]
+        text = client.get(md["download_url"]).text
+        xlsx = client.post("/api/v1/sessions/s_test/exports", json={"kind": "xlsx"}).json()["data"]
+        content = client.get(xlsx["download_url"]).content
+
+    assert "2024 年" in text and "2025 年" in text
+    workbook = load_workbook(io.BytesIO(content))
+    assert "2024 指标" in workbook.sheetnames
+    assert "2025 指标" in workbook.sheetnames
+    assert "跨年对比" in workbook.sheetnames

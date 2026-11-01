@@ -228,6 +228,24 @@
     });
   });
 
+  const companyToggle = document.getElementById("company-toggle");
+  const companyDetail = document.getElementById("company-detail");
+
+  function applyCompanyDetail(open) {
+    if (!companyDetail || !companyToggle) return;
+    companyDetail.hidden = !open;
+    companyToggle.textContent = open ? "收起档案 ▴" : "展开档案 ▾";
+  }
+
+  if (companyToggle && companyDetail) {
+    applyCompanyDetail(localStorage.getItem("company_detail_open") === "1");
+    companyToggle.addEventListener("click", function () {
+      const open = companyDetail.hidden;
+      localStorage.setItem("company_detail_open", open ? "1" : "0");
+      applyCompanyDetail(open);
+    });
+  }
+
   function closeModal() {
     if (mask) mask.classList.remove("on");
   }
