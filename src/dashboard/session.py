@@ -23,6 +23,7 @@ class FilingData:
     metrics: list[MetricResult]
     checks: list
     anomalies: list[AnomalyItem]
+    company_info: dict = field(default_factory=dict)
 
     @property
     def metrics_by_code(self) -> dict[str, MetricResult]:
@@ -46,6 +47,21 @@ class SessionData:
         return [filing.period for filing in self.filings]
 
 
+STATEMENT_ANCHORS = {
+    "income": ("营业总收入", "营业收入", "营业总成本"),
+    "balance": ("货币资金", "流动资产", "资产总计"),
+    "cashflow": ("销售商品", "经营活动产生的现金流量", "经营活动现金流入"),
+}
+
+
+def _trim_to_statement(rows: list[StatementRow], kind: str) -> list[StatementRow]:
+    anchors = STATEMENT_ANCHORS.get(kind, ())
+    for index, row in enumerate(rows):
+        if any(anchor in row.label for anchor in anchors):
+            return rows[index:]
+    return rows
+
+
 def filter_rows_by_statement(rows_by_kind: dict[str, list[StatementRow]]) -> dict[str, list[StatementRow]]:
     """按科目归属过滤行：利润表页里的母公司资产负债表尾行不进入利润表。"""
     from align import normalize_label
@@ -55,7 +71,7 @@ def filter_rows_by_statement(rows_by_kind: dict[str, list[StatementRow]]) -> dic
     filtered: dict[str, list[StatementRow]] = {}
     for kind, rows in rows_by_kind.items():
         kept = []
-        for row in rows:
+        for row in _trim_to_statement(rows, kind):
             account = schema.resolve(normalize_label(row.label))
             if account is not None and account.statement != kind:
                 continue
@@ -114,6 +130,37 @@ def _add_deducted_fallback(rows: dict[str, list[StatementRow]], pages: list[str]
     return rows
 
 
+INFO_LABELS = {
+    "公司的中文名称": "全称",
+    "公司中文名称": "全称",
+    "中文名称": "全称",
+    "注册地址": "注册地址",
+    "公司注册地址": "注册地址",
+    "办公地址": "办公地址",
+    "公司办公地址": "办公地址",
+}
+
+
+def _extract_company_info(pages: list[str]) -> dict[str, str]:
+    """从年报前若干页抓取公司全称 / 注册地址 / 办公地址（最佳努力）。"""
+    info: dict[str, str] = {}
+    for text in pages[:20]:
+        for raw in text.splitlines():
+            line = " ".join(raw.split())
+            if "邮政编码" in line or "历史变更" in line:
+                continue
+            for label, key in INFO_LABELS.items():
+                if key in info or not line.startswith(label):
+                    continue
+                value = line[len(label):].lstrip(" ：:").rstrip(" 。")
+                value = value[:60]
+                if len(value) >= 2:
+                    info[key] = value
+        if "全称" in info and "注册地址" in info:
+            break
+    return info
+
+
 def build_filing(pdf_path: str | Path, period: str, filing_id: str = "f_01") -> FilingData:
     """把一份财报 PDF 变成看板需要的数据（定位 → 表格 → 指标 → 勾稽 → 异常）。"""
     path = str(pdf_path)
@@ -154,6 +201,7 @@ def build_filing(pdf_path: str | Path, period: str, filing_id: str = "f_01") -> 
         metrics=metrics,
         checks=checks,
         anomalies=anomalies,
+        company_info=_extract_company_info(pages),
     )
 
 
@@ -176,10 +224,12 @@ def build_session(
 
 
 def company_key(name: str) -> str:
-    """公司归一：去掉年份与扩展名，便于判断「同一公司」。"""
+    """公司归一：去掉代码前缀、年份、报告名与扩展名，便于判断「同一公司」。"""
     import re
 
-    value = re.sub(r"20\d{2}", "", name)
+    value = re.sub(r"^\d{6}[_-]", "", name)
+    value = re.sub(r"20\d{2}", "", value)
+    value = re.sub(r"[_-]?年?年度报告", "", value)
     value = re.sub(r"\.pdf$", "", value, flags=re.IGNORECASE)
     return value.strip("_- ").strip()
 

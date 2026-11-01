@@ -122,3 +122,32 @@ def test_upload_rate_limited_after_ten(tmp_path):
 
     assert statuses[:10] == [400] * 10
     assert statuses[10] == 429
+
+def test_home_page_supports_multi_file(tmp_path):
+    with _client(tmp_path) as client:
+        page = client.get("/")
+
+    assert "dropzone" in page.text
+    assert "progressbar" in page.text
+    assert "多份年报" in page.text
+
+
+def test_dashboard_has_continue_upload(settings, dashboard_session):
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    app = create_app(settings)
+    app.state.sessions[dashboard_session.session_id] = dashboard_session
+    with TestClient(app) as client:
+        page = client.get(f"/s/{dashboard_session.session_id}")
+
+    assert page.status_code == 200
+    assert "继续拖入" in page.text
+    assert 'id="continue-upload"' in page.text
+    assert 'class="nav"' in page.text
+    assert "基本信息" in page.text or "company-card" in page.text
+    assert "跨年对比台" in page.text
+    assert "交易所" in page.text
+    assert "公司全称" in page.text
+    assert "原始解析数" in page.text

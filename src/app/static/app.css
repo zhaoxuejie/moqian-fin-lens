@@ -4,7 +4,7 @@
   --ink: #111827;
   --ink2: #4b5563;
   --line: #e5e7eb;
-  --teal: #0f766e;
+  --teal: #9d3b40;
 }
 
 * { box-sizing: border-box; }
@@ -31,7 +31,7 @@ body {
 .logo {
   width: 26px; height: 26px;
   border-radius: 8px;
-  background: linear-gradient(135deg, #0f766e, #115e59);
+  background: linear-gradient(135deg, #b5484d, #7f2f33);
   color: #fff;
   display: grid; place-items: center;
   font-size: 13px;
@@ -84,5 +84,71 @@ body {
 .btn.primary { background: var(--teal); border-color: var(--teal); color: #fff; }
 .btn.primary:disabled { opacity: .6; cursor: default; }
 .status { margin-top: 12px; font-size: 13px; color: var(--ink2); }
+.status.ok { color: #15803d; }
+.status.error { color: #b91c1c; }
+
+
+.topbar { display: block; height: auto; }
+.brandbar { display: flex; align-items: center; gap: 9px; height: 58px; font-weight: 700; }
+
+.uploader { padding: 22px 24px; }
+.uploader h2 { font-size: 17px; }
+.uploader .hint { font-size: 12.5px; }
+
+.dropzone {
+  margin-top: 14px;
+  border: 1.5px dashed #d9b3b5;
+  background: linear-gradient(180deg, #fffdfd, #fdf6f6);
+  border-radius: 14px;
+  min-height: 176px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.dropzone:hover, .dropzone.on {
+  border-color: #b5484d;
+  box-shadow: 0 10px 30px rgba(181, 72, 77, .10);
+  transform: translateY(-1px);
+}
+.dz-icon { font-size: 30px; color: #b5484d; line-height: 1; }
+.dz-main { font-size: 15px; color: #374151; }
+.dz-link { color: #9d3b40; font-weight: 600; }
+.dz-sub { font-size: 12px; color: #9ca3af; }
+
+.filelist { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.file-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid #f0d9da; background: #fffafa; color: #4b5563;
+  border-radius: 999px; padding: 4px 10px; font-size: 12px;
+}
+.file-chip b {
+  width: 18px; height: 18px; border-radius: 50%; background: #9d3b40; color: #fff;
+  display: inline-grid; place-items: center; font-size: 10px;
+}
+.file-chip .fs { color: #9ca3af; }
+.file-chip .rm { font-style: normal; cursor: pointer; color: #b5484d; margin-left: 2px; }
+
+.upload-actions { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+.btn.primary {
+  background: linear-gradient(135deg, #b5484d, #7f2f33);
+  border: none; color: #fff; padding: 9px 20px; font-size: 14px;
+  border-radius: 10px; box-shadow: 0 8px 20px rgba(127, 47, 51, .22);
+}
+.btn.primary:disabled { opacity: .55; box-shadow: none; cursor: default; }
+
+.progress { margin-top: 14px; height: 8px; background: #f3e6e7; border-radius: 999px; overflow: hidden; }
+.progress .bar {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, #c76a6e, #9d3b40, #c76a6e);
+  background-size: 200% 100%;
+  border-radius: 999px;
+  transition: width .45s ease;
+  animation: shimmer 1.6s linear infinite;
+}
+@keyframes shimmer { from { background-position: 0 0; } to { background-position: 200% 0; } }
+
 .status.ok { color: #15803d; }
 .status.error { color: #b91c1c; }

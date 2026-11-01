@@ -15,28 +15,33 @@ class SessionRepository:
         self.db = db
 
     def save(self, session: SessionData) -> None:
-        conn = self.db.conn
-        conn.execute(
-            "INSERT OR REPLACE INTO session (id, company_name, stock_code, status, created_at) VALUES (?, ?, ?, ?, ?)",
-            (session.session_id, session.company_name, session.stock_code, "done", session.created_at),
-        )
-        for filing in session.filings:
+        with self.db.write_lock:
+            conn = self.db.conn
             conn.execute(
-                "INSERT OR REPLACE INTO filing (id, session_id, report_type, period, pages, status, parsed_at, created_at, snapshot)"
-                " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                (
-                    filing.filing_id,
-                    session.session_id,
-                    "annual",
-                    filing.period,
-                    filing.pages,
-                    "done",
-                    session.created_at,
-                    session.created_at,
-                    _dumps(filing),
-                ),
+                "INSERT INTO session (id, company_name, stock_code, status, created_at) VALUES (?, ?, ?, ?, ?)"
+                " ON CONFLICT(id) DO UPDATE SET company_name=excluded.company_name, stock_code=excluded.stock_code,"
+                " status=excluded.status, created_at=excluded.created_at",
+                (session.session_id, session.company_name, session.stock_code, "done", session.created_at),
             )
-        conn.commit()
+            for filing in session.filings:
+                conn.execute(
+                    "INSERT INTO filing (id, session_id, report_type, period, pages, status, parsed_at, created_at, snapshot)"
+                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                    " ON CONFLICT(id) DO UPDATE SET session_id=excluded.session_id, period=excluded.period,"
+                    " pages=excluded.pages, status=excluded.status, snapshot=excluded.snapshot",
+                    (
+                        filing.filing_id,
+                        session.session_id,
+                        "annual",
+                        filing.period,
+                        filing.pages,
+                        "done",
+                        session.created_at,
+                        session.created_at,
+                        _dumps(filing),
+                    ),
+                )
+            conn.commit()
 
     def load(self, session_id: str) -> SessionData | None:
         conn = self.db.conn

@@ -31,7 +31,9 @@
 | TASK-012 | 会话落库与原件生命周期 | v1.0 | TASK-010 | P0 | ✅ done | [task-012-session-persistence.md](task-012-session-persistence.md) |
 | TASK-013 | 部署与可观测 | v1.0 | TASK-012 | P1 | ✅ done | [task-013-deployment-and-observability.md](task-013-deployment-and-observability.md) |
 | TASK-014 | 指标与提取缺口修补（PATCH） | v1.0 | TASK-011 | P1 | ✅ done | [task-014-metric-extraction-gaps.md](task-014-metric-extraction-gaps.md) |
-| TASK-015 | 多文件上传与继续上传 | v1.0 | TASK-011 | P1 | ⬜ todo | [task-015-multi-file-upload-ui.md](task-015-multi-file-upload-ui.md) |
+| TASK-015 | 多文件上传与继续上传 | v1.0 | TASK-011 | P1 | ✅ done | [task-015-multi-file-upload-ui.md](task-015-multi-file-upload-ui.md) |
+| TASK-016 | 看板对齐高保真原型 | v1.0 | TASK-015 | P1 | ✅ done | [task-016-dashboard-visual-alignment.md](task-016-dashboard-visual-alignment.md) |
+| TASK-017 | 品牌视觉与详情页改造 | v1.0 | TASK-016 | P0 | ✅ done | [task-017-brand-and-detail-refresh.md](task-017-brand-and-detail-refresh.md) |
 
 ## 规则
 1. 任务存储模式：**一个任务单独一个文件**，不把多个任务混在同一个文件。

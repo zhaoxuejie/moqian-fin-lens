@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import re
+import traceback
 import sys
 import time
 import uuid
@@ -21,6 +22,7 @@ from core.errors import AppError, ErrorCode, http_status
 from core.logging import get_logger, log_event, setup_logging
 from core.response import fail, ok
 from dashboard.build import build_anomaly_payload, build_charts, build_charts_multi, session_yoy
+from dashboard.compare import build_comparison
 from dashboard.session import SessionData, append_filing, build_filing, company_key, filter_rows_by_statement
 from export.markdown import write_markdown
 from export.xlsx import render_xlsx
@@ -32,6 +34,7 @@ from store.db import Database
 from store.repo import SessionRepository, cleanup_temp_files
 
 BASE_DIR = Path(__file__).resolve().parent
+APP_VERSION = "0.2.9"
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
@@ -94,6 +97,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
         elapsed = round((time.perf_counter() - started) * 1000, 2)
         response.headers["X-Request-Id"] = rid
+        if request.url.path.startswith("/static/"):
+            response.headers["Cache-Control"] = "no-cache"
         log_event(
             logger,
             logging.INFO,
@@ -122,7 +127,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return templates.TemplateResponse(
             request=request,
             name="index.html",
-            context={"app_env": settings.app_env},
+            context={"app_env": settings.app_env, "asset_version": APP_VERSION},
         )
 
     def _session(session_id: str):
@@ -146,6 +151,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 "rows": filter_rows_by_statement(filing.rows),
                 "periods": session.periods,
                 "session_yoy": session_yoy(session.filings),
+                "asset_version": APP_VERSION,
             },
         )
 
@@ -227,8 +233,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     for item in filing.metrics
                 ],
                 "session_yoy": session_yoy(session.filings),
+                "asset_version": APP_VERSION,
             }
         )
+
+    @app.get("/api/v1/sessions/{session_id}/compare")
+    async def compare(session_id: str):
+        session = _session(session_id)
+        return ok(build_comparison(session))
 
     @app.get("/api/v1/sessions/{session_id}/charts")
     async def charts_api(session_id: str):
@@ -298,7 +310,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         report_type = "annual" if "年度" in filename else "semi"
         match = re.search(r"(20\d{2})", filename)
         period = match.group(1) if match else "unknown"
-        company = filename.rsplit(".", 1)[0]
+        code_match = re.match(r"^(\d{6})", filename)
+        stock_code = code_match.group(1) if code_match else ""
+        company = re.sub(r"^\d{6}[_-]", "", filename.rsplit(".", 1)[0])
+        company = re.sub(r"[_-]?20\d{2}年?年度报告$", "", company).strip() or filename.rsplit(".", 1)[0]
 
         existing_session: SessionData | None = None
         if form.get("session_id"):
@@ -342,12 +357,20 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 session = SessionData(
                     session_id=session_id,
                     company_name=company,
-                    stock_code="",
+                    stock_code=stock_code,
                     filings=[filing],
                     created_at=datetime.now().astimezone().isoformat(timespec="seconds"),
                 )
             app.state.sessions[session.session_id] = session
             app.state.repo.save(session)
+            log_event(
+                logger,
+                logging.INFO,
+                "session_saved",
+                session_id=session.session_id,
+                filings=len(session.filings),
+                db=str(settings.database_path),
+            )
             temp_path.unlink(missing_ok=True)
             stats = app.state.parse_stats
             stats["total"] += 1
@@ -373,6 +396,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 )
 
         def on_error(exc: Exception) -> None:
+            log_event(
+                logger,
+                logging.ERROR,
+                "parse_failed",
+                session_id=session_id,
+                error=str(exc)[:200],
+                traceback=traceback.format_exc()[-1500:],
+            )
             stats = app.state.parse_stats
             stats["total"] += 1
             stats["failed"] += 1

@@ -4,27 +4,38 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>财报透视</title>
-  <link rel="stylesheet" href="/static/app.css">
+  <link rel="stylesheet" href="/static/app.css?v={{ asset_version }}">
 </head>
 <body>
   <header class="topbar">
-    <div class="wrap brand"><span class="logo">财</span>财报透视</div>
+    <div class="wrap brandbar"><span class="logo">财</span>财报透视</div>
   </header>
 
   <main class="wrap">
     <section class="hero">
       <h1>上传 A 股年报，把财报整理成可核对的财务视图</h1>
-      <p>三表结构化、20 项指标、7 组图表、异常项提示，每个数字都能回到原文页码。</p>
+      <p>三表结构化、20 项指标、8 组图表、异常项提示，每个数字都能回到原文页码。</p>
     </section>
 
     <section class="card uploader">
       <h2>上传年报 PDF</h2>
-      <p class="hint">仅支持 PDF；单份 ≤ 50MB、≤ 400 页。解析完成后自动跳转看板。</p>
-      <form id="upload-form">
-        <input type="file" id="file" accept="application/pdf" required>
-        <button class="btn primary" type="submit">开始解析</button>
-      </form>
-      <div id="status" class="status"></div>
+      <p class="hint">支持一次选择同一公司的多份年报（最多 5 期）；单份 ≤ 50MB、≤ 400 页。</p>
+
+      <div id="dropzone" class="dropzone">
+        <div class="dz-icon">⇪</div>
+        <div class="dz-main">把 PDF 拖到这里，或 <span class="dz-link">点击选择文件</span></div>
+        <div class="dz-sub">支持多选，解析完成后自动跳转看板</div>
+        <input type="file" id="file" accept="application/pdf" multiple hidden>
+      </div>
+
+      <div id="filelist" class="filelist"></div>
+
+      <div class="upload-actions">
+        <button class="btn primary" id="start" disabled>开始解析</button>
+        <span id="status" class="status"></span>
+      </div>
+
+      <div class="progress" id="progressbar" hidden><div class="bar" id="bar"></div></div>
     </section>
 
     <footer class="disclaimer">
@@ -32,6 +43,6 @@
     </footer>
   </main>
 
-  <script src="/static/upload.js"></script>
+  <script src="/static/upload.js?v={{ asset_version }}"></script>
 </body>
 </html>

@@ -112,7 +112,16 @@ class JobManager:
                     job.progress = 1.0
                     job.finished_at = _now()
                 self._refresh_positions_locked()
-            on_success(result)
+            try:
+                on_success(result)
+            except Exception as exc:  # 保存等后置步骤失败必须可见
+                with self._lock:
+                    job = self.jobs.get(job_id)
+                    if job is not None:
+                        job.state = "failed"
+                        job.stage = "failed"
+                        job.error = {"code": 50001, "msg": "保存会话失败：" + str(exc)[:200], "stage": "persist"}
+                on_error(exc)
 
         self._executor.submit(runner)
 

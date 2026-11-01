@@ -67,3 +67,16 @@ def test_session_yoy_skips_single_filing(dashboard_session):
     from dashboard.build import session_yoy
 
     assert session_yoy([dashboard_session.latest]) == {}
+
+def test_filter_trims_previous_statement_tail():
+    from dashboard.session import filter_rows_by_statement
+    from parse.table import StatementRow
+
+    rows = {
+        "income": [
+            StatementRow(label="所有者权益（或股东权益）合计", page=130, snippet="", cells=(), is_missing=True),
+            StatementRow(label="一、营业总收入", page=130, snippet="", cells=(), is_missing=True),
+        ]
+    }
+    filtered = filter_rows_by_statement(rows)
+    assert filtered["income"][0].label == "一、营业总收入"

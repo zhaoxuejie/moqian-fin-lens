@@ -4,27 +4,30 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{ session.company_name }} · 财报透视</title>
-  <link rel="stylesheet" href="/static/app.css">
-  <link rel="stylesheet" href="/static/dashboard.css">
+  <link rel="stylesheet" href="/static/app.css?v={{ asset_version }}">
+  <link rel="stylesheet" href="/static/dashboard.css?v={{ asset_version }}">
 </head>
 <body data-session="{{ session.session_id }}">
   <header class="topbar">
-    <div class="wrap brand"><span class="logo">财</span>财报透视</div>
+    <div class="wrap topbar-inner">
+      <div class="brand"><span class="logo">财</span>财报透视</div>
+      <nav class="nav">
+        <a href="#overview">概览</a>
+        <a href="#tables">三表</a>
+        <a href="#charts">图表</a>
+        <a href="#anomaly">异常项</a>
+      </nav>
+      <div class="spacer"></div>
+      <button class="btn" id="export-md">导出 Markdown</button>
+      <button class="btn" id="export-xlsx">导出 Excel</button>
+      <span id="continue-status" class="muted"></span>
+    </div>
   </header>
 
   <main class="wrap">
-    <section class="hero">
+    <section class="hero" id="overview">
       <h1>{{ session.company_name }}<span class="code">{{ session.stock_code }}</span></h1>
-      <p>{{ filing.period }} 年年度报告 · 共 {{ filing.pages }} 页 · 已解析 {{ session.periods|length }} 期</p>
-      <p class="actions"><button class="btn" id="export-md">导出 Markdown</button><button class="btn" id="export-xlsx">导出 Excel</button></p>
-      {% if periods|length > 1 %}
-      <p class="periods">
-        期间：
-        {% for p in periods %}
-        <a class="period {{ 'on' if p == filing.period else '' }}" href="/s/{{ session.session_id }}?period={{ p }}">{{ p }}</a>
-        {% endfor %}
-      </p>
-      {% endif %}
+      <p>{{ filing.period }} 年年度报告 · 共 {{ filing.pages }} 页 · 已解析 {{ periods|length }} 期</p>
       <p class="checks">勾稽：
         {% for check in filing.checks %}
         <span class="check {{ check.status }}">{{ check.rule }} {{ check.status }}</span>
@@ -32,45 +35,79 @@
       </p>
     </section>
 
+    <section class="company-card">
+      <div class="ci"><span>简称</span><b>{{ session.company_name }}</b></div>
+      <div class="ci"><span>股票代码</span><b>{{ session.stock_code or "—" }}</b></div>
+      <div class="ci"><span>交易所</span><b>{% if session.stock_code[:1] == "6" %}上交所{% elif session.stock_code[:1] in ["0", "3"] %}深交所{% elif session.stock_code[:1] in ["8", "4", "9"] %}北交所{% else %}—{% endif %}</b></div>
+      <div class="ci"><span>报告期</span><b>{{ filing.period }} 年</b></div>
+      <div class="ci"><span>全文</span><b>{{ filing.pages }} 页</b></div>
+      <div class="ci"><span>勾稽</span><b>{{ filing.checks|selectattr("status", "equalto", "passed")|list|length }} 通过{% if filing.checks|selectattr("status", "equalto", "skipped")|list %} · {{ filing.checks|selectattr("status", "equalto", "skipped")|list|length }} 跳过{% endif %}{% if filing.checks|selectattr("status", "equalto", "failed")|list %} · {{ filing.checks|selectattr("status", "equalto", "failed")|list|length }} 失败{% endif %}</b></div>
+      <div class="ci"><span>解析时间</span><b>{{ session.created_at[:16] }}</b></div>
+      <div class="ci wide"><span>公司全称</span><b>{{ filing.company_info.get("全称", "—") }}</b></div>
+      <div class="ci wide"><span>注册地址</span><b>{{ filing.company_info.get("注册地址", "—") }}</b></div>
+      <div class="ci wide"><span>办公地址</span><b>{{ filing.company_info.get("办公地址", "—") }}</b></div>
+    </section>
+
+    <section class="upload">
+      <div class="files">
+        {% for p in periods %}
+        <a class="file {{ 'on' if p == filing.period else '' }}" href="/s/{{ session.session_id }}?period={{ p }}">
+          <span class="dot"></span>{{ p }} 年报 · <b>{{ '当前' if p == filing.period else '已解析' }}</b>
+        </a>
+        {% endfor %}
+      </div>
+      <button class="drop" id="continue-upload">继续拖入同一公司的其他年报，自动对齐科目并生成趋势</button>
+      <input type="file" id="continue-file" accept="application/pdf" hidden>
+    </section>
+
     <section class="kpis">
       {% for item in metrics[:8] %}
       <div class="kpi">
-        <div class="k"><span>{{ item.label }}</span><button class="src" data-entry="metric:{{ item.code }}">溯源</button></div>
+        <div class="k">
+          <span>{{ item.label }}</span>
+          <button class="src" data-entry="metric:{{ item.code }}">溯源</button>
+        </div>
         <div class="v">
           {% if item.value is none %}<span class="muted">原文未披露</span>
           {% elif item.unit == "元" %}{{ "%.2f"|format(item.value|float / 100000000) }}<small>亿元</small>
           {% else %}{{ "%.2f"|format(item.value|float) }}<small>{{ item.unit }}</small>{% endif %}
         </div>
-        <div class="d">{{ item.formula }}
+        <div class="d">
           {% set yoy = session_yoy.get(item.code) if session_yoy else none %}
-          {% if yoy %}<span class="yoy">同比 {{ "%.1f"|format(yoy.value|float) }}{{ yoy.unit }}</span>{% endif %}
+          {% if yoy %}
+          <span class="yoy {{ 'up' if yoy.value|float >= 0 else 'down' }}">{{ '▲' if yoy.value|float >= 0 else '▼' }} {{ "%.1f"|format(yoy.value|float|abs) }}{{ '%' if yoy.unit == '%' else 'pct' }}</span> 同比
+          {% elif item.yoy is not none %}
+          <span class="yoy {{ 'up' if item.yoy|float >= 0 else 'down' }}">{{ '▲' if item.yoy|float >= 0 else '▼' }} {{ "%.1f"|format(item.yoy|float|abs) }}{{ '%' if item.yoy_unit == '%' else 'pct' }}</span> 同比
+          {% else %}{{ item.formula }}{% endif %}
         </div>
       </div>
       {% endfor %}
     </section>
 
-    <section class="section">
-      <div class="section-hd"><h2>三大报表</h2><span>每个数字来自原文，页码见右侧</span></div>
+    <section class="section" id="tables">
+      <div class="section-hd"><h2>三大报表（原始解析数）</h2><span>单位以原表为准 · 每个数字可点击核对原文</span></div>
       <div class="card">
         <div class="tabs">
-          <button class="tab on" data-tab="income">利润表</button>
-          <button class="tab" data-tab="balance">资产负债表</button>
+          <button class="tab on" data-tab="balance">资产负债表</button>
+          <button class="tab" data-tab="income">利润表</button>
           <button class="tab" data-tab="cashflow">现金流量表</button>
         </div>
-        {% for kind, label in [("income", "利润表"), ("balance", "资产负债表"), ("cashflow", "现金流量表")] %}
-        <div class="panel {{ 'on' if kind == 'income' else '' }}" id="{{ kind }}">
+        {% for kind, label in [("balance", "资产负债表"), ("income", "利润表"), ("cashflow", "现金流量表")] %}
+        <div class="panel {{ 'on' if kind == 'balance' else '' }}" id="{{ kind }}">
           <table>
-            <thead><tr><th>科目</th><th>本期</th><th>上期</th><th>页码</th></tr></thead>
+            <thead><tr><th>科目</th><th>本期</th><th>上期</th><th>溯源</th></tr></thead>
             <tbody>
-              {% for row in rows.get(kind, [])[:40] %}
+              {% for row in rows.get(kind, [])[:32] %}
+              {% if row.cells %}
               <tr>
                 <td>{{ row.label }}</td>
                 {% for cell in row.cells[:2] %}
-                <td class="num">{{ cell.raw }}</td>
+                <td class="num">{{ cell.raw if cell.raw else "—" }}</td>
                 {% endfor %}
-                {% if row.cells|length == 0 %}<td class="muted">未披露</td><td class="muted">未披露</td>{% endif %}
+                {% if row.cells|length == 1 %}<td class="num muted">—</td>{% endif %}
                 <td><button class="src" data-entry="row:{{ kind }}:{{ loop.index0 }}">P.{{ row.page }}</button></td>
               </tr>
+              {% endif %}
               {% endfor %}
             </tbody>
           </table>
@@ -79,12 +116,25 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="compare">
+      <div class="section-hd"><h2>跨年对比台</h2><span>按年列示科目并计算同比（相对上一年）；用于加工分析，不改动原始数</span></div>
+      <div class="card">
+        <div class="tabs" id="compare-tabs">
+          <button class="tab on" data-compare="balance">资产负债表</button>
+          <button class="tab" data-compare="income">利润表</button>
+          <button class="tab" data-compare="cashflow">现金流量表</button>
+        </div>
+        <div class="compare-wrap"><div id="compare-body" class="muted">加载中…</div></div>
+      </div>
+    </section>
+
+    <section class="section" id="charts">
       <div class="section-hd"><h2>财务视图</h2><span>7 组图表 + 异常项；数据全部来自后端计算</span></div>
       <div class="chart-grid">
         {% for cid in ["v1", "v2", "v3", "v4", "v5", "v6", "v7"] %}
         <div class="card chart-card" id="card-{{ cid }}">
           <div class="chart-title" id="title-{{ cid }}">加载中…</div>
+          <div class="chart-sub" id="sub-{{ cid }}"></div>
           <div class="chart" id="chart-{{ cid }}"></div>
           <div class="chart-meta" id="meta-{{ cid }}"></div>
         </div>
@@ -92,14 +142,25 @@
       </div>
     </section>
 
-    <section class="section">
-      <div class="section-hd"><h2>异常项</h2><span>只陈列数字之间的矛盾，不做投资评价</span></div>
+    <section class="section" id="anomaly">
+      <div class="section-hd"><h2>异常项高亮</h2><span>只陈列数字之间的矛盾，不做投资评价；每项都可溯源</span></div>
       {% if filing.anomalies %}
       <div class="anom">
         {% for item in filing.anomalies %}
         <div class="anom-item">
-          <b>{{ item.title }}</b>
-          <p>{{ item.text }}</p>
+          <div class="ic">{{ loop.index }}</div>
+          <div class="body">
+            <b>{{ item.title }}</b>
+            <p>{{ item.text }}</p>
+            <div class="meta">
+              {% for ev in item.evidence %}
+              <span class="chip">{{ ev.get('code', '') }}{% if ev.get('value') %} {{ ev.get('value') }}{% endif %}{% if ev.get('growth') %} {{ ev.get('growth') }}%{% endif %}</span>
+              {% endfor %}
+              {% for page in item.page_refs %}
+              <span class="src">P.{{ page }}</span>
+              {% endfor %}
+            </div>
+          </div>
         </div>
         {% endfor %}
       </div>
@@ -122,7 +183,7 @@
     </div>
   </div>
 
-  <script src="/static/echarts.min.js"></script>
-  <script src="/static/dashboard.js"></script>
+  <script src="/static/echarts.min.js?v={{ asset_version }}"></script>
+  <script src="/static/dashboard.js?v={{ asset_version }}"></script>
 </body>
 </html>

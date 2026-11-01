@@ -93,3 +93,15 @@ def test_cleanup_removes_old_temp_files(tmp_path):
     assert removed == ["old.pdf"]
     assert not old.exists()
     assert fresh.exists()
+
+def test_snapshot_preserves_company_info(tmp_path, dashboard_session):
+    session = dashboard_session
+    session.latest.company_info = {"全称": "示例科技股份有限公司", "办公地址": "示例市示例路 1 号"}
+    app = _app(_settings(tmp_path))
+    app.state.repo.save(session)
+
+    restored = app.state.repo.load(session.session_id)
+
+    assert restored is not None
+    assert restored.latest.company_info["全称"] == "示例科技股份有限公司"
+    assert restored.latest.company_info["办公地址"] == "示例市示例路 1 号"
