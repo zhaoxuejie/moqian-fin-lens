@@ -27,9 +27,18 @@ def _load_cases():
     return json.loads(GOLD_FILE.read_text(encoding="utf-8"))
 
 
+def _pdf_for(company: str, year: str) -> Path:
+    matches = sorted((PDF_DIR / company).glob(f"*{year}*.pdf"))
+    if not matches:
+        pytest.skip(f"缺少评估集 PDF：{company} {year}")
+    return matches[0]
+
+
 def test_table_rows_meet_accuracy_target():
     cases = _load_cases()
     pdf_index = {path.stem: path for path in PDF_DIR.rglob("*.pdf")}
+    if not pdf_index:
+        pytest.skip("缺少评估集 PDF")
     statement_gold = {
         path.stem: json.loads(path.read_text(encoding="utf-8"))
         for path in GOLD_DIR.glob("*年度报告.json")
@@ -70,9 +79,7 @@ def test_table_rows_meet_accuracy_target():
 
 
 def test_statement_extraction_performance():
-    pdf = next((PDF_DIR / "002475_立讯精密").glob("*2025*.pdf"))
-    if not pdf.exists():
-        pytest.skip("缺少评估集 PDF")
+    pdf = _pdf_for("002475_立讯精密", "2025")
     gold = json.loads((GOLD_DIR / "002475_立讯精密_2025年年度报告.json").read_text(encoding="utf-8"))
     ranges = {
         kind: (gold["statements"][kind]["start"], gold["statements"][kind]["start"] + 2)
@@ -85,10 +92,8 @@ def test_statement_extraction_performance():
     assert sum(len(items) for items in rows.values()) > 100
     assert elapsed < 60
 def test_cross_page_rows_have_page_and_snippet():
+    pdf = _pdf_for("002230_科大讯飞", "2024")
     gold = json.loads((GOLD_DIR / "002230_科大讯飞_2024年年度报告.json").read_text(encoding="utf-8"))
-    pdf = next((PDF_DIR / "002230_科大讯飞").glob("*2024*.pdf"))
-    if not pdf.exists():
-        pytest.skip("缺少评估集 PDF")
     start = gold["statements"]["balance"]["start"]
     rows = extract_statement_rows(str(pdf), {"balance": (start, start + 4)})["balance"]
 
