@@ -37,6 +37,7 @@
 | TASK-018 | 详情页信息分层与对比台可读性 | v1.0 | TASK-017 | P1 | ✅ done | [task-018-detail-hierarchy-and-compare-units.md](task-018-detail-hierarchy-and-compare-units.md) |
 | TASK-019 | 报表首行丢失修复 | v1.0 | TASK-018 | P0 | ✅ done | [task-019-first-row-recovery.md](task-019-first-row-recovery.md) |
 | TASK-020 | 财务视图多页结构 | v1.0 | TASK-019 | P0 | ✅ done | [task-020-multi-page-dashboard.md](task-020-multi-page-dashboard.md) |
+| TASK-021 | 财务视图图表重构（10 图） | v1.0 | TASK-020 | P0 | 🚧 doing | [task-021-charts-redesign.md](task-021-charts-redesign.md) |
 
 ## 规则
 1. 任务存储模式：**一个任务单独一个文件**，不把多个任务混在同一个文件。

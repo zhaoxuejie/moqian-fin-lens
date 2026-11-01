@@ -98,7 +98,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 | 方法 | 路径 | 说明 |
 | ---- | ---- | ---- |
 | GET | `/` | 首页：上传区 + 使用说明 + 免责声明 |
-| GET | `/s/{session_id}` | 看板页：基础信息、指标卡、三表、8 组图表、异常项、导出入口 |
+| GET | `/s/{session_id}` | 看板页：基础信息、指标卡、三表、10 组图表、异常项、导出入口 |
 | GET | `/s/{session_id}?tab=statements` | 直接定位到三表 Tab（其余 tab：`charts`、`anomaly`） |
 | GET | `/s/{session_id}/export/{export_id}` | 下载已生成的导出文件（下载即失效策略见 4.8） |
 
@@ -308,7 +308,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 状态：stable
 版本：v1
 
-响应示例（截取 V1、V2）：
+响应示例（截取 c1、c6）：
 
 ```json
 {
@@ -317,33 +317,31 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
   "data": {
     "charts": [
       {
-        "id": "v1",
-        "title": "利润的含金量",
-        "kind": "combo",
-        "unit": "元",
-        "x": ["2021", "2022", "2023"],
+        "id": "c1",
+        "group": "盈利与增长",
+        "title": "扣非净利润与增速",
+        "x": ["2023", "2024", "2025"],
         "series": [
-          { "name": "营业收入", "type": "bar", "data": [8240000000, 10360000000, 12180436512.33], "yAxisIndex": 0 },
-          { "name": "扣非净利润", "type": "line", "data": [890000000, 960000000, 810264881.3], "yAxisIndex": 1 },
-          { "name": "经营现金流", "type": "line", "data": [980000000, 720000000, 490258731.44], "yAxisIndex": 1 }
+          { "name": "扣非净利润", "type": "bar", "unit": "元", "yAxisIndex": 0, "sign_colors": true, "data": [810264881.3, 1240000000, 988000000] },
+          { "name": "扣非增速", "type": "line", "unit": "%", "yAxisIndex": 1, "data": [-12.5, 53.0, -20.3] }
         ],
         "meta": {
-          "caliber": "扣非净利润取原文披露值；经营现金流取合并现金流量表",
-          "sources": [{ "label": "P.42", "page": 42 }, { "label": "P.103", "page": 103 }],
+          "caliber": "扣非净利润取合并利润表；扣非增速按报告上期比较列计算",
+          "sources": [{ "label": "P.42", "page": 42 }],
           "missing": []
         }
       },
       {
-        "id": "v2",
-        "title": "现金含量",
-        "kind": "combo",
-        "unit": "倍",
-        "x": ["2021", "2022", "2023"],
+        "id": "c6",
+        "group": "现金质量",
+        "title": "经营现金流与自由现金流",
+        "x": ["2023", "2024", "2025"],
         "series": [
-          { "name": "经营现金流", "type": "bar", "data": [980000000, 720000000, 490258731.44] },
-          { "name": "现金含量", "type": "line", "data": [1.04, 0.71, 0.57], "markLine": { "value": 1.0, "label": "1.0 警戒" } }
+          { "name": "经营现金流", "type": "bar", "unit": "元", "yAxisIndex": 0, "sign_colors": true, "data": [490258731.44, 1100000000, -320000000] },
+          { "name": "自由现金流", "type": "bar", "unit": "元", "yAxisIndex": 0, "sign_colors": true, "data": [121000000, 510000000, -910000000] },
+          { "name": "现金含量", "type": "line", "unit": "倍", "yAxisIndex": 1, "markLine": { "value": 1.0, "label": "1.0 警戒" }, "data": [0.57, 1.04, -0.41] }
         ],
-        "meta": { "caliber": "经营现金流 ÷ 净利润", "sources": [], "missing": [] }
+        "meta": { "caliber": "自由现金流 = 经营现金流 − 购建长期资产支付的现金", "sources": [], "missing": [] }
       }
     ]
   },
@@ -353,9 +351,12 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 
 约定：
 
-- `id` 固定为 `v1`～`v7`；`v8` 走异常项接口（卡片形态）。
-- `missing` 非空时，对应图表在页面显示「数据不足」占位，不允许补 0。
-- 单期会话下，趋势类图表 `x` 长度为 1，页面显示「需上传多期」提示。
+- `id` 固定为 `c1`～`c10`，`group` 为 `盈利与增长` / `现金质量` / `风险与结构`，顺序即页面顺序；异常项走独立接口（卡片形态）。
+- `series[].unit` 必填，枚举 `元` / `%` / `倍` / `次`；同一图内不同单位必须以 `yAxisIndex` 分轴，不得共用一根轴。
+- `sign_colors: true` 的柱状系列按数值正负着色（正值品牌红、负值绿色）。
+- `series[].markLine` 用于参考线（ROE 15%、资产负债率 60%、现金含量 1.0），`value` 为参考值，`label` 为展示文案。
+- `missing` 非空时列出具体系列名，对应图表在页面显示「数据不足」占位，不允许补 0。
+- 多期会话 `x` 为会话内各期年份；单期会话用报告上期比较列补成两点，首点标签为 `<年份>（比较列）`，依赖平均余额的系列首点为 `null`。
 
 ### 接口 7：异常项
 
@@ -520,7 +521,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 | `metrics.compute(filing, series)` | 计算 20 项指标 | `list[Metric]` |
 | `metrics.check_balance(statements)` | 三表勾稽 | `CheckResult` |
 | `anomaly.detect(series, metrics)` | 命中异常 | `list[AnomalyItem]` |
-| `dashboard.build(charts_input)` | 装配 8 组图表 | `list[ChartPayload]` |
+| `dashboard.charts.build_chart_set(filings)` | 装配 10 组图表 | `list[ChartPayload]` |
 | `export.render_markdown(session)` | 渲染 md | `bytes` |
 | `export.render_xlsx(session)` | 渲染 xlsx | `bytes` |
 
@@ -531,6 +532,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 | 接口 | 变更内容 | 版本 | 关联ADR |
 | ---- | ---- | ---- | ---- |
 | — | 初版契约 | v0.1.0 | ADR-001 ～ ADR-007 |
+| 接口 6 图表数据 | id 由 `v1`～`v7` 改为 `c1`～`c10`；新增 `group`、`series.unit`、`sign_colors`；单期会话横轴改为「比较列 + 当期」两点 | v0.3.1 | — |
 
 ## 废弃与迁移指引
 
