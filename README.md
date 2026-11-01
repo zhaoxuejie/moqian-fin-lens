@@ -14,7 +14,7 @@ moqian-fin-lens parses A-share annual report PDFs into structured statements, 20
 ![Tests](https://img.shields.io/badge/tests-238%20passing-brightgreen)
 ![Coverage](https://img.shields.io/badge/coverage-90.55%25-brightgreen)
 
-当前版本：v0.3.0（内测）
+当前版本：v0.4.0（开源首发）
 
 ## 界面
 
