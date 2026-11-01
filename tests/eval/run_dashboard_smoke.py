@@ -55,7 +55,7 @@ def main() -> int:
 
     ok = (
         page.status_code == 200
-        and len(charts.json()["data"]["charts"]) == 7
+        and len(charts.json()["data"]["charts"]) == 11
         and len(metrics.json()["data"]["metrics"]) == 20
         and trace.status_code == 200
         and created.status_code == 200

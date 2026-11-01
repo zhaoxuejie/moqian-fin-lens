@@ -28,20 +28,26 @@ body {
 .topbar {
   display: block; height: auto;
   position: sticky; top: 0; z-index: 10;
-  background: rgba(255, 255, 255, .92);
+  background: rgba(255, 255, 255, .96);
   border-bottom: 1px solid var(--line);
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 10px 24px -18px rgba(16, 24, 40, .18);
 }
-.topbar-inner { display: flex; align-items: center; gap: 22px; height: 58px; }
-.brand { display: flex; align-items: center; gap: 9px; font-weight: 700; color: var(--ink); text-decoration: none; }
+.topbar-inner { display: flex; align-items: center; gap: 22px; height: 62px; }
+.brand { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 700; color: var(--ink); text-decoration: none; }
 .logo {
   width: 26px; height: 26px; border-radius: 8px;
   background: var(--brand-grad);
   color: #fff; display: grid; place-items: center; font-size: 13px;
 }
-.nav { display: flex; gap: 14px; }
-.nav a { color: var(--ink2); text-decoration: none; font-size: 13px; }
-.nav a:hover { color: var(--teal); }
+.nav { display: flex; align-items: center; gap: 4px; }
+.nav a {
+  color: var(--ink2); text-decoration: none; font-size: 14px; font-weight: 500;
+  padding: 6px 12px; border-radius: 8px; line-height: 1.4;
+  transition: background .15s ease, color .15s ease;
+}
+.nav a:hover { color: var(--teal); background: #f4f5f7; }
+.nav a.on { color: var(--teal); font-weight: 600; background: var(--teal-soft); }
 .spacer { flex: 1; }
 
 .hero { padding: 24px 0 6px; }
@@ -109,6 +115,8 @@ tbody tr:hover { background: #fbfcfd; }
 .panel.on { display: block; }
 
 .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.chart-group { margin-top: 22px; }
+.chart-group .section-hd { margin-bottom: 10px; }
 .chart-card { padding: 14px 16px 8px; }
 .chart-title { font-weight: 700; font-size: 13px; }
 .chart-sub { color: var(--ink3); font-size: 11px; margin: 2px 0 6px; }
@@ -235,7 +243,6 @@ tr.raw-head td { background: #fafbfc; color: var(--ink3); font-size: 12px; text-
 }
 
 
-.nav a.on { color: var(--teal); font-weight: 600; }
 .summary-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin: 14px 0; }
 .summary-hd { display: flex; align-items: baseline; gap: 10px; }
 .summary-hd h2 { margin: 0; font-size: 15px; }

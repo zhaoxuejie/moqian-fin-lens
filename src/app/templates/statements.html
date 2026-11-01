@@ -46,4 +46,34 @@
     </div>
   </section>
 
+  <section class="section" id="anomaly">
+    <div class="section-hd">
+      <h2>异常项高亮</h2>
+      <span>基于 {{ filing.period }} 年报本期与上期比较列；只陈列数字之间的矛盾，不做投资评价</span>
+    </div>
+    {% if filing.anomalies %}
+    <div class="anom">
+      {% for item in filing.anomalies %}
+      <div class="anom-item">
+        <div class="ic">{{ loop.index }}</div>
+        <div class="body">
+          <b>{{ item.title }}</b>
+          <p>{{ item.text }}</p>
+          <div class="meta">
+            {% for ev in item.evidence %}
+            <span class="chip">{{ ev.get('code', '') }}{% if ev.get('value') %} {{ ev.get('value') }}{% endif %}{% if ev.get('growth') %} {{ ev.get('growth') }}%{% endif %}</span>
+            {% endfor %}
+            {% for page in item.page_refs %}
+            <span class="src">P.{{ page }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card muted">本期未触发异常规则。</div>
+    {% endif %}
+  </section>
+
 {% include "_foot.html" %}

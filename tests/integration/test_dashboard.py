@@ -20,8 +20,23 @@ def test_dashboard_page_renders(settings, dashboard_session):
     assert "本期结论" in body
     assert "免责声明" in body
     assert charts.status_code == 200
-    assert 'id="chart-v1"' in charts.text
-    assert 'id="chart-v7"' in charts.text
+    assert 'id="chart-c1"' in charts.text
+    assert 'id="chart-c11"' in charts.text
+    assert "盈利与增长" in charts.text
+    assert "现金质量" in charts.text
+    assert "风险与结构" in charts.text
+
+
+def test_anomalies_live_on_statements_page(settings, dashboard_session):
+    with _client(settings, dashboard_session) as client:
+        statements = client.get("/s/s_test/statements")
+        charts = client.get("/s/s_test/charts")
+
+    assert statements.status_code == 200
+    assert 'id="anomaly"' in statements.text
+    assert "异常项高亮" in statements.text
+    assert "2024 年报本期与上期比较列" in statements.text
+    assert 'id="anomaly"' not in charts.text
 
 
 def test_session_detail_contract(settings, dashboard_session):
@@ -57,13 +72,14 @@ def test_metrics_endpoint_returns_twenty(settings, dashboard_session):
     assert {item["code"] for item in items} >= {"gross_margin", "roe", "cash_content"}
 
 
-def test_charts_endpoint_returns_seven(settings, dashboard_session):
+def test_charts_endpoint_returns_ten(settings, dashboard_session):
     with _client(settings, dashboard_session) as client:
         response = client.get("/api/v1/sessions/s_test/charts")
 
     charts = response.json()["data"]["charts"]
-    assert [chart["id"] for chart in charts] == ["v1", "v2", "v3", "v4", "v5", "v6", "v7"]
-    assert all(chart["x"] == ["2024"] for chart in charts)
+    assert [chart["id"] for chart in charts] == [f"c{index}" for index in range(1, 12)]
+    assert all(chart["x"] == ["2023（比较列）", "2024"] for chart in charts)
+    assert all(series["unit"] for chart in charts for series in chart["series"])
 
 
 def test_anomalies_endpoint(settings, dashboard_session):

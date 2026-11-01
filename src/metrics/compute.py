@@ -56,6 +56,25 @@ def _suffix_account(label: str, schema: Schema):
     return None
 
 
+def _prefix_account(label: str, schema: Schema):
+    """跨行折行会把科目名截断，行上的数字本身是完整的。
+
+    例如「购建固定资产、无形资产和其他长」是标准科目名的前缀。仅当标签是
+    某个标准别名的前缀、长度 ≥ 别名的 60%，且只指向唯一科目时才采用，
+    避免把「营业利润」这类短名误挂到更长的近似科目上。
+    """
+    if len(label) < 6:
+        return None
+    codes = {
+        schema.alias_index[alias]
+        for alias in schema.alias_index
+        if len(alias) > len(label) and len(label) >= len(alias) * 0.6 and alias.startswith(label)
+    }
+    if len(codes) != 1:
+        return None
+    return schema.by_code.get(next(iter(codes)))
+
+
 def values_from_rows(
     rows_by_kind: Mapping[str, list[StatementRow]],
     schema: Schema | None = None,
@@ -70,11 +89,13 @@ def values_from_rows(
 
     for origin, rows in rows_by_kind.items():
         for row in rows:
-            label = NUMBERING.sub("", normalize_label(row.label))
+            label = re.sub(r"\s+", "", NUMBERING.sub("", normalize_label(row.label)))
             account = schema.resolve(label)
             exact = account is not None
             if account is None:
                 account = _suffix_account(label, schema)
+            if account is None:
+                account = _prefix_account(label, schema)
             if account is None:
                 continue
             # 跨表行（利润表页里的母公司资产负债表尾行）一律忽略，避免口径串表

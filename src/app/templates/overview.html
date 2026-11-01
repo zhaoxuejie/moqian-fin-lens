@@ -21,7 +21,7 @@
       <span>勾稽 {{ quality.passed }} 通过{% if quality.skipped %} · {{ quality.skipped }} 跳过{% endif %}{% if quality.failed %} · {{ quality.failed }} 失败{% endif %}</span>
       <span>未披露 {{ quality.undisclosed }}/{{ quality.total_rows }} 行</span>
       <span>异常 {{ quality.anomalies }} 项</span>
-      {% if quality.anomalies %}<a class="risk-link" href="/s/{{ session.session_id }}/charts?period={{ filing.period }}#anomaly">查看异常项 →</a>{% endif %}
+      {% if quality.anomalies %}<a class="risk-link" href="/s/{{ session.session_id }}/statements?period={{ filing.period }}#anomaly">查看异常项 →</a>{% endif %}
     </div>
   </section>
 
@@ -53,13 +53,13 @@
     <div class="section-hd"><h2>继续查看</h2><span>按维度进入对应页面</span></div>
     <div class="entry-grid">
       <a class="entry" href="/s/{{ session.session_id }}/statements?period={{ filing.period }}">
-        <b>单年报表</b><span>{{ filing.period }} 年原始三表，本期 / 上期对照，数字可溯源</span>
+        <b>单年报表</b><span>{{ filing.period }} 年原始三表与异常项明细，本期 / 上期对照，数字可溯源</span>
       </a>
       <a class="entry" href="/s/{{ session.session_id }}/compare?period={{ filing.period }}">
         <b>跨年对比</b><span>历年科目对比、增减额与同比</span>
       </a>
       <a class="entry" href="/s/{{ session.session_id }}/charts?period={{ filing.period }}">
-        <b>图表与异常</b><span>7 组财务图表 + 异常项明细</span>
+        <b>财务视图</b><span>11 组多年趋势图表，体量、增速与结构一屏看完</span>
       </a>
     </div>
   </section>

@@ -59,6 +59,34 @@ def test_values_from_rows_maps_labels_to_codes():
     assert values["balance"]["total_assets"]["previous"] == D("1800")
 
 
+def test_truncated_label_with_wrapped_suffix_is_mapped():
+    rows = {
+        "income": [_row("五、净利润（净亏损以“－”号填", "100", "80")],
+        "balance": [],
+        "cashflow": [_row("购建固定资产、无形资产和其他长", "40", "30")],
+    }
+    values = values_from_rows(rows)
+    assert values["income"]["net_profit"]["current"] == D("100")
+    assert values["cashflow"]["capex_paid"]["previous"] == D("30")
+
+
+def test_wrapped_label_with_newline_is_mapped():
+    rows = {
+        "income": [_row("五、净利润（净亏损以“－”号填\n列）", "100", "80")],
+        "balance": [],
+        "cashflow": [_row("购建固定资产、无形资产和其他长\n期资产支付的现金", "40", "30")],
+    }
+    values = values_from_rows(rows)
+    assert values["income"]["net_profit"]["current"] == D("100")
+    assert values["cashflow"]["capex_paid"]["current"] == D("40")
+
+
+def test_short_or_ambiguous_prefix_is_not_mapped():
+    rows = {"income": [_row("营业利", "100")], "balance": [], "cashflow": []}
+    values = values_from_rows(rows)
+    assert "operating_profit" not in values.get("income", {})
+
+
 def test_metrics_compute_expected_values():
     values = values_from_rows(_full_values())
     results = {item.code: item for item in compute_metrics(values)}

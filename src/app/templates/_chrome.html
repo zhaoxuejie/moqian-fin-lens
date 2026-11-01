@@ -5,7 +5,7 @@
       <a href="/s/{{ session.session_id }}" class="{{ 'on' if current_page == 'overview' else '' }}">概览</a>
       <a href="/s/{{ session.session_id }}/statements?period={{ filing.period }}" class="{{ 'on' if current_page == 'statements' else '' }}">单年报表</a>
       <a href="/s/{{ session.session_id }}/compare?period={{ filing.period }}" class="{{ 'on' if current_page == 'compare' else '' }}">跨年对比</a>
-      <a href="/s/{{ session.session_id }}/charts?period={{ filing.period }}" class="{{ 'on' if current_page == 'charts' else '' }}">图表异常</a>
+      <a href="/s/{{ session.session_id }}/charts?period={{ filing.period }}" class="{{ 'on' if current_page == 'charts' else '' }}">财务视图</a>
     </nav>
     <div class="spacer"></div>
     <button class="icon-btn" id="export-md" data-tip="导出 Markdown" aria-label="导出 Markdown">

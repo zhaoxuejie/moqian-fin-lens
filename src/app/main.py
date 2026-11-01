@@ -21,7 +21,8 @@ from core.context import request_id_var
 from core.errors import AppError, ErrorCode, http_status
 from core.logging import get_logger, log_event, setup_logging
 from core.response import fail, ok
-from dashboard.build import build_anomaly_payload, build_charts, build_charts_multi, session_yoy
+from dashboard.build import build_anomaly_payload, session_yoy
+from dashboard.charts import build_chart_set, group_charts
 from dashboard.compare import build_comparison
 from dashboard.summary import build_summary, data_quality
 from dashboard.session import SessionData, append_filing, build_filing, company_key, filter_rows_by_statement
@@ -173,9 +174,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/s/{session_id}/charts")
     async def charts_page(request: Request, session_id: str, period: str | None = None):
-        return templates.TemplateResponse(
-            request=request, name="charts.html", context=_page_context(session_id, period, "charts")
-        )
+        context = _page_context(session_id, period, "charts")
+        context["charts"] = build_chart_set(context["session"].filings)
+        context["chart_groups"] = group_charts(context["charts"])
+        return templates.TemplateResponse(request=request, name="charts.html", context=context)
 
     @app.get("/api/v1/sessions/{session_id}")
     async def session_detail(session_id: str):
@@ -267,13 +269,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.get("/api/v1/sessions/{session_id}/charts")
     async def charts_api(session_id: str):
         session = _session(session_id)
-        filing = session.latest
-        charts = (
-            build_charts_multi(session.filings)
-            if len(session.filings) > 1
-            else build_charts(filing.values, filing.metrics_by_code, session.periods)
-        )
-        return ok({"charts": charts})
+        return ok({"charts": build_chart_set(session.filings)})
 
     @app.get("/api/v1/sessions/{session_id}/anomalies")
     async def anomalies_api(session_id: str):

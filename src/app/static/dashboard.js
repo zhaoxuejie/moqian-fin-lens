@@ -12,11 +12,17 @@
     });
   });
 
-  const CIRCLED = { v1: "①", v2: "②", v3: "③", v4: "④", v5: "⑤", v6: "⑥", v7: "⑦" };
+  const CIRCLED = ["①", "②", "③", "④", "⑤", "⑥", "⑦", "⑧", "⑨", "⑩", "⑪"];
+  const SIGN_UP = "#b91c1c";
+  const SIGN_DOWN = "#15803d";
+  const SIGN_NEUTRAL = "#94a3b8";
+  const PALETTE = ["#9d3b40", "#b8863b", "#4c6f91", "#8d5a86", "#6b5b95", "#a8644a"];
 
   function unitLabel(unit) {
     if (!unit) return "";
-    return unit === "元" ? "亿元" : unit;
+    if (unit === "元") return "元（自动换算亿/万）";
+    if (unit === "次") return "次/年";
+    return unit;
   }
 
   function axisFormatter(unit) {
@@ -28,9 +34,23 @@
         return value;
       };
     }
-    if (unit === "%") return function (value) { return value + "%"; };
-    if (unit === "倍") return function (value) { return Number(value).toFixed(1); };
+    if (unit === "%") return function (value) { return Number(value).toFixed(0) + "%"; };
+    if (unit === "倍" || unit === "次") return function (value) { return Number(value).toFixed(1); };
     return null;
+  }
+
+  function tooltipValue(value, unit) {
+    if (value === null || value === undefined) return "—";
+    if (unit === "元") {
+      const abs = Math.abs(value);
+      if (abs >= 100000000) return (value / 100000000).toLocaleString("zh-CN", { maximumFractionDigits: 2 }) + " 亿元";
+      if (abs >= 10000) return (value / 10000).toLocaleString("zh-CN", { maximumFractionDigits: 2 }) + " 万元";
+      return Number(value).toLocaleString("zh-CN", { maximumFractionDigits: 2 }) + " 元";
+    }
+    if (unit === "%") return Number(value).toFixed(2) + "%";
+    if (unit === "倍") return Number(value).toFixed(2) + " 倍";
+    if (unit === "次") return Number(value).toFixed(2) + " 次";
+    return String(value);
   }
 
   function allMissing(series) {
@@ -39,80 +59,154 @@
     });
   }
 
-  function renderChart(chart) {
+  function renderChart(chart, index) {
     const el = document.getElementById("chart-" + chart.id);
     const title = document.getElementById("title-" + chart.id);
     const sub = document.getElementById("sub-" + chart.id);
     const meta = document.getElementById("meta-" + chart.id);
     if (!el) return;
-    const circle = CIRCLED[chart.id] || String(chart.id).toUpperCase();
-    if (title) title.textContent = circle + " " + chart.title;
-    if (sub && chart.meta && chart.meta.caliber) {
-      sub.textContent = chart.meta.caliber + (chart.unit ? " · 单位：" + unitLabel(chart.unit) : "");
+
+    if (title) title.textContent = (CIRCLED[index] || String(index + 1)) + " " + chart.title;
+
+    const allSeries = chart.series || [];
+    const units = [];
+    allSeries.forEach(function (item) {
+      if (item.unit && units.indexOf(item.unit) < 0) units.push(item.unit);
+    });
+    if (sub) {
+      sub.textContent = ((chart.meta && chart.meta.caliber) || "") +
+        (units.length ? " · 单位：" + units.map(unitLabel).join("、") : "");
     }
 
-    const missing = (chart.meta && chart.meta.missing) || [];
     if (meta) {
-      if (missing.length) {
-        meta.textContent = "数据不足：" + missing.join("、");
-        meta.classList.add("warn");
-      } else {
-        meta.textContent = "";
-      }
+      const missing = (chart.meta && chart.meta.missing) || [];
+      const note = (chart.meta && chart.meta.note) || "";
+      meta.textContent = [missing.length ? "数据不足：" + missing.join("、") : "", note].filter(Boolean).join("；");
+      meta.classList.toggle("warn", missing.length > 0);
     }
 
-    if (allMissing(chart.series || [])) {
+    if (allMissing(allSeries)) {
       el.innerHTML = '<div style="height:100%;display:grid;place-items:center;color:#9ca3af;font-size:12px">数据不足，暂不绘图</div>';
       return;
     }
 
     const chartInstance = echarts.init(el);
-    const formatter = axisFormatter(chart.unit);
-    const hasDual = (chart.series || []).some(function (item) { return item.yAxisIndex === 1; });
-    const series = (chart.series || []).map(function (item) {
-      const copy = Object.assign({}, item);
-      copy.type = item.type || "line";
+    const axisIndexes = [];
+    allSeries.forEach(function (item) {
+      const axis = item.yAxisIndex || 0;
+      if (axisIndexes.indexOf(axis) < 0) axisIndexes.push(axis);
+    });
+    axisIndexes.sort();
+
+    const axisUnits = {};
+    allSeries.forEach(function (item) {
+      const axis = item.yAxisIndex || 0;
+      axisUnits[axis] = axisUnits[axis] || [];
+      if (item.unit && axisUnits[axis].indexOf(item.unit) < 0) axisUnits[axis].push(item.unit);
+    });
+
+    const axisValues = {};
+    allSeries.forEach(function (item) {
+      const axis = item.yAxisIndex || 0;
+      axisValues[axis] = axisValues[axis] || [];
+      (item.data || []).forEach(function (value) {
+        if (value !== null && value !== undefined) axisValues[axis].push(Number(value));
+      });
+    });
+
+    const yAxis = axisIndexes.map(function (axis, order) {
+      const perUnit = axisUnits[axis] || [];
+      const formatter = perUnit.length === 1
+        ? axisFormatter(perUnit[0])
+        : function (value) { return Number(value).toFixed(1); };
+      const values = axisValues[axis] || [];
+      const dataMax = values.length ? Math.max.apply(null, values) : null;
+      const lineMax = values.length
+        ? Math.max.apply(null, allSeries.filter(function (item) {
+            return (item.yAxisIndex || 0) === axis && item.markLine && item.markLine.value !== undefined && item.markLine.value !== null;
+          }).map(function (item) { return Number(item.markLine.value); }))
+        : null;
+      const needsExtension = dataMax !== null && lineMax !== null && lineMax > dataMax;
+      return {
+        type: "value",
+        max: needsExtension ? lineMax * 1.05 : undefined,
+        axisLabel: { formatter: formatter || undefined, color: "#9ca3af", fontSize: 10 },
+        splitLine: order === 0 ? { lineStyle: { color: "#f1f3f5" } } : { show: false },
+      };
+    });
+
+    const series = allSeries.map(function (item) {
+      const copy = {
+        name: item.name,
+        type: item.type || "line",
+        data: item.data,
+        yAxisIndex: item.yAxisIndex || 0,
+      };
+      if (item.sign_colors) {
+        copy.color = SIGN_NEUTRAL;
+        copy.itemStyle = {
+          color: function (params) { return (params.value || 0) >= 0 ? SIGN_UP : SIGN_DOWN; },
+        };
+      }
+      if (item.markLine && item.markLine.value !== undefined && item.markLine.value !== null) {
+        copy.markLine = {
+          symbol: "none",
+          silent: true,
+          data: [{
+            yAxis: item.markLine.value,
+            label: {
+              formatter: item.markLine.label || String(item.markLine.value),
+              color: "#b45309",
+              fontSize: 10,
+              position: "insideEndTop",
+            },
+            lineStyle: { color: "#d97706", type: "dashed", width: 1 },
+          }],
+        };
+      }
       return copy;
     });
 
     chartInstance.setOption({
+      color: PALETTE,
       tooltip: {
         trigger: "axis",
-        valueFormatter: formatter ? function (value) { return formatter(value); } : undefined,
+        formatter: function (params) {
+          const list = params || [];
+          if (!list.length) return "";
+          let html = list[0].axisValue + "<br/>";
+          list.forEach(function (param) {
+            const unit = (allSeries[param.seriesIndex] || {}).unit || "";
+            html += param.marker + param.seriesName + "：" + tooltipValue(param.value, unit) + "<br/>";
+          });
+          return html;
+        },
       },
-      legend: { top: 0, right: 0, textStyle: { fontSize: 11 } },
-      grid: { left: 8, right: 12, top: 34, bottom: 4, containLabel: true },
+      legend: { top: 0, right: 0, textStyle: { fontSize: 11 }, itemWidth: 14, itemHeight: 8 },
+      grid: { left: 8, right: 12, top: 36, bottom: 4, containLabel: true },
       xAxis: { type: "category", data: chart.x, axisLabel: { color: "#6b7280", fontSize: 11 } },
-      yAxis: hasDual
-        ? [
-            {
-              type: "value",
-              axisLabel: { formatter: axisFormatter(chart.unit === "倍" ? "元" : chart.unit) || undefined },
-              splitLine: { lineStyle: { color: "#f1f3f5" } },
-            },
-            {
-              type: "value",
-              axisLabel: { formatter: axisFormatter(chart.unit === "倍" ? "倍" : chart.unit) || undefined },
-              splitLine: { show: false },
-            },
-          ]
-        : { type: "value", axisLabel: { formatter: formatter || undefined }, splitLine: { lineStyle: { color: "#f1f3f5" } } },
+      yAxis: yAxis,
       series: series,
     });
     window.addEventListener("resize", function () { chartInstance.resize(); });
   }
 
-  if (document.getElementById("chart-v1")) {
-  fetch("/api/v1/sessions/" + encodeURIComponent(sessionId) + "/charts")
-    .then(function (response) { return response.json(); })
-    .then(function (body) {
-      (body.data && body.data.charts ? body.data.charts : []).forEach(renderChart);
-    })
-    .catch(function () {
-      document.querySelectorAll(".chart").forEach(function (el) {
-        el.innerHTML = '<div style="height:100%;display:grid;place-items:center;color:#b91c1c;font-size:12px">图表加载失败</div>';
-      });
-    });
+  if (document.getElementById("charts")) {
+    const embedded = Array.isArray(window.__CHARTS__) ? window.__CHARTS__ : null;
+    if (embedded) {
+      embedded.forEach(renderChart);
+    } else {
+      fetch("/api/v1/sessions/" + encodeURIComponent(sessionId) + "/charts")
+        .then(function (response) { return response.json(); })
+        .then(function (body) {
+          ((body.data && body.data.charts) || []).forEach(renderChart);
+        })
+        .catch(function () {
+          document.querySelectorAll(".chart").forEach(function (el) {
+            el.innerHTML = '<div style="height:100%;display:grid;place-items:center;color:#b91c1c;font-size:12px">图表加载失败</div>';
+          });
+        });
+    }
   }
 
   let compareData = null;

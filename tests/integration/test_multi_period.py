@@ -61,8 +61,8 @@ def test_multi_period_upload_and_charts(tmp_path):
     assert detail["filing_count"] == 2
     assert [item["period"] for item in detail["filings"]] == ["2024", "2025"]
     assert charts[0]["x"] == ["2024", "2025"]
-    v4 = next(chart for chart in charts if chart["id"] == "v4")
-    assert any(value is not None for value in v4["series"][0]["data"])
+    growth = next(chart for chart in charts if chart["id"] == "c6")
+    assert any(value is not None for value in growth["series"][0]["data"])
     assert metrics["session_yoy"]
 
 

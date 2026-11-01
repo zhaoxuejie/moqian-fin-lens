@@ -105,7 +105,7 @@ def test_upload_and_parse_to_dashboard(tmp_path):
         page = client.get(f"/s/{session_id}")
         assert page.status_code == 200
         charts = client.get(f"/api/v1/sessions/{session_id}/charts").json()["data"]["charts"]
-        assert len(charts) == 7
+        assert len(charts) == 11
         run_log = tmp_path / "logs" / "runs.jsonl"
         assert run_log.exists()
         assert json.loads(run_log.read_text(encoding="utf-8").splitlines()[-1])["ok"] is True
@@ -163,9 +163,9 @@ def test_dashboard_pages_render(settings, dashboard_session):
     app.state.sessions[dashboard_session.session_id] = dashboard_session
     pages = [
         ("/s/s_test", "本期结论"),
-        ("/s/s_test/statements", "原始解析数"),
+        ("/s/s_test/statements", "异常项高亮"),
         ("/s/s_test/compare", "跨年对比台"),
-        ("/s/s_test/charts", "异常项高亮"),
+        ("/s/s_test/charts", "财务视图"),
     ]
     with TestClient(app) as client:
         for path, marker in pages:
