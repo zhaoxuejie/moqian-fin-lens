@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import sqlite3
+import time
+
 import time
 from pathlib import Path
 
@@ -16,6 +19,21 @@ class SessionRepository:
 
     def save(self, session: SessionData) -> None:
         with self.db.write_lock:
+            self._save_locked(session)
+
+    def _save_locked(self, session: SessionData) -> None:
+        last_error: Exception | None = None
+        for attempt in range(3):
+            try:
+                self._save_once(session)
+                return
+            except sqlite3.OperationalError as exc:
+                last_error = exc
+                self.db.reset_thread_connection()
+                time.sleep(0.2 * (attempt + 1))
+        raise last_error  # type: ignore[misc]
+
+    def _save_once(self, session: SessionData) -> None:
             conn = self.db.conn
             conn.execute(
                 "INSERT INTO session (id, company_name, stock_code, status, created_at) VALUES (?, ?, ?, ?, ?)"

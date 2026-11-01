@@ -20,7 +20,8 @@ class Database:
     """
 
     def __init__(self, path: str | Path) -> None:
-        self.path = str(path)
+        raw = str(path)
+        self.path = raw if raw == ":memory:" else str(Path(raw).resolve())
         if self.path != ":memory:":
             Path(self.path).parent.mkdir(parents=True, exist_ok=True)
         self._local = threading.local()
@@ -76,6 +77,15 @@ class Database:
     def schema_versions(self) -> list[int]:
         rows = self._main.execute("SELECT version FROM schema_version ORDER BY version").fetchall()
         return [row["version"] for row in rows]
+
+    def reset_thread_connection(self) -> None:
+        conn = getattr(self._local, "conn", None)
+        if conn is not None:
+            try:
+                conn.close()
+            except Exception:
+                pass
+            self._local.conn = None
 
     def close(self) -> None:
         self._closed = True
