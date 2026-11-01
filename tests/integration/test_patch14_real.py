@@ -40,3 +40,15 @@ def test_statements_keep_consolidated_only():
     assert "负债和所有者权益总计" in balance_labels or "负债和所有者权益（或股东权益）总计" in balance_labels
     assert income_labels[-1].startswith("（二）稀释每股收益")
     assert any("六、其他综合收益的税后净额" in label for label in income_labels)
+
+def test_first_balance_row_recovered():
+    from dashboard.session import build_filing, filter_rows_by_statement
+
+    filing = build_filing(_pdf("002230_科大讯飞", "2024"), "2024")
+    rows = filter_rows_by_statement(filing.rows)["balance"]
+
+    head = rows[0]
+    assert head.label == "货币资金"
+    assert head.page == 114
+    assert head.cells[0].raw == "3,387,380,425.36"
+    assert head.cells[1].raw == "3,562,635,256.73"

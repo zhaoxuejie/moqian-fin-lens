@@ -214,6 +214,68 @@ def _extract_company_info(pages: list[str]) -> dict[str, str]:
     return info
 
 
+FIRST_ROW_ANCHORS = {
+    "balance": ("货币资金",),
+    "income": ("营业总收入", "营业收入"),
+    "cashflow": ("销售商品",),
+}
+ROW_LINE = re.compile(
+    r"^(?P<label>[^\d]{2,40}?)\s+(?P<current>\(?-?[\d,]+(?:\.\d{2})?\)?)\s+"
+    r"(?P<previous>\(?-?[\d,]+(?:\.\d{2})?\)?)\s*$"
+)
+
+
+def _recover_first_rows(rows: dict[str, list[StatementRow]], pages: list[str], ranges: dict[str, tuple[int, int]]) -> dict[str, list[StatementRow]]:
+    """报表首行被并进表头时，用起始页文本把锚点科目补回第一行。"""
+    for kind, (start, _end) in ranges.items():
+        items = rows.get(kind, [])
+        anchors = FIRST_ROW_ANCHORS.get(kind, ())
+        if not items or not anchors:
+            continue
+        first_page = min(row.page for row in items)
+        if any(
+            anchor in row.label
+            for row in items
+            if row.page <= first_page + 1
+            for anchor in anchors
+        ):
+            continue
+        for page_number in (start, start + 1):
+            if page_number < 1 or page_number > len(pages):
+                continue
+            for line in pages[page_number - 1].splitlines():
+                flat = " ".join(line.split())
+                match = ROW_LINE.match(flat)
+                if not match or not any(anchor in match.group("label") for anchor in anchors):
+                    continue
+                try:
+                    current = normalize(match.group("current")).value
+                    previous = normalize(match.group("previous")).value
+                except Exception:
+                    continue
+                if current is None:
+                    continue
+                cells = [CellValue(match.group("current"), current, "current", page_number, (0.0, 0.0, 0.0, 0.0))]
+                if previous is not None:
+                    cells.append(CellValue(match.group("previous"), previous, "previous", page_number, (0.0, 0.0, 0.0, 0.0)))
+                items.insert(
+                    0,
+                    StatementRow(
+                        label=match.group("label").strip(),
+                        page=page_number,
+                        snippet=flat[:200],
+                        cells=tuple(cells),
+                        is_missing=False,
+                    ),
+                )
+                rows[kind] = items
+                break
+            else:
+                continue
+            break
+    return rows
+
+
 CASH_LINE = re.compile(r"^货币资金\s+(?P<current>\(?-?[\d,]+\.\d{2}\)?)\s+(?P<previous>\(?-?[\d,]+\.\d{2}\)?)")
 
 
@@ -286,6 +348,7 @@ def build_filing(pdf_path: str | Path, period: str, filing_id: str = "f_01") -> 
 
     rows = extract_statement_rows(path, ranges)
     rows = _add_deducted_fallback(rows, pages)
+    rows = _recover_first_rows(rows, pages, ranges)
     values = values_from_rows(rows)
     metrics = compute_metrics(values)
     checks = check_statements(values)
