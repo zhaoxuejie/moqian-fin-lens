@@ -30,7 +30,7 @@
 | TASK-011 | 多期会话与同比 | v1.0 | TASK-010 | P0 | ✅ done | [task-011-multi-period-sessions.md](task-011-multi-period-sessions.md) |
 | TASK-012 | 会话落库与原件生命周期 | v1.0 | TASK-010 | P0 | ✅ done | [task-012-session-persistence.md](task-012-session-persistence.md) |
 | TASK-013 | 部署与可观测 | v1.0 | TASK-012 | P1 | ✅ done | [task-013-deployment-and-observability.md](task-013-deployment-and-observability.md) |
-| TASK-014 | 指标与提取缺口修补（PATCH） | v1.0 | TASK-011 | P1 | ⬜ todo | [task-014-metric-extraction-gaps.md](task-014-metric-extraction-gaps.md) |
+| TASK-014 | 指标与提取缺口修补（PATCH） | v1.0 | TASK-011 | P1 | ✅ done | [task-014-metric-extraction-gaps.md](task-014-metric-extraction-gaps.md) |
 
 ## 规则
 1. 任务存储模式：**一个任务单独一个文件**，不把多个任务混在同一个文件。

@@ -132,7 +132,9 @@ accounts:
   - code: net_profit_deducted
     label: 扣除非经常性损益后的净利润
     statement: income
-    aliases: [扣除非经常性损益后的净利润, 扣除非经常性损益的净利润]
+    aliases: [扣除非经常性损益后的净利润, 扣除非经常性损益的净利润,
+              归属于上市公司股东的扣除非经常性损益的净利润,
+              归属于上市公司股东的扣除非经常性损益后的净利润]
     required: true
   - code: basic_eps
     label: 基本每股收益

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -7,7 +9,8 @@ from pathlib import Path
 from anomaly.rules import AnomalyItem, detect
 from metrics import MetricResult, check_statements, compute_metrics, values_from_rows
 from parse import PdfDoc, locate_statements
-from parse.table import StatementRow, extract_statement_rows
+from parse.normalize import normalize
+from parse.table import CellValue, StatementRow, extract_statement_rows
 
 
 @dataclass
@@ -63,6 +66,54 @@ def filter_rows_by_statement(rows_by_kind: dict[str, list[StatementRow]]) -> dic
     return filtered
 
 
+DEDUCTED_LABEL = "扣除非经常性损益"
+DEDUCTED_AMOUNT = re.compile(r"\(?-?[\d,]+\.\d{2}\)?")
+
+
+def _add_deducted_fallback(rows: dict[str, list[StatementRow]], pages: list[str]) -> dict[str, list[StatementRow]]:
+    """扣非净利润通常披露在「主要财务指标」而非三表页，缺省时全文兜底抓取一次。
+
+    A 股年报的写法是「归属于上市公司股东的扣除非经常性损益的净利润」，
+    且标签常被 PDF 拆成多段，因此在扁平化文本上定位标签，再取其后前两个金额。
+    """
+    if any("扣除非经常性损益" in row.label for row in rows.get("income", [])):
+        return rows
+    for index, text in enumerate(pages, start=1):
+        flat = re.sub(r"\s+", "", text)
+        position = flat.find(DEDUCTED_LABEL)
+        if position == -1:
+            continue
+        window = flat[position:position + 160]
+        label_end = window.find("净利润")
+        if label_end == -1:
+            continue
+        tail = window[label_end + len("净利润"):]
+        amounts = DEDUCTED_AMOUNT.findall(tail)
+        if len(amounts) < 2:
+            continue
+        try:
+            current = normalize(amounts[0]).value
+            previous = normalize(amounts[1]).value
+        except Exception:
+            continue
+        if current is None:
+            continue
+        cells = [CellValue(amounts[0], current, "current", index, (0.0, 0.0, 0.0, 0.0))]
+        if previous is not None:
+            cells.append(CellValue(amounts[1], previous, "previous", index, (0.0, 0.0, 0.0, 0.0)))
+        rows.setdefault("income", []).append(
+            StatementRow(
+                label="归属于上市公司股东的扣除非经常性损益的净利润",
+                page=index,
+                snippet=window[:200],
+                cells=tuple(cells),
+                is_missing=False,
+            )
+        )
+        return rows
+    return rows
+
+
 def build_filing(pdf_path: str | Path, period: str, filing_id: str = "f_01") -> FilingData:
     """把一份财报 PDF 变成看板需要的数据（定位 → 表格 → 指标 → 勾稽 → 异常）。"""
     path = str(pdf_path)
@@ -88,6 +139,7 @@ def build_filing(pdf_path: str | Path, period: str, filing_id: str = "f_01") -> 
     }
 
     rows = extract_statement_rows(path, ranges)
+    rows = _add_deducted_fallback(rows, pages)
     values = values_from_rows(rows)
     metrics = compute_metrics(values)
     checks = check_statements(values)

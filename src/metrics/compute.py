@@ -91,9 +91,9 @@ def values_from_rows(
 
     values: dict[str, dict[str, dict[str, Decimal]]] = {}
     for (statement, code), items in entries.items():
-        exact_items = [periods for is_exact, periods in items if is_exact]
         merged: dict[str, Decimal] = {}
-        for periods in exact_items or [periods for _, periods in items]:
+        # 按行出现顺序取值：合并报表在三表页里先出现，母公司报表在后
+        for _exact, periods in items:
             for period, value in periods.items():
                 merged.setdefault(period, value)
         values.setdefault(statement, {})[code] = merged

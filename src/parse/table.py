@@ -390,5 +390,25 @@ def extract_statement_rows(
                     for item in pdf.pages[page_number - 1].extract_words()
                 ]
                 rows = build_rows(words, start)
-            result[kind] = rows
+            result[kind] = _merge_cross_page_rows(rows)
     return result
+
+
+def _merge_cross_page_rows(rows: list[StatementRow]) -> list[StatementRow]:
+    """跨页断行：上一行只有科目名、下一行只有数字时合并为一行。"""
+    merged: list[StatementRow] = []
+    for row in rows:
+        if row.cells and not row.label and merged and not merged[-1].cells and merged[-1].label:
+            previous = merged.pop()
+            merged.append(
+                StatementRow(
+                    label=previous.label,
+                    page=previous.page,
+                    snippet=(previous.snippet + " " + row.snippet)[:200],
+                    cells=row.cells,
+                    is_missing=row.is_missing,
+                )
+            )
+            continue
+        merged.append(row)
+    return merged
