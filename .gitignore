@@ -39,3 +39,6 @@ Thumbs.db
 
 # 临时文件
 *.bak
+tmp*/
+tmp-*.log
+.coverage*
