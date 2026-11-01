@@ -98,7 +98,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 | 方法 | 路径 | 说明 |
 | ---- | ---- | ---- |
 | GET | `/` | 首页：上传区 + 使用说明 + 免责声明 |
-| GET | `/s/{session_id}` | 看板页：基础信息、指标卡、三表、10 组图表、异常项、导出入口 |
+| GET | `/s/{session_id}` | 看板页：基础信息、指标卡、三表、11 组图表、异常项、导出入口 |
 | GET | `/s/{session_id}?tab=statements` | 直接定位到三表 Tab（其余 tab：`charts`、`anomaly`） |
 | GET | `/s/{session_id}/export/{export_id}` | 下载已生成的导出文件（下载即失效策略见 4.8） |
 
@@ -308,7 +308,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 状态：stable
 版本：v1
 
-响应示例（截取 c1、c6）：
+响应示例（截取 c2、c7）：
 
 ```json
 {
@@ -317,7 +317,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
   "data": {
     "charts": [
       {
-        "id": "c1",
+        "id": "c2",
         "group": "盈利与增长",
         "title": "扣非净利润与增速",
         "x": ["2023", "2024", "2025"],
@@ -332,7 +332,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
         }
       },
       {
-        "id": "c6",
+        "id": "c7",
         "group": "现金质量",
         "title": "经营现金流与自由现金流",
         "x": ["2023", "2024", "2025"],
@@ -351,7 +351,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 
 约定：
 
-- `id` 固定为 `c1`～`c10`，`group` 为 `盈利与增长` / `现金质量` / `风险与结构`，顺序即页面顺序；异常项走独立接口（卡片形态）。
+- `id` 固定为 `c1`～`c11`，`group` 为 `盈利与增长` / `现金质量` / `风险与结构`，顺序即页面顺序；异常项走独立接口（卡片形态）。
 - `series[].unit` 必填，枚举 `元` / `%` / `倍` / `次`；同一图内不同单位必须以 `yAxisIndex` 分轴，不得共用一根轴。
 - `sign_colors: true` 的柱状系列按数值正负着色（正值品牌红、负值绿色）。
 - `series[].markLine` 用于参考线（ROE 15%、资产负债率 60%、现金含量 1.0），`value` 为参考值，`label` 为展示文案。
@@ -521,7 +521,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 | `metrics.compute(filing, series)` | 计算 20 项指标 | `list[Metric]` |
 | `metrics.check_balance(statements)` | 三表勾稽 | `CheckResult` |
 | `anomaly.detect(series, metrics)` | 命中异常 | `list[AnomalyItem]` |
-| `dashboard.charts.build_chart_set(filings)` | 装配 10 组图表 | `list[ChartPayload]` |
+| `dashboard.charts.build_chart_set(filings)` | 装配 11 组图表 | `list[ChartPayload]` |
 | `export.render_markdown(session)` | 渲染 md | `bytes` |
 | `export.render_xlsx(session)` | 渲染 xlsx | `bytes` |
 
@@ -533,6 +533,7 @@ v1.0 无账号体系，采用**匿名会话 Cookie**：
 | ---- | ---- | ---- | ---- |
 | — | 初版契约 | v0.1.0 | ADR-001 ～ ADR-007 |
 | 接口 6 图表数据 | id 由 `v1`～`v7` 改为 `c1`～`c10`；新增 `group`、`series.unit`、`sign_colors`；单期会话横轴改为「比较列 + 当期」两点 | v0.3.1 | — |
+| 接口 6 图表数据 | 新增 `c1`「营业总收入与增速」，其余图表 id 顺延为 `c2`～`c11` | v0.3.1 | ADR-009 |
 
 ## 废弃与迁移指引
 
