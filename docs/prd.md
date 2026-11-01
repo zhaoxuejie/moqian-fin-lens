@@ -1,4 +1,4 @@
-# 财报透视（finance-agent）PRD
+# 财报透视（moqian-fin-lens）PRD
 当前版本：v0.3.1（图表重构）
 里程碑：v1.0
 文档状态：confirmed（2026-10-31 用户确认；0.2 节 Q1～Q4 按默认执行）

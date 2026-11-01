@@ -1,4 +1,4 @@
-# 财报透视（finance-agent）接口契约
+# 财报透视（moqian-fin-lens）接口契约
 当前版本：v0.1.0（草案）
 关联 PRD：`docs/prd.md` v0.2.0（confirmed）
 关联架构：`docs/architecture.md` v0.1.0

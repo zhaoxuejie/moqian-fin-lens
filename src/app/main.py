@@ -57,7 +57,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         migrations_applied=applied,
     )
 
-    app = FastAPI(title="财报透视（finance-agent）", version="0.1.0")
+    app = FastAPI(title="财报透视（moqian-fin-lens）", version="0.1.0")
     app.state.settings = settings
     app.state.db = db
     app.state.export_dir = Path(settings.data_dir) / "exports"
@@ -596,7 +596,7 @@ def _bootstrap() -> FastAPI:
         return create_app()
     except ConfigError as exc:
         fields = ", ".join(exc.fields)
-        print(f"[finance-agent] startup failed: missing or invalid config: {fields}", file=sys.stderr)
+        print(f"[moqian-fin-lens] startup failed: missing or invalid config: {fields}", file=sys.stderr)
         raise SystemExit(2) from exc
 
 

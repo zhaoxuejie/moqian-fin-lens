@@ -1,4 +1,4 @@
-# 财报透视（finance-agent）架构文档
+# 财报透视（moqian-fin-lens）架构文档
 当前版本：v0.1.0（草案）
 关联 PRD：`docs/prd.md` v0.2.0（confirmed）
 文档状态：draft，待评审

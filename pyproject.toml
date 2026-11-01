@@ -3,10 +3,25 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "finance-agent"
+name = "moqian-fin-lens"
 version = "0.3.0"
-description = "A 股财报解析与可核对财务视图"
+description = "A-share financial report parser: extract core metrics and visualize fundamentals."
+readme = "README.md"
 requires-python = ">=3.11"
+keywords = [
+  "financial-analysis",
+  "stock-analysis",
+  "a-share",
+  "financial-report",
+  "pdf-parser",
+  "data-visualization",
+  "fundamental-analysis",
+]
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Office/Business :: Financial",
+]
 dependencies = [
   "fastapi>=0.110",
   "uvicorn>=0.29",
