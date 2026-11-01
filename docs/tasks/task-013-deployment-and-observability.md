@@ -4,7 +4,7 @@
 - 里程碑：v1.0
 - 前置依赖：TASK-012
 - 优先级：P1
-- 状态：⬜ todo
+- 状态：✅ done（2026-10-31 验收通过）
 - 来源：`docs/prd.md` 5.5 可观测、5.2 并发；`docs/architecture.md` ADR-007
 - 关联文档：`Dockerfile`、`docker-compose.yml`（TASK-001 已写，未实际构建）
 
@@ -47,3 +47,24 @@
 
 - 本机 Docker 守护进程曾在 TASK-001 时未启动；若仍不可用，需先在宿主机启动 Docker Desktop，评测记录中注明环境限制。
 - 单实例部署（ADR-007）不变，多实例扩展不在本卡。
+
+## 评测结果（2026-10-31）
+
+| 项 | 结果 |
+| ---- | ---- |
+| 镜像构建 | 102 秒构建成功（本机 Docker 29.7.2，构建时注入国内 pip 源） |
+| 容器冒烟 | `docker run` 与 `docker compose up` 均返回 healthz 200 |
+| 配置校验 | 缺 DATABASE_PATH 时容器退出码 2，并打印缺失字段名 |
+| 运行摘要 | 每次解析写入 `data/logs/runs.jsonl`（页数/耗时/勾稽/失败原因），超过 5MB 轮转 |
+| 告警 | 10 次解析后成功率低于 90% 打印 `parse_success_rate_low`；逻辑由单测覆盖 |
+| 发布脚本 | 容器内 `bash -n` 语法通过；`--dry-run` 输出四条命令且不改仓库 |
+| 修复的打包缺陷 | accounts.yaml 与 templates/static 未打进 wheel，导致容器启动即崩（已在 package-data 声明） |
+| 测试 | 212 项通过，覆盖率 92.70% |
+
+待确认：告警的「真实触发」未构造（需要累计 10 次解析失败样本），目前只有单测覆盖判定逻辑。
+
+## 验收记录
+
+| 时间 | 结论 | 证据 |
+| ---- | ---- | ---- |
+| 2026-10-31 | pass | 镜像 102 秒构建；run 与 compose 冒烟 healthz 200；缺配置退出码 2；dry-run 通过；212 项测试；用户确认通过 |

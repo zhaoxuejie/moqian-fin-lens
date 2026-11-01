@@ -91,3 +91,16 @@ def test_lazy_app_attribute_builds_asgi_app(monkeypatch, tmp_path):
 def test_unknown_attribute_raises():
     with pytest.raises(AttributeError):
         main_module.__getattr__("nope")
+
+def test_healthz_reports_database_failure(settings):
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    app = create_app(settings)
+    app.state.db.close()
+    with TestClient(app) as client:
+        response = client.get("/healthz")
+
+    assert response.status_code == 503
+    assert response.json()["db"] == "error"

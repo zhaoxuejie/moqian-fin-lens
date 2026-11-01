@@ -25,6 +25,7 @@ from dashboard.session import SessionData, append_filing, build_filing, company_
 from export.markdown import write_markdown
 from export.xlsx import render_xlsx
 from jobs.manager import Job, JobManager, RateLimiter
+from ops.runlog import append_run, should_alert
 from parse import PdfDoc
 from traceability.service import trace_entry
 from store.db import Database
@@ -66,6 +67,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.exports = {}
     app.state.jobs = JobManager(max_workers=5)
     app.state.limiter = RateLimiter(limit=10, window_seconds=3600)
+    app.state.log_path = Path(settings.data_dir) / "logs" / "runs.jsonl"
+    app.state.parse_stats = {"total": 0, "failed": 0}
 
     app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
@@ -104,7 +107,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     @app.get("/healthz")
-    async def healthz() -> dict[str, str]:
+    async def healthz():
+        try:
+            db.conn.execute("SELECT 1").fetchone()
+        except Exception:
+            return JSONResponse(
+                status_code=503,
+                content={"status": "degraded", "db": "error"},
+            )
         return {"status": "ok"}
 
     @app.get("/")
@@ -317,6 +327,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         job = Job(job_id=job_id, filing_id="f_01", session_id=session_id)
         position = app.state.jobs.create(job)
 
+        started_at = time.perf_counter()
+
         def task(progress):
             progress("parsing", 0.15)
             filing = build_filing(temp_path, period, f"f_{uuid.uuid4().hex[:6]}")
@@ -337,8 +349,54 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             app.state.sessions[session.session_id] = session
             app.state.repo.save(session)
             temp_path.unlink(missing_ok=True)
+            stats = app.state.parse_stats
+            stats["total"] += 1
+            append_run(
+                app.state.log_path,
+                {
+                    "session_id": session.session_id,
+                    "period": filing.period,
+                    "pages": filing.pages,
+                    "duration_s": round(time.perf_counter() - started_at, 2),
+                    "checks": {check.status: 1 for check in filing.checks},
+                    "llm_calls": 0,
+                    "ok": True,
+                },
+            )
+            if should_alert(stats["total"], stats["failed"]):
+                log_event(
+                    logger,
+                    logging.WARNING,
+                    "parse_success_rate_low",
+                    total=stats["total"],
+                    failed=stats["failed"],
+                )
 
-        app.state.jobs.submit(job_id, task, on_success, lambda exc: None)
+        def on_error(exc: Exception) -> None:
+            stats = app.state.parse_stats
+            stats["total"] += 1
+            stats["failed"] += 1
+            append_run(
+                app.state.log_path,
+                {
+                    "session_id": session_id,
+                    "period": period,
+                    "pages": page_count,
+                    "duration_s": round(time.perf_counter() - started_at, 2),
+                    "ok": False,
+                    "error": str(exc)[:200],
+                },
+            )
+            if should_alert(stats["total"], stats["failed"]):
+                log_event(
+                    logger,
+                    logging.WARNING,
+                    "parse_success_rate_low",
+                    total=stats["total"],
+                    failed=stats["failed"],
+                )
+
+        app.state.jobs.submit(job_id, task, on_success, on_error)
 
         return JSONResponse(
             status_code=202,

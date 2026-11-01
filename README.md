@@ -38,7 +38,15 @@ pytest --cov                          # 覆盖率门槛 80%
 
 ```bash
 docker compose up --build
+docker compose exec app curl -s http://127.0.0.1:8000/healthz
 ```
+
+## 部署与可观测
+
+- 健康检查：`GET /healthz` 返回 `{"status":"ok"}` 并验证数据库可读；数据库异常时返回 503。
+- 运行摘要：每次解析追加一行 JSON 到 `data/logs/runs.jsonl`（页数、耗时、勾稽结论、失败原因），超过 5MB 自动轮转。
+- 告警口径：累计 10 次解析后，成功率低于 90% 会打印 `parse_success_rate_low` 警告日志。
+- 发布：`bash scripts/release.sh 1.0.0 --dry-run` 预览；去掉 `--dry-run` 会更新 CHANGELOG、提交并打 tag（不 push）。
 
 ## 目录概览
 

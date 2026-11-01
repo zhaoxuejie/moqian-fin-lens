@@ -1,3 +1,4 @@
+import json
 import time
 from pathlib import Path
 
@@ -105,6 +106,9 @@ def test_upload_and_parse_to_dashboard(tmp_path):
         assert page.status_code == 200
         charts = client.get(f"/api/v1/sessions/{session_id}/charts").json()["data"]["charts"]
         assert len(charts) == 7
+        run_log = tmp_path / "logs" / "runs.jsonl"
+        assert run_log.exists()
+        assert json.loads(run_log.read_text(encoding="utf-8").splitlines()[-1])["ok"] is True
 
 def test_upload_rate_limited_after_ten(tmp_path):
     with _client(tmp_path) as client:
