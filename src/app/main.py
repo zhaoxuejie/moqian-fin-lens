@@ -35,7 +35,7 @@ from store.db import Database
 from store.repo import SessionRepository, cleanup_temp_files
 
 BASE_DIR = Path(__file__).resolve().parent
-APP_VERSION = "0.3.1"
+APP_VERSION = "0.3.2"
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 

@@ -66,6 +66,7 @@
 
   <section class="section">
     <div class="section-hd"><h2>全部指标</h2><span>20 项指标，为控制首屏只列前 8 项</span></div>
+    <div class="card metric-card">
     <div class="metric-table">
       {% for item in metrics %}
       <div class="mrow">
@@ -74,6 +75,7 @@
         <button class="src" data-entry="metric:{{ item.code }}">溯源</button>
       </div>
       {% endfor %}
+    </div>
     </div>
   </section>
 
