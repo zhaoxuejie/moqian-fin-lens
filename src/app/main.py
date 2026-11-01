@@ -347,6 +347,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         def task(progress):
             progress("parsing", 0.15)
             filing = build_filing(temp_path, period, f"f_{uuid.uuid4().hex[:6]}")
+            filing.parsed_at = datetime.now().astimezone().isoformat(timespec="seconds")
             progress("computing", 0.8)
             return filing
 

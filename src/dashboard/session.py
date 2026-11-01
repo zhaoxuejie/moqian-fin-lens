@@ -25,6 +25,7 @@ class FilingData:
     anomalies: list[AnomalyItem]
     company_info: dict = field(default_factory=dict)
     page_texts: dict[int, str] = field(default_factory=dict)
+    parsed_at: str = ""
 
     @property
     def metrics_by_code(self) -> dict[str, MetricResult]:

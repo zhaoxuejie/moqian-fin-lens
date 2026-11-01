@@ -66,7 +66,7 @@
         <span>报告期 {{ filing.period }} 年</span>
         <span>全文 {{ filing.pages }} 页</span>
         <span>勾稽 {{ filing.checks|selectattr("status", "equalto", "passed")|list|length }} 通过{% if filing.checks|selectattr("status", "equalto", "skipped")|list %} · {{ filing.checks|selectattr("status", "equalto", "skipped")|list|length }} 跳过{% endif %}{% if filing.checks|selectattr("status", "equalto", "failed")|list %} · {{ filing.checks|selectattr("status", "equalto", "failed")|list|length }} 失败{% endif %}</span>
-        <span>解析于 {{ session.created_at[11:16] }}</span>
+        <span>解析于 {{ (filing.parsed_at or session.created_at)[11:16] }}</span>
         <span id="continue-status" class="muted"></span>
       </div>
     </section>
