@@ -23,6 +23,7 @@ from core.logging import get_logger, log_event, setup_logging
 from core.response import fail, ok
 from dashboard.build import build_anomaly_payload, build_charts, build_charts_multi, session_yoy
 from dashboard.compare import build_comparison
+from dashboard.summary import build_summary, data_quality
 from dashboard.session import SessionData, append_filing, build_filing, company_key, filter_rows_by_statement
 from export.markdown import write_markdown
 from export.xlsx import render_xlsx
@@ -34,7 +35,7 @@ from store.db import Database
 from store.repo import SessionRepository, cleanup_temp_files
 
 BASE_DIR = Path(__file__).resolve().parent
-APP_VERSION = "0.2.6"
+APP_VERSION = "0.3.0"
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
@@ -136,23 +137,44 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             raise AppError(ErrorCode.SESSION_NOT_FOUND, "会话不存在", {"session_id": session_id})
         return session
 
-    @app.get("/s/{session_id}")
-    async def dashboard(request: Request, session_id: str, period: str | None = None):
+    def _page_context(session_id: str, period: str | None, page: str) -> dict:
         session = _session(session_id)
         filing = next((item for item in session.filings if item.period == period), session.latest)
+        return {
+            "session": session,
+            "filing": filing,
+            "periods": session.periods,
+            "metrics": filing.metrics,
+            "anomalies": filing.anomalies,
+            "rows": filter_rows_by_statement(filing.rows),
+            "session_yoy": session_yoy(session.filings),
+            "asset_version": APP_VERSION,
+            "current_page": page,
+        }
+
+    @app.get("/s/{session_id}")
+    async def overview(request: Request, session_id: str, period: str | None = None):
+        context = _page_context(session_id, period, "overview")
+        context["summary"] = build_summary(context["filing"])
+        context["quality"] = data_quality(context["filing"])
+        return templates.TemplateResponse(request=request, name="overview.html", context=context)
+
+    @app.get("/s/{session_id}/statements")
+    async def statements_page(request: Request, session_id: str, period: str | None = None):
         return templates.TemplateResponse(
-            request=request,
-            name="dashboard.html",
-            context={
-                "session": session,
-                "filing": filing,
-                "metrics": filing.metrics,
-                "anomalies": filing.anomalies,
-                "rows": filter_rows_by_statement(filing.rows),
-                "periods": session.periods,
-                "session_yoy": session_yoy(session.filings),
-                "asset_version": APP_VERSION,
-            },
+            request=request, name="statements.html", context=_page_context(session_id, period, "statements")
+        )
+
+    @app.get("/s/{session_id}/compare")
+    async def compare_page(request: Request, session_id: str, period: str | None = None):
+        return templates.TemplateResponse(
+            request=request, name="compare.html", context=_page_context(session_id, period, "compare")
+        )
+
+    @app.get("/s/{session_id}/charts")
+    async def charts_page(request: Request, session_id: str, period: str | None = None):
+        return templates.TemplateResponse(
+            request=request, name="charts.html", context=_page_context(session_id, period, "charts")
         )
 
     @app.get("/api/v1/sessions/{session_id}")

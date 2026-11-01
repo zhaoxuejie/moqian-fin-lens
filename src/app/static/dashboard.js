@@ -102,6 +102,7 @@
     window.addEventListener("resize", function () { chartInstance.resize(); });
   }
 
+  if (document.getElementById("chart-v1")) {
   fetch("/api/v1/sessions/" + encodeURIComponent(sessionId) + "/charts")
     .then(function (response) { return response.json(); })
     .then(function (body) {
@@ -112,6 +113,7 @@
         el.innerHTML = '<div style="height:100%;display:grid;place-items:center;color:#b91c1c;font-size:12px">图表加载失败</div>';
       });
     });
+  }
 
   let compareData = null;
   let compareUnit = localStorage.getItem("finance_compare_unit") || "auto";
@@ -209,6 +211,7 @@
     });
   }
 
+  if (document.getElementById("compare-body")) {
   fetch("/api/v1/sessions/" + encodeURIComponent(sessionId) + "/compare")
     .then(function (response) { return response.json(); })
     .then(function (body) {
@@ -219,6 +222,7 @@
       const body = document.getElementById("compare-body");
       if (body) body.textContent = "对比数据加载失败";
     });
+  }
 
   document.querySelectorAll("#compare-tabs .tab").forEach(function (tab) {
     tab.addEventListener("click", function () {

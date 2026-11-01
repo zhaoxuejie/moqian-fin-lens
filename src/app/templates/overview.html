@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ session.company_name }} · 概览 · 财报透视</title>
+  <link rel="stylesheet" href="/static/app.css?v={{ asset_version }}">
+  <link rel="stylesheet" href="/static/dashboard.css?v={{ asset_version }}">
+</head>
+<body data-session="{{ session.session_id }}" data-period="{{ filing.period }}">
+{% include "_chrome.html" %}
+
+  <section class="summary-card">
+    <div class="summary-hd"><h2>本期结论</h2><span>规则生成 · 仅陈述数字与方向</span></div>
+    <ul class="summary-list">
+      {% for item in summary %}
+      <li class="{{ item.tone }}">{{ item.text }}</li>
+      {% endfor %}
+    </ul>
+    <div class="quality">
+      <span>勾稽 {{ quality.passed }} 通过{% if quality.skipped %} · {{ quality.skipped }} 跳过{% endif %}{% if quality.failed %} · {{ quality.failed }} 失败{% endif %}</span>
+      <span>未披露 {{ quality.undisclosed }}/{{ quality.total_rows }} 行</span>
+      <span>异常 {{ quality.anomalies }} 项</span>
+      {% if quality.anomalies %}<a class="risk-link" href="/s/{{ session.session_id }}/charts?period={{ filing.period }}#anomaly">查看异常项 →</a>{% endif %}
+    </div>
+  </section>
+
+  <section class="kpis">
+    {% for item in metrics[:8] %}
+    <div class="kpi">
+      <div class="k">
+        <span>{{ item.label }}</span>
+        <button class="src" data-entry="metric:{{ item.code }}">溯源</button>
+      </div>
+      <div class="v">
+        {% if item.value is none %}<span class="muted">原文未披露</span>
+        {% elif item.unit == "元" %}{{ "%.2f"|format(item.value|float / 100000000) }}<small>亿元</small>
+        {% else %}{{ "%.2f"|format(item.value|float) }}<small>{{ item.unit }}</small>{% endif %}
+      </div>
+      <div class="d">
+        {% set yoy = session_yoy.get(item.code) if session_yoy else none %}
+        {% if yoy %}
+        <span class="yoy {{ 'up' if yoy.value|float >= 0 else 'down' }}">{{ '▲' if yoy.value|float >= 0 else '▼' }} {{ "%.1f"|format(yoy.value|float|abs) }}{{ '%' if yoy.unit == '%' else 'pct' }}</span> 同比
+        {% elif item.yoy is not none %}
+        <span class="yoy {{ 'up' if item.yoy|float >= 0 else 'down' }}">{{ '▲' if item.yoy|float >= 0 else '▼' }} {{ "%.1f"|format(item.yoy|float|abs) }}{{ '%' if item.yoy_unit == '%' else 'pct' }}</span> 同比
+        {% else %}{{ item.formula }}{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+
+  <section class="section">
+    <div class="section-hd"><h2>继续查看</h2><span>按维度进入对应页面</span></div>
+    <div class="entry-grid">
+      <a class="entry" href="/s/{{ session.session_id }}/statements?period={{ filing.period }}">
+        <b>单年报表</b><span>{{ filing.period }} 年原始三表，本期 / 上期对照，数字可溯源</span>
+      </a>
+      <a class="entry" href="/s/{{ session.session_id }}/compare?period={{ filing.period }}">
+        <b>跨年对比</b><span>历年科目对比、增减额与同比</span>
+      </a>
+      <a class="entry" href="/s/{{ session.session_id }}/charts?period={{ filing.period }}">
+        <b>图表与异常</b><span>7 组财务图表 + 异常项明细</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-hd"><h2>全部指标</h2><span>20 项指标，为控制首屏只列前 8 项</span></div>
+    <div class="metric-table">
+      {% for item in metrics %}
+      <div class="mrow">
+        <span>{{ item.label }}</span>
+        <b>{% if item.value is none %}未披露{% elif item.unit == "元" %}{{ "%.2f"|format(item.value|float / 100000000) }} 亿{% else %}{{ "%.2f"|format(item.value|float) }} {{ item.unit }}{% endif %}</b>
+        <button class="src" data-entry="metric:{{ item.code }}">溯源</button>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+{% include "_foot.html" %}

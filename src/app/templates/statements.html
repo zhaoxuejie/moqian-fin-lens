@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ session.company_name }} · {{ filing.period }} 年报表 · 财报透视</title>
+  <link rel="stylesheet" href="/static/app.css?v={{ asset_version }}">
+  <link rel="stylesheet" href="/static/dashboard.css?v={{ asset_version }}">
+</head>
+<body data-session="{{ session.session_id }}" data-period="{{ filing.period }}">
+{% include "_chrome.html" %}
+
+  <section class="section" id="tables">
+    <div class="section-hd"><h2>{{ filing.period }} 年三大报表（原始解析数）</h2><span>单位以原表为准 · 每个数字可点击核对原文</span></div>
+    <div class="card">
+      <div class="tabs">
+        <button class="tab on" data-tab="balance">资产负债表</button>
+        <button class="tab" data-tab="income">利润表</button>
+        <button class="tab" data-tab="cashflow">现金流量表</button>
+      </div>
+      {% for kind, label in [("balance", "资产负债表"), ("income", "利润表"), ("cashflow", "现金流量表")] %}
+      <div class="panel {{ 'on' if kind == 'balance' else '' }}" id="{{ kind }}">
+        <div class="raw-table">
+          <table>
+            <thead><tr><th>科目</th><th>本期</th><th>上期</th><th>溯源</th></tr></thead>
+            <tbody>
+              {% for row in rows.get(kind, []) %}
+              {% if row.cells %}
+              <tr>
+                <td>{{ row.label }}</td>
+                {% for cell in row.cells[:2] %}
+                <td class="num">{{ cell.raw if cell.raw else "—" }}</td>
+                {% endfor %}
+                {% if row.cells|length == 1 %}<td class="num muted">—</td>{% endif %}
+                <td><button class="src" data-entry="row:{{ kind }}:{{ loop.index0 }}">P.{{ row.page }}</button></td>
+              </tr>
+              {% else %}
+              <tr class="raw-head"><td colspan="4">{{ row.label }}</td></tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+{% include "_foot.html" %}

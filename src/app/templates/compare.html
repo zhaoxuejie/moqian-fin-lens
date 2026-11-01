@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ session.company_name }} · 跨年对比 · 财报透视</title>
+  <link rel="stylesheet" href="/static/app.css?v={{ asset_version }}">
+  <link rel="stylesheet" href="/static/dashboard.css?v={{ asset_version }}">
+</head>
+<body data-session="{{ session.session_id }}" data-period="{{ filing.period }}">
+{% include "_chrome.html" %}
+
+  <section class="section" id="compare">
+    <div class="section-hd"><h2>跨年对比台</h2><span>按年列示科目并计算同比（相对上一年）</span>
+      <div class="unit-switch" id="compare-units">
+        <span class="muted">单位</span>
+        <button class="unit on" data-unit="auto">自适应</button>
+        <button class="unit" data-unit="yuan">元</button>
+        <button class="unit" data-unit="wan">万元</button>
+        <button class="unit" data-unit="yi">亿元</button>
+        <button class="unit toggle on" id="toggle-delta" type="button">增减额</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="tabs" id="compare-tabs">
+        <button class="tab on" data-compare="balance">资产负债表</button>
+        <button class="tab" data-compare="income">利润表</button>
+        <button class="tab" data-compare="cashflow">现金流量表</button>
+      </div>
+      <div class="compare-wrap"><div id="compare-body" class="muted">加载中…</div></div>
+    </div>
+  </section>
+
+{% include "_foot.html" %}

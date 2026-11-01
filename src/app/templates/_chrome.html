@@ -1,0 +1,56 @@
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="/"><span class="logo">财</span>财报透视</a>
+    <nav class="nav">
+      <a href="/s/{{ session.session_id }}" class="{{ 'on' if current_page == 'overview' else '' }}">概览</a>
+      <a href="/s/{{ session.session_id }}/statements?period={{ filing.period }}" class="{{ 'on' if current_page == 'statements' else '' }}">单年报表</a>
+      <a href="/s/{{ session.session_id }}/compare?period={{ filing.period }}" class="{{ 'on' if current_page == 'compare' else '' }}">跨年对比</a>
+      <a href="/s/{{ session.session_id }}/charts?period={{ filing.period }}" class="{{ 'on' if current_page == 'charts' else '' }}">图表异常</a>
+    </nav>
+    <div class="spacer"></div>
+    <button class="icon-btn" id="export-md" data-tip="导出 Markdown" aria-label="导出 Markdown">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+    </button>
+    <button class="icon-btn" id="export-xlsx" data-tip="导出 Excel" aria-label="导出 Excel">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="company-head">
+    <div class="ch-line">
+      <b>{{ session.company_name }}</b>
+      <span class="sep">·</span><span>{{ session.stock_code or "—" }}</span>
+      <span class="sep">·</span><span>{% if session.stock_code[:1] == "6" %}上交所{% elif session.stock_code[:1] in ["0", "3"] %}深交所{% elif session.stock_code[:1] in ["8", "4", "9"] %}北交所{% else %}—{% endif %}</span>
+      {% if filing.company_info.get("法定代表人") %}<span class="sep">·</span><span>法定代表人 {{ filing.company_info.get("法定代表人") }}</span>{% endif %}
+      <button class="ch-toggle" id="company-toggle" type="button">展开档案 ▾</button>
+    </div>
+    <div class="ch-detail" id="company-detail" hidden>
+      <div class="ci"><span>公司全称（中文）</span><b>{{ filing.company_info.get("全称", "—") }}</b></div>
+      <div class="ci"><span>外文名称</span><b>{{ filing.company_info.get("外文名称", "—") }}</b></div>
+      <div class="ci"><span>外文名称缩写</span><b>{{ filing.company_info.get("外文缩写", "—") }}</b></div>
+      <div class="ci"><span>公司网址</span><b>{% if filing.company_info.get("网址") %}<a href="{{ filing.company_info.get('网址') }}" target="_blank" rel="noopener">{{ filing.company_info.get('网址') }}</a>{% else %}—{% endif %}</b></div>
+      <div class="ci"><span>电子邮箱</span><b>{{ filing.company_info.get("邮箱", "—") }}</b></div>
+      <div class="ci wide"><span>注册地址</span><b>{{ filing.company_info.get("注册地址", "—") }}</b></div>
+      <div class="ci wide"><span>办公地址</span><b>{{ filing.company_info.get("办公地址", "—") }}</b></div>
+    </div>
+  </section>
+
+  <section class="report-bar">
+    <div class="rb-main">
+      <span class="rb-label">本期报告</span>
+      {% for p in periods %}
+      <a class="file {{ 'on' if p == filing.period else '' }}" href="{% if current_page == 'overview' %}/s/{{ session.session_id }}{% else %}/s/{{ session.session_id }}/{{ current_page }}{% endif %}?period={{ p }}">{{ p }} 年报</a>
+      {% endfor %}
+      <button class="drop" id="continue-upload">+ 继续上传同一公司其他年报</button>
+      <input type="file" id="continue-file" accept="application/pdf" hidden>
+    </div>
+    <div class="rb-meta">
+      <span>报告期 {{ filing.period }} 年</span>
+      <span>全文 {{ filing.pages }} 页</span>
+      <span>勾稽 {{ filing.checks|selectattr("status", "equalto", "passed")|list|length }} 通过{% if filing.checks|selectattr("status", "equalto", "skipped")|list %} · {{ filing.checks|selectattr("status", "equalto", "skipped")|list|length }} 跳过{% endif %}{% if filing.checks|selectattr("status", "equalto", "failed")|list %} · {{ filing.checks|selectattr("status", "equalto", "failed")|list|length }} 失败{% endif %}</span>
+      <span>解析于 {{ (filing.parsed_at or session.created_at)[11:16] }}</span>
+      <span id="continue-status" class="muted"></span>
+    </div>
+  </section>

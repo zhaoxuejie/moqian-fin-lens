@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ session.company_name }} · 图表与异常 · 财报透视</title>
+  <link rel="stylesheet" href="/static/app.css?v={{ asset_version }}">
+  <link rel="stylesheet" href="/static/dashboard.css?v={{ asset_version }}">
+</head>
+<body data-session="{{ session.session_id }}" data-period="{{ filing.period }}">
+{% include "_chrome.html" %}
+
+  <section class="section" id="charts">
+    <div class="section-hd"><h2>财务视图</h2><span>7 组图表；数据全部来自后端计算</span></div>
+    <div class="chart-grid">
+      {% for cid in ["v1", "v2", "v3", "v4", "v5", "v6", "v7"] %}
+      <div class="card chart-card" id="card-{{ cid }}">
+        <div class="chart-title" id="title-{{ cid }}">加载中…</div>
+        <div class="chart-sub" id="sub-{{ cid }}"></div>
+        <div class="chart" id="chart-{{ cid }}"></div>
+        <div class="chart-meta" id="meta-{{ cid }}"></div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="section" id="anomaly">
+    <div class="section-hd"><h2>异常项高亮</h2><span>只陈列数字之间的矛盾，不做投资评价；每项都可溯源</span></div>
+    {% if filing.anomalies %}
+    <div class="anom">
+      {% for item in filing.anomalies %}
+      <div class="anom-item">
+        <div class="ic">{{ loop.index }}</div>
+        <div class="body">
+          <b>{{ item.title }}</b>
+          <p>{{ item.text }}</p>
+          <div class="meta">
+            {% for ev in item.evidence %}
+            <span class="chip">{{ ev.get('code', '') }}{% if ev.get('value') %} {{ ev.get('value') }}{% endif %}{% if ev.get('growth') %} {{ ev.get('growth') }}%{% endif %}</span>
+            {% endfor %}
+            {% for page in item.page_refs %}
+            <span class="src">P.{{ page }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card muted">本期未触发异常规则。</div>
+    {% endif %}
+  </section>
+
+{% include "_foot.html" %}

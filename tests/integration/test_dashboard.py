@@ -12,14 +12,16 @@ def _client(settings, session):
 def test_dashboard_page_renders(settings, dashboard_session):
     with _client(settings, dashboard_session) as client:
         response = client.get("/s/s_test")
+        charts = client.get("/s/s_test/charts")
 
     assert response.status_code == 200
     body = response.text
     assert "示例科技股份有限公司" in body
-    assert "财务视图" in body
+    assert "本期结论" in body
     assert "免责声明" in body
-    assert 'id="chart-v1"' in body
-    assert 'id="chart-v7"' in body
+    assert charts.status_code == 200
+    assert 'id="chart-v1"' in charts.text
+    assert 'id="chart-v7"' in charts.text
 
 
 def test_session_detail_contract(settings, dashboard_session):

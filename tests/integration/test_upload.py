@@ -147,9 +147,28 @@ def test_dashboard_has_continue_upload(settings, dashboard_session):
     assert 'id="continue-upload"' in page.text
     assert 'class="nav"' in page.text
     assert "company-head" in page.text
-    assert "跨年对比台" in page.text
+    assert "本期结论" in page.text
     assert 'id="company-toggle"' in page.text
     assert "外文名称" in page.text
     assert "本期报告" in page.text
     assert "公司全称" in page.text
-    assert "原始解析数" in page.text
+    assert "全部指标" in page.text
+
+def test_dashboard_pages_render(settings, dashboard_session):
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    app = create_app(settings)
+    app.state.sessions[dashboard_session.session_id] = dashboard_session
+    pages = [
+        ("/s/s_test", "本期结论"),
+        ("/s/s_test/statements", "原始解析数"),
+        ("/s/s_test/compare", "跨年对比台"),
+        ("/s/s_test/charts", "异常项高亮"),
+    ]
+    with TestClient(app) as client:
+        for path, marker in pages:
+            response = client.get(path)
+            assert response.status_code == 200, path
+            assert marker in response.text, (path, marker)
