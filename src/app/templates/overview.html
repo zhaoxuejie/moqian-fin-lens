@@ -69,8 +69,8 @@
     <div class="metric-table">
       {% for item in metrics %}
       <div class="mrow">
-        <span>{{ item.label }}</span>
-        <b>{% if item.value is none %}未披露{% elif item.unit == "元" %}{{ "%.2f"|format(item.value|float / 100000000) }} 亿{% else %}{{ "%.2f"|format(item.value|float) }} {{ item.unit }}{% endif %}</b>
+        <span class="mlabel">{{ item.label }}</span>
+        <b class="mval">{% if item.value is none %}<span class="muted">未披露</span>{% elif item.unit == "元" %}{{ "%.2f"|format(item.value|float / 100000000) }}<small>亿</small>{% else %}{{ "%.2f"|format(item.value|float) }}<small>{{ item.unit }}</small>{% endif %}</b>
         <button class="src" data-entry="metric:{{ item.code }}">溯源</button>
       </div>
       {% endfor %}

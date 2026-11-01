@@ -21,14 +21,19 @@ def build_summary(filing: FilingData) -> list[dict[str, str]]:
     debt_ratio = _metric(filing, "debt_ratio")
 
     if revenue_growth is not None:
-        direction = "增长" if revenue_growth >= 0 else "下降"
-        items.append({"tone": "info", "text": f"营业总收入同比{direction} {abs(float(revenue_growth)):.1f}%。"})
-
-    if deducted is not None and deducted_growth is not None:
-        tone = "good" if deducted_growth >= 0 else "risk"
+        positive = float(revenue_growth) >= 0
         items.append(
             {
-                "tone": tone,
+                "tone": "up" if positive else "down",
+                "text": f"营业总收入同比{'增长' if positive else '下降'} {abs(float(revenue_growth)):.1f}%。",
+            }
+        )
+
+    if deducted is not None and deducted_growth is not None:
+        positive = float(deducted_growth) >= 0
+        items.append(
+            {
+                "tone": "up" if positive else "down",
                 "text": f"扣非归母净利润同比{'增长' if deducted_growth >= 0 else '下降'} {abs(float(deducted_growth)):.1f}%。",
             }
         )
@@ -36,7 +41,7 @@ def build_summary(filing: FilingData) -> list[dict[str, str]]:
     if cash_content is not None:
         value = float(cash_content)
         if value >= 1:
-            items.append({"tone": "good", "text": f"经营现金流 / 净利润 = {value:.2f}，利润基本有现金支撑。"})
+            items.append({"tone": "info", "text": f"经营现金流 / 净利润 = {value:.2f}，利润基本有现金支撑。"})
         else:
             items.append({"tone": "risk", "text": f"经营现金流 / 净利润 = {value:.2f}，利润的现金含量偏低。"})
 
