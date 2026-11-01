@@ -143,11 +143,13 @@ def test_dashboard_has_continue_upload(settings, dashboard_session):
         page = client.get(f"/s/{dashboard_session.session_id}")
 
     assert page.status_code == 200
-    assert "继续拖入" in page.text
+    assert "继续上传同一公司其他年报" in page.text
     assert 'id="continue-upload"' in page.text
     assert 'class="nav"' in page.text
-    assert "基本信息" in page.text or "company-card" in page.text
+    assert "company-head" in page.text
     assert "跨年对比台" in page.text
-    assert "交易所" in page.text
+    assert 'id="company-toggle"' in page.text
+    assert "外文名称" in page.text
+    assert "本期报告" in page.text
     assert "公司全称" in page.text
     assert "原始解析数" in page.text

@@ -52,7 +52,7 @@ def test_real_report_unaligned_items_keep_page_numbers():
     gold = json.loads(
         (GOLD_DIR / "002230_科大讯飞_2024年年度报告.json").read_text(encoding="utf-8")
     )
-    pdf = next((PDF_DIR / "002230_科大讯飞").glob("*.pdf"))
+    pdf = PDF_DIR / "002230_科大讯飞" / "002230_科大讯飞_2024年年度报告.pdf"
     if not pdf.exists():
         pytest.skip("缺少评估集 PDF")
 

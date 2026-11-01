@@ -53,14 +53,17 @@ def build_comparison(session: SessionData) -> dict[str, object]:
             if all(value is None for value in values):
                 continue
             yoy: list[float | None] = []
+            delta: list[Decimal | None] = []
             for index in range(len(values)):
                 yoy.append(None if index == 0 else _yoy(values[index], values[index - 1]))
+                delta.append(None if index == 0 or values[index] is None or values[index - 1] is None else values[index] - values[index - 1])
             rows.append(
                 {
                     "code": code,
                     "label": labels.get(code, code),
                     "values": [None if value is None else str(value) for value in values],
                     "yoy": yoy,
+                    "delta": [None if value is None else str(value) for value in delta],
                 }
             )
 

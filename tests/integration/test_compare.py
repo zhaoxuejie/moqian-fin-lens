@@ -44,3 +44,4 @@ def test_compare_multi_period_yoy(tmp_path, dashboard_session):
     assert row["values"] == ["100", "125"]
     assert round(row["yoy"][1], 2) == 25.0
     assert row["label"] == "资产总计"
+    assert row["delta"] == [None, "25"]

@@ -114,12 +114,33 @@
     });
 
   let compareData = null;
+  let compareUnit = localStorage.getItem("finance_compare_unit") || "auto";
+  let compareDelta = localStorage.getItem("compare_show_delta") !== "0";
 
-  function fmtNumber(text) {
+  function rawText(text) {
+    if (text === null || text === undefined) return "";
+    const value = Number(text);
+    return Number.isFinite(value) ? value.toLocaleString("zh-CN", { maximumFractionDigits: 2 }) : String(text);
+  }
+
+  function fmtCompare(text) {
     if (text === null || text === undefined) return "—";
     const value = Number(text);
     if (!Number.isFinite(value)) return String(text);
+    if (compareUnit === "yuan") return value.toLocaleString("zh-CN", { maximumFractionDigits: 2 });
+    const abs = Math.abs(value);
+    if (compareUnit === "yi" || (compareUnit === "auto" && abs >= 100000000)) {
+      return (value / 100000000).toLocaleString("zh-CN", { maximumFractionDigits: 2 }) + " 亿";
+    }
+    if (compareUnit === "wan" || (compareUnit === "auto" && abs >= 10000)) {
+      return (value / 10000).toLocaleString("zh-CN", { maximumFractionDigits: 2 }) + " 万";
+    }
     return value.toLocaleString("zh-CN", { maximumFractionDigits: 2 });
+  }
+
+  function activeCompareKind() {
+    const active = document.querySelector("#compare-tabs .tab.on");
+    return active ? active.dataset.compare : "balance";
   }
 
   function renderCompare(kind) {
@@ -127,24 +148,65 @@
     if (!body || !compareData || !compareData.statements[kind]) return;
     const statement = compareData.statements[kind];
     const periods = compareData.periods;
-    let html = '<table class="compare"><thead><tr><th>科目</th>';
+
+    let headTop = '<th rowspan="2">科目</th>';
+    let headSub = "";
     periods.forEach(function (period, index) {
-      html += "<th>" + period + (index > 0 ? " <small>同比</small>" : " <small>基准年</small>") + "</th>";
+      if (index === 0) {
+        headTop += '<th rowspan="2">' + period + "</th>";
+      } else if (compareDelta) {
+        headTop += '<th class="group" colspan="3">' + period + "</th>";
+        headSub += '<th class="sub group">值</th><th class="sub">增减额</th><th class="sub">同比</th>';
+      } else {
+        headTop += '<th class="group" colspan="2">' + period + "</th>";
+        headSub += '<th class="sub group">值</th><th class="sub">同比</th>';
+      }
     });
-    html += "</tr></thead><tbody>";
+
+    let html = '<table class="compare"><thead><tr>' + headTop + "</tr><tr>" + headSub + "</tr></thead><tbody>";
     statement.rows.forEach(function (row) {
       html += "<tr><td>" + row.label + "</td>";
       row.values.forEach(function (value, index) {
-        const yoy = row.yoy[index];
-        let cell = '<div class="cv">' + fmtNumber(value) + "</div>";
-        if (index > 0 && yoy !== null && yoy !== undefined) {
-          cell += '<div class="cy ' + (yoy >= 0 ? "up" : "down") + '">' + (yoy >= 0 ? "▲" : "▼") + " " + Math.abs(yoy).toFixed(1) + "%</div>";
+        html += '<td class="num" title="' + rawText(value) + '">' + fmtCompare(value) + "</td>";
+        if (index > 0) {
+          if (compareDelta) {
+            const delta = row.delta ? row.delta[index] : null;
+            html += '<td class="num delta" title="' + rawText(delta) + '">' + fmtCompare(delta) + "</td>";
+          }
+          const yoy = row.yoy[index];
+          if (yoy === null || yoy === undefined) {
+            html += '<td class="num">—</td>';
+          } else {
+            html += '<td class="num cy ' + (yoy >= 0 ? "up" : "down") + '">' + (yoy >= 0 ? "▲" : "▼") + " " + Math.abs(yoy).toFixed(1) + "%</td>";
+          }
         }
-        html += '<td class="num">' + cell + "</td>";
       });
       html += "</tr>";
     });
     body.innerHTML = html + "</tbody></table>";
+
+    document.querySelectorAll("#compare-units .unit[data-unit]").forEach(function (button) {
+      button.classList.toggle("on", button.dataset.unit === compareUnit);
+    });
+    const deltaButton = document.getElementById("toggle-delta");
+    if (deltaButton) deltaButton.classList.toggle("on", compareDelta);
+  }
+
+  document.querySelectorAll("#compare-units .unit[data-unit]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      compareUnit = button.dataset.unit;
+      localStorage.setItem("finance_compare_unit", compareUnit);
+      renderCompare(activeCompareKind());
+    });
+  });
+
+  const deltaToggle = document.getElementById("toggle-delta");
+  if (deltaToggle) {
+    deltaToggle.addEventListener("click", function () {
+      compareDelta = !compareDelta;
+      localStorage.setItem("compare_show_delta", compareDelta ? "1" : "0");
+      renderCompare(activeCompareKind());
+    });
   }
 
   fetch("/api/v1/sessions/" + encodeURIComponent(sessionId) + "/compare")

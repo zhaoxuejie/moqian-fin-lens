@@ -10,16 +10,21 @@
 <body data-session="{{ session.session_id }}">
   <header class="topbar">
     <div class="wrap topbar-inner">
-      <div class="brand"><span class="logo">财</span>财报透视</div>
+      <a class="brand" href="/"><span class="logo">财</span>财报透视</a>
       <nav class="nav">
         <a href="#overview">概览</a>
         <a href="#tables">三表</a>
+        <a href="#compare">跨年对比台</a>
         <a href="#charts">图表</a>
         <a href="#anomaly">异常项</a>
       </nav>
       <div class="spacer"></div>
-      <button class="btn" id="export-md">导出 Markdown</button>
-      <button class="btn" id="export-xlsx">导出 Excel</button>
+      <button class="icon-btn" id="export-md" data-tip="导出 Markdown" aria-label="导出 Markdown">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      </button>
+      <button class="icon-btn" id="export-xlsx" data-tip="导出 Excel" aria-label="导出 Excel">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+      </button>
       <span id="continue-status" class="muted"></span>
     </div>
   </header>
@@ -27,37 +32,43 @@
   <main class="wrap">
     <section class="hero" id="overview">
       <h1>{{ session.company_name }}<span class="code">{{ session.stock_code }}</span></h1>
-      <p>{{ filing.period }} 年年度报告 · 共 {{ filing.pages }} 页 · 已解析 {{ periods|length }} 期</p>
-      <p class="checks">勾稽：
-        {% for check in filing.checks %}
-        <span class="check {{ check.status }}">{{ check.rule }} {{ check.status }}</span>
-        {% endfor %}
-      </p>
     </section>
 
-    <section class="company-card">
-      <div class="ci"><span>简称</span><b>{{ session.company_name }}</b></div>
-      <div class="ci"><span>股票代码</span><b>{{ session.stock_code or "—" }}</b></div>
-      <div class="ci"><span>交易所</span><b>{% if session.stock_code[:1] == "6" %}上交所{% elif session.stock_code[:1] in ["0", "3"] %}深交所{% elif session.stock_code[:1] in ["8", "4", "9"] %}北交所{% else %}—{% endif %}</b></div>
-      <div class="ci"><span>报告期</span><b>{{ filing.period }} 年</b></div>
-      <div class="ci"><span>全文</span><b>{{ filing.pages }} 页</b></div>
-      <div class="ci"><span>勾稽</span><b>{{ filing.checks|selectattr("status", "equalto", "passed")|list|length }} 通过{% if filing.checks|selectattr("status", "equalto", "skipped")|list %} · {{ filing.checks|selectattr("status", "equalto", "skipped")|list|length }} 跳过{% endif %}{% if filing.checks|selectattr("status", "equalto", "failed")|list %} · {{ filing.checks|selectattr("status", "equalto", "failed")|list|length }} 失败{% endif %}</b></div>
-      <div class="ci"><span>解析时间</span><b>{{ session.created_at[:16] }}</b></div>
-      <div class="ci wide"><span>公司全称</span><b>{{ filing.company_info.get("全称", "—") }}</b></div>
-      <div class="ci wide"><span>注册地址</span><b>{{ filing.company_info.get("注册地址", "—") }}</b></div>
-      <div class="ci wide"><span>办公地址</span><b>{{ filing.company_info.get("办公地址", "—") }}</b></div>
-    </section>
-
-    <section class="upload">
-      <div class="files">
-        {% for p in periods %}
-        <a class="file {{ 'on' if p == filing.period else '' }}" href="/s/{{ session.session_id }}?period={{ p }}">
-          <span class="dot"></span>{{ p }} 年报 · <b>{{ '当前' if p == filing.period else '已解析' }}</b>
-        </a>
-        {% endfor %}
+    <section class="company-head">
+      <div class="ch-line">
+        <b>{{ session.company_name }}</b>
+        <span class="sep">·</span><span>{{ session.stock_code or "—" }}</span>
+        <span class="sep">·</span><span>{% if session.stock_code[:1] == "6" %}上交所{% elif session.stock_code[:1] in ["0", "3"] %}深交所{% elif session.stock_code[:1] in ["8", "4", "9"] %}北交所{% else %}—{% endif %}</span>
+        {% if filing.company_info.get("法定代表人") %}<span class="sep">·</span><span>法定代表人 {{ filing.company_info.get("法定代表人") }}</span>{% endif %}
+        <button class="ch-toggle" id="company-toggle" type="button">展开档案 ▾</button>
       </div>
-      <button class="drop" id="continue-upload">继续拖入同一公司的其他年报，自动对齐科目并生成趋势</button>
-      <input type="file" id="continue-file" accept="application/pdf" hidden>
+      <div class="ch-detail" id="company-detail" hidden>
+        <div class="ci"><span>公司全称（中文）</span><b>{{ filing.company_info.get("全称", "—") }}</b></div>
+        <div class="ci"><span>外文名称</span><b>{{ filing.company_info.get("外文名称", "—") }}</b></div>
+        <div class="ci"><span>外文名称缩写</span><b>{{ filing.company_info.get("外文缩写", "—") }}</b></div>
+        <div class="ci"><span>公司网址</span><b>{% if filing.company_info.get("网址") %}<a href="{{ filing.company_info.get('网址') }}" target="_blank" rel="noopener">{{ filing.company_info.get('网址') }}</a>{% else %}—{% endif %}</b></div>
+        <div class="ci"><span>电子邮箱</span><b>{{ filing.company_info.get("邮箱", "—") }}</b></div>
+        <div class="ci wide"><span>注册地址</span><b>{{ filing.company_info.get("注册地址", "—") }}</b></div>
+        <div class="ci wide"><span>办公地址</span><b>{{ filing.company_info.get("办公地址", "—") }}</b></div>
+      </div>
+    </section>
+
+    <section class="report-bar">
+      <div class="rb-main">
+        <span class="rb-label">本期报告</span>
+        {% for p in periods %}
+        <a class="file {{ 'on' if p == filing.period else '' }}" href="/s/{{ session.session_id }}?period={{ p }}">{{ p }} 年报</a>
+        {% endfor %}
+        <button class="drop" id="continue-upload">+ 继续上传同一公司其他年报</button>
+        <input type="file" id="continue-file" accept="application/pdf" hidden>
+      </div>
+      <div class="rb-meta">
+        <span>报告期 {{ filing.period }} 年</span>
+        <span>全文 {{ filing.pages }} 页</span>
+        <span>勾稽 {{ filing.checks|selectattr("status", "equalto", "passed")|list|length }} 通过{% if filing.checks|selectattr("status", "equalto", "skipped")|list %} · {{ filing.checks|selectattr("status", "equalto", "skipped")|list|length }} 跳过{% endif %}{% if filing.checks|selectattr("status", "equalto", "failed")|list %} · {{ filing.checks|selectattr("status", "equalto", "failed")|list|length }} 失败{% endif %}</span>
+        <span>解析于 {{ session.created_at[11:16] }}</span>
+        <span id="continue-status" class="muted"></span>
+      </div>
     </section>
 
     <section class="kpis">
@@ -117,7 +128,7 @@
     </section>
 
     <section class="section" id="compare">
-      <div class="section-hd"><h2>跨年对比台</h2><span>按年列示科目并计算同比（相对上一年）；用于加工分析，不改动原始数</span></div>
+      <div class="section-hd"><h2>跨年对比台</h2><span>按年列示科目并计算同比（相对上一年）；用于加工分析，不改动原始数</span><div class="unit-switch" id="compare-units"><span class="muted">单位</span><button class="unit on" data-unit="auto">自适应</button><button class="unit" data-unit="yuan">元</button><button class="unit" data-unit="wan">万元</button><button class="unit" data-unit="yi">亿元</button><button class="unit toggle on" id="toggle-delta" type="button">增减额</button></div></div>
       <div class="card">
         <div class="tabs" id="compare-tabs">
           <button class="tab on" data-compare="balance">资产负债表</button>

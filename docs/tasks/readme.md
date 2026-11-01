@@ -34,6 +34,7 @@
 | TASK-015 | 多文件上传与继续上传 | v1.0 | TASK-011 | P1 | ✅ done | [task-015-multi-file-upload-ui.md](task-015-multi-file-upload-ui.md) |
 | TASK-016 | 看板对齐高保真原型 | v1.0 | TASK-015 | P1 | ✅ done | [task-016-dashboard-visual-alignment.md](task-016-dashboard-visual-alignment.md) |
 | TASK-017 | 品牌视觉与详情页改造 | v1.0 | TASK-016 | P0 | ✅ done | [task-017-brand-and-detail-refresh.md](task-017-brand-and-detail-refresh.md) |
+| TASK-018 | 详情页信息分层与对比台可读性 | v1.0 | TASK-017 | P1 | ✅ done | [task-018-detail-hierarchy-and-compare-units.md](task-018-detail-hierarchy-and-compare-units.md) |
 
 ## 规则
 1. 任务存储模式：**一个任务单独一个文件**，不把多个任务混在同一个文件。

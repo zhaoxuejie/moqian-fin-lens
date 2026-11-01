@@ -134,29 +134,42 @@ INFO_LABELS = {
     "公司的中文名称": "全称",
     "公司中文名称": "全称",
     "中文名称": "全称",
+    "公司的外文名称（如有）": "外文名称",
+    "公司的外文名称缩写（如有）": "外文缩写",
+    "公司的法定代表人": "法定代表人",
     "注册地址": "注册地址",
     "公司注册地址": "注册地址",
     "办公地址": "办公地址",
     "公司办公地址": "办公地址",
 }
+URL_PATTERN = re.compile(r"https?://[^\s，。]+")
+EMAIL_PATTERN = re.compile(r"[\w.+-]+@[\w.-]+\.\w+")
 
 
 def _extract_company_info(pages: list[str]) -> dict[str, str]:
-    """从年报前若干页抓取公司全称 / 注册地址 / 办公地址（最佳努力）。"""
+    """从年报前若干页抓取公司档案（最佳努力）。"""
     info: dict[str, str] = {}
     for text in pages[:20]:
         for raw in text.splitlines():
             line = " ".join(raw.split())
             if "邮政编码" in line or "历史变更" in line:
                 continue
+            if "公司网址" in line and "网址" not in info:
+                url = URL_PATTERN.search(line)
+                if url:
+                    info["网址"] = url.group(0)[:80]
+            if ("电子信箱" in line or "电子邮箱" in line) and "邮箱" not in info:
+                email = EMAIL_PATTERN.search(line)
+                if email:
+                    info["邮箱"] = email.group(0)[:80]
             for label, key in INFO_LABELS.items():
                 if key in info or not line.startswith(label):
                     continue
                 value = line[len(label):].lstrip(" ：:").rstrip(" 。")
-                value = value[:60]
+                value = value[:80]
                 if len(value) >= 2:
                     info[key] = value
-        if "全称" in info and "注册地址" in info:
+        if {"全称", "注册地址", "法定代表人", "网址", "邮箱"} <= set(info):
             break
     return info
 

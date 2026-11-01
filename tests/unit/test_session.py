@@ -80,3 +80,25 @@ def test_filter_trims_previous_statement_tail():
     }
     filtered = filter_rows_by_statement(rows)
     assert filtered["income"][0].label == "一、营业总收入"
+
+def test_extract_company_info_fields():
+    from dashboard.session import _extract_company_info
+
+    text = (
+        "公司的中文名称 测试股份有限公司\n"
+        "公司的外文名称（如有） TEST CO.,LTD\n"
+        "公司的外文名称缩写（如有） TEST\n"
+        "公司的法定代表人 张三\n"
+        "公司网址 http://www.test.com 电子信箱 a@test.com\n"
+        "注册地址 测试市测试路 1 号\n"
+        "办公地址 测试市测试路 2 号"
+    )
+    info = _extract_company_info([text])
+
+    assert info["全称"] == "测试股份有限公司"
+    assert info["外文名称"] == "TEST CO.,LTD"
+    assert info["外文缩写"] == "TEST"
+    assert info["法定代表人"] == "张三"
+    assert info["网址"] == "http://www.test.com"
+    assert info["邮箱"] == "a@test.com"
+    assert info["注册地址"] == "测试市测试路 1 号"
