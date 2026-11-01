@@ -69,6 +69,7 @@ def filing_to_dict(filing: FilingData) -> dict[str, Any]:
             for item in filing.checks
         ],
         "company_info": filing.company_info,
+        "page_texts": {str(number): text for number, text in filing.page_texts.items()},
         "anomalies": [
             {
                 "rule_code": item.rule_code,
@@ -158,6 +159,7 @@ def filing_from_dict(payload: dict[str, Any]) -> FilingData:
         checks=checks,
         anomalies=anomalies,
         company_info=payload.get("company_info", {}),
+        page_texts={int(number): text for number, text in payload.get("page_texts", {}).items()},
     )
 
 

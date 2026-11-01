@@ -226,3 +226,10 @@ table.compare th.sub { font-weight: 400; font-size: 11px; color: var(--ink3); }
 .raw-table { max-height: 560px; overflow: auto; }
 .raw-table thead th { position: sticky; top: 0; z-index: 2; }
 tr.raw-head td { background: #fafbfc; color: var(--ink3); font-size: 12px; text-align: left; }
+
+
+.modal .page-text {
+  margin-top: 10px; max-height: 220px; overflow: auto;
+  background: #fbfcfd; border: 1px dashed var(--line); border-radius: 8px;
+  padding: 8px 10px; font-size: 11.5px; color: var(--ink2); white-space: pre-wrap;
+}

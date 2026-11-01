@@ -24,6 +24,7 @@ class FilingData:
     checks: list
     anomalies: list[AnomalyItem]
     company_info: dict = field(default_factory=dict)
+    page_texts: dict[int, str] = field(default_factory=dict)
 
     @property
     def metrics_by_code(self) -> dict[str, MetricResult]:
@@ -59,16 +60,32 @@ PARENT_CUT_PATTERNS = {
     "balance": ("货币资金",),
     "cashflow": ("销售商品",),
 }
+STATEMENT_TERMINALS = {
+    "balance": (
+        "负债和所有者权益总计",
+        "负债和所有者权益（或股东权益）总计",
+        "负债和所有者权益合计",
+        "负债和所有者权益（或股东权益）合计",
+    ),
+    "income": ("稀释每股收益",),
+    "cashflow": ("期末现金及现金等价物余额",),
+}
 
 
 def _cut_parent_statement(rows: list[StatementRow], kind: str) -> list[StatementRow]:
-    """合并报表之后若接着母公司报表，按「同一条目第二次出现」截断。"""
+    """合并报表之后若接着母公司报表，截断到合并报表的末行（含）。"""
+    terminals = STATEMENT_TERMINALS.get(kind, ())
+    for index, row in enumerate(rows):
+        label = row.label.strip()
+        if any(terminal in label for terminal in terminals):
+            return rows[:index + 1]
+
     patterns = PARENT_CUT_PATTERNS.get(kind, ())
     seen = 0
     for index, row in enumerate(rows):
-        if not row.cells:
-            continue
         label = row.label.strip()
+        if not label:
+            continue
         starts = (
             label.startswith(("一、", "1、"))
             or label.startswith(kind)
@@ -90,24 +107,18 @@ def _trim_to_statement(rows: list[StatementRow], kind: str) -> list[StatementRow
 
 
 def filter_rows_by_statement(rows_by_kind: dict[str, list[StatementRow]]) -> dict[str, list[StatementRow]]:
-    """按科目归属重新分桶：三表页范围边界处的行按 Schema 归位，再裁掉母公司报表段。"""
+    """按科目归属过滤行：利润表页里的母公司资产负债表尾行不进入利润表。"""
     from align import normalize_label
     from schema import load_accounts
 
     schema = load_accounts()
-    buckets: dict[str, list[StatementRow]] = {kind: [] for kind in rows_by_kind}
-
-    for kind, rows in rows_by_kind.items():
-        for row in rows:
-            account = schema.resolve(normalize_label(row.label))
-            target = account.statement if account is not None and account.statement in buckets else kind
-            buckets[target].append(row)
-
     filtered: dict[str, list[StatementRow]] = {}
-    for kind, rows in buckets.items():
-        rows.sort(key=lambda row: row.page)
+    for kind, rows in rows_by_kind.items():
         kept: list[StatementRow] = []
         for row in _trim_to_statement(rows, kind):
+            account = schema.resolve(normalize_label(row.label))
+            if account is not None and account.statement != kind:
+                continue
             if not row.cells and row.label.endswith("："):
                 continue
             kept.append(row)
@@ -203,6 +214,52 @@ def _extract_company_info(pages: list[str]) -> dict[str, str]:
     return info
 
 
+CASH_LINE = re.compile(r"^货币资金\s+(?P<current>\(?-?[\d,]+\.\d{2}\)?)\s+(?P<previous>\(?-?[\d,]+\.\d{2}\)?)")
+
+
+def _add_cash_fallback(rows: dict[str, list[StatementRow]], pages: list[str]) -> dict[str, list[StatementRow]]:
+    """部分年报首页表格首行会被并表头，导致「货币资金」缺失：从页面文本补回。"""
+    balance_rows = rows.get("balance", [])
+    if balance_rows:
+        first_page = min(row.page for row in balance_rows)
+        if any(row.label.strip() == "货币资金" and row.page <= first_page + 1 for row in balance_rows):
+            return rows
+    first_page = min((row.page for row in balance_rows), default=1)
+    for index in (first_page, first_page + 1):
+        if index < 1 or index > len(pages):
+            continue
+        for line in pages[index - 1].splitlines():
+            match = CASH_LINE.match(" ".join(line.split()))
+            if not match:
+                continue
+            try:
+                current = normalize(match.group("current")).value
+                previous = normalize(match.group("previous")).value
+            except Exception:
+                continue
+            if current is None:
+                continue
+            cells = [CellValue(match.group("current"), current, "current", index, (0.0, 0.0, 0.0, 0.0))]
+            if previous is not None:
+                cells.append(CellValue(match.group("previous"), previous, "previous", index, (0.0, 0.0, 0.0, 0.0)))
+            rows.setdefault("balance", []).insert(
+                0,
+                StatementRow(label="货币资金", page=index, snippet=line.strip()[:200], cells=tuple(cells), is_missing=False),
+            )
+            return rows
+    return rows
+
+
+def _collect_page_texts(rows: dict[str, list[StatementRow]], pages: list[str]) -> dict[int, str]:
+    """保留三表所在页的文本，供溯源浮层展示整页原文。"""
+    numbers = sorted({row.page for items in rows.values() for row in items})
+    result: dict[int, str] = {}
+    for number in numbers:
+        if 1 <= number <= len(pages):
+            result[number] = pages[number - 1][:1500]
+    return result
+
+
 def build_filing(pdf_path: str | Path, period: str, filing_id: str = "f_01") -> FilingData:
     """把一份财报 PDF 变成看板需要的数据（定位 → 表格 → 指标 → 勾稽 → 异常）。"""
     path = str(pdf_path)
@@ -244,6 +301,7 @@ def build_filing(pdf_path: str | Path, period: str, filing_id: str = "f_01") -> 
         checks=checks,
         anomalies=anomalies,
         company_info=_extract_company_info(pages),
+        page_texts=_collect_page_texts(rows, pages),
     )
 
 

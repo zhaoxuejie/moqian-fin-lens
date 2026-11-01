@@ -261,6 +261,10 @@
           document.getElementById("m-title").textContent = data.label || "原文溯源";
           document.getElementById("m-meta").textContent = "P." + data.page + (data.account_code ? " · " + data.account_code : "");
           document.getElementById("m-quote").textContent = data.snippet || "原文片段缺失";
+          const pageBox = document.getElementById("m-page-text");
+          if (pageBox) {
+            pageBox.textContent = data.page_text ? "该页原文：\n" + data.page_text : "";
+          }
           document.getElementById("m-note").textContent = data.formula || data.unit_note || "";
           mask.classList.add("on");
         })

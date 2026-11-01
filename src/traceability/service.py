@@ -37,6 +37,7 @@ def _row_trace(session: SessionData, entry_id: str) -> dict[str, Any]:
         "snippet": row.snippet,
         "unit_note": "页面展示单位为元；原文单位见报表表头",
         "formula": None,
+        "page_text": filing.page_texts.get(row.page, ""),
         "bbox": {"x0": cell.bbox[0], "y0": cell.bbox[1], "x1": cell.bbox[2], "y1": cell.bbox[3]} if cell else None,
     }
 
@@ -72,6 +73,7 @@ def _metric_trace(session: SessionData, entry_id: str) -> dict[str, Any]:
         "snippet": snippet,
         "unit_note": "计算口径见 formula",
         "formula": metric.formula,
+        "page_text": filing.page_texts.get(page, ""),
         "bbox": None,
     }
 
