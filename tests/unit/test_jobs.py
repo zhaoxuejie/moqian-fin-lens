@@ -35,3 +35,52 @@ def test_job_update_and_get():
     assert job.state == "parsing"
     assert job.progress == 0.5
     assert manager.get("missing") is None
+
+
+def test_job_is_done_only_after_success_callback():
+    """客户端轮询到 done 时，保存会话的回调必须已经跑完。"""
+    import threading
+
+    manager = JobManager(max_workers=1)
+    manager.create(Job(job_id="j1", filing_id="f1", session_id="s1"))
+    entered, release = threading.Event(), threading.Event()
+    states_during_save = []
+
+    def on_success(_result):
+        entered.set()
+        release.wait(5)
+        states_during_save.append(manager.get("j1").state)
+
+    manager.submit("j1", lambda progress: "ok", on_success, lambda exc: None)
+    assert entered.wait(5)
+    assert manager.get("j1").state != "done"
+    release.set()
+    for _ in range(100):
+        if manager.get("j1").state == "done":
+            break
+        threading.Event().wait(0.05)
+    assert manager.get("j1").state == "done"
+    assert states_during_save == ["parsing"]
+
+
+def test_job_fails_when_success_callback_fails():
+    import threading
+
+    manager = JobManager(max_workers=1)
+    manager.create(Job(job_id="j1", filing_id="f1", session_id="s1"))
+    errors = []
+    finished = threading.Event()
+
+    def on_error(exc):
+        errors.append(exc)
+        finished.set()
+
+    def on_success(_result):
+        raise RuntimeError("disk full")
+
+    manager.submit("j1", lambda progress: "ok", on_success, on_error)
+    assert finished.wait(5)
+    job = manager.get("j1")
+    assert job.state == "failed"
+    assert job.error["stage"] == "persist"
+    assert manager.active == 0

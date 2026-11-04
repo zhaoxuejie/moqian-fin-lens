@@ -24,6 +24,7 @@ class ErrorCode(IntEnum):
 
     PARSE_FAILED = 42201
     STATEMENT_LOCATE_FAILED = 42202
+    UNSUPPORTED_REPORT_TYPE = 42203
 
     RATE_LIMITED = 42901
 
@@ -46,6 +47,7 @@ _HTTP_STATUS: dict[ErrorCode, int] = {
     ErrorCode.FILING_NOT_READY: 409,
     ErrorCode.PARSE_FAILED: 422,
     ErrorCode.STATEMENT_LOCATE_FAILED: 422,
+    ErrorCode.UNSUPPORTED_REPORT_TYPE: 422,
     ErrorCode.RATE_LIMITED: 429,
     ErrorCode.INTERNAL: 500,
     ErrorCode.QUEUE_FULL: 503,

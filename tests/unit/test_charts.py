@@ -5,7 +5,7 @@ import pytest
 from anomaly.rules import detect
 from dashboard.charts import build_chart_set, group_charts
 from dashboard.session import FilingData
-from metrics import check_statements, compute_metrics, values_from_rows
+from metrics import check_statements, compute_metrics, pages_from_rows, values_from_rows
 from parse.table import CellValue, StatementRow
 
 
@@ -35,6 +35,7 @@ def _rows():
         "balance": [
             _row("资产总计", "2000", "1800"),
             _row("负债合计", "1200", "1100"),
+            _row("归属于母公司所有者权益合计", "760", "740"),
             _row("所有者权益合计", "800", "700"),
             _row("应收账款", "300", "150"),
             _row("存货", "400", "250"),
@@ -52,7 +53,7 @@ def _filing(rows=None, period: str = "2024") -> FilingData:
     values = values_from_rows(rows)
     metrics = compute_metrics(values)
     checks = check_statements(values)
-    anomalies = detect(values, {item.code: item for item in metrics}, checks)
+    anomalies = detect(values, {item.code: item for item in metrics}, checks, pages_from_rows(rows))
     return FilingData(
         filing_id="f_01",
         period=period,

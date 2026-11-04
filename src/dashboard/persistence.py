@@ -148,6 +148,8 @@ def filing_from_dict(payload: dict[str, Any]) -> FilingData:
             page_refs=item.get("page_refs", []),
         )
         for item in payload.get("anomalies", [])
+        # v0.4.0 及以前的快照里异常项没有页码；接口契约要求无页码不展示
+        if item.get("page_refs")
     ]
 
     return FilingData(

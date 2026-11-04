@@ -103,6 +103,21 @@ class JobManager:
                     self._refresh_positions_locked()
                 on_error(exc)
                 return
+            # 先保存、后报 done：客户端看到 done 时会话必须已经可读，否则紧接着的追加上传会 404
+            try:
+                on_success(result)
+            except Exception as exc:  # 保存等后置步骤失败必须可见
+                with self._lock:
+                    self._active -= 1
+                    job = self.jobs.get(job_id)
+                    if job is not None:
+                        job.state = "failed"
+                        job.stage = "failed"
+                        job.error = {"code": 50001, "msg": "保存会话失败：" + str(exc)[:200], "stage": "persist"}
+                        job.finished_at = _now()
+                    self._refresh_positions_locked()
+                on_error(exc)
+                return
             with self._lock:
                 self._active -= 1
                 job = self.jobs.get(job_id)
@@ -112,16 +127,6 @@ class JobManager:
                     job.progress = 1.0
                     job.finished_at = _now()
                 self._refresh_positions_locked()
-            try:
-                on_success(result)
-            except Exception as exc:  # 保存等后置步骤失败必须可见
-                with self._lock:
-                    job = self.jobs.get(job_id)
-                    if job is not None:
-                        job.state = "failed"
-                        job.stage = "failed"
-                        job.error = {"code": 50001, "msg": "保存会话失败：" + str(exc)[:200], "stage": "persist"}
-                on_error(exc)
 
         self._executor.submit(runner)
 

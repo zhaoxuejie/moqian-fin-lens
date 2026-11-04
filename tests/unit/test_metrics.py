@@ -41,6 +41,7 @@ def _full_values() -> dict:
         _row("应付债券", "30", "30"),
         _row("资产总计", "2000", "1800"),
         _row("负债合计", "1200", "1100"),
+        _row("归属于母公司所有者权益合计", "760", "740"),
         _row("所有者权益合计", "800", "700"),
     ]
     cashflow = [_row("经营活动产生的现金流量净额", "120", "90")]
@@ -97,8 +98,24 @@ def test_metrics_compute_expected_values():
     assert results["expense_ratio"].value == D("10")  # (50+30+20)/1000*100
     assert results["cash_content"].value == D("1.2")  # 120/100
     assert results["interest_bearing_debt"].value == D("180")  # 100+50+30
-    assert results["roe"].value == D("12")  # 90 / avg(800,700)=750 *100
+    assert results["roe"].value == D("12")  # 90 / 归母权益 avg(760,740)=750 *100
     assert abs(results["roa"].value - D("100") / D("1900") * 100) < D("0.000001")
+
+
+def test_roe_uses_parent_equity_without_fallback():
+    rows = _full_values()
+    rows["balance"] = [row for row in rows["balance"] if row.label != "归属于母公司所有者权益合计"]
+    results = {item.code: item for item in compute_metrics(values_from_rows(rows))}
+    # 归母权益没取到时不退回「所有者权益合计」：分子是归母口径，分母也必须是
+    assert results["roe"].value is None
+    assert "equity_attributable_holders" in results["roe"].missing_reason
+
+
+def test_roe_label_matches_formula():
+    roe = next(item for item in METRICS if item.code == "roe")
+    assert "加权" not in roe.label
+    assert roe.requires == ("net_profit_attributable", "equity_attributable_holders")
+    assert "归属于母公司所有者权益" in roe.formula
 
 
 def test_growth_metrics_use_previous_year():

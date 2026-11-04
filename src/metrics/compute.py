@@ -75,18 +75,8 @@ def _prefix_account(label: str, schema: Schema):
     return schema.by_code.get(next(iter(codes)))
 
 
-def values_from_rows(
-    rows_by_kind: Mapping[str, list[StatementRow]],
-    schema: Schema | None = None,
-) -> dict[str, dict[str, dict[str, Decimal]]]:
-    """把三表行映射成 values[statement][account_code][period] = Decimal。
-
-    分层优先：精确科目名优先于后缀匹配；同一科目多次披露时保留首个精确值，
-    避免附注或母公司报表覆盖主表。
-    """
-    schema = schema or load_accounts()
-    entries: dict[tuple[str, str], list[tuple[bool, dict[str, Decimal]]]] = {}
-
+def _resolved_rows(rows_by_kind: Mapping[str, list[StatementRow]], schema: Schema):
+    """逐行产出 (标准科目, 行, 是否精确命中, 各期数值)；取数与页码索引共用同一套命中规则。"""
     for origin, rows in rows_by_kind.items():
         for row in rows:
             label = re.sub(r"\s+", "", NUMBERING.sub("", normalize_label(row.label)))
@@ -108,7 +98,23 @@ def values_from_rows(
             }
             if not periods:
                 continue
-            entries.setdefault((account.statement, account.code), []).append((exact, periods))
+            yield account, row, exact, periods
+
+
+def values_from_rows(
+    rows_by_kind: Mapping[str, list[StatementRow]],
+    schema: Schema | None = None,
+) -> dict[str, dict[str, dict[str, Decimal]]]:
+    """把三表行映射成 values[statement][account_code][period] = Decimal。
+
+    分层优先：精确科目名优先于后缀匹配；同一科目多次披露时保留首个精确值，
+    避免附注或母公司报表覆盖主表。
+    """
+    schema = schema or load_accounts()
+    entries: dict[tuple[str, str], list[tuple[bool, dict[str, Decimal]]]] = {}
+
+    for account, _row, exact, periods in _resolved_rows(rows_by_kind, schema):
+        entries.setdefault((account.statement, account.code), []).append((exact, periods))
 
     values: dict[str, dict[str, dict[str, Decimal]]] = {}
     for (statement, code), items in entries.items():
@@ -119,6 +125,18 @@ def values_from_rows(
                 merged.setdefault(period, value)
         values.setdefault(statement, {})[code] = merged
     return values
+
+
+def pages_from_rows(
+    rows_by_kind: Mapping[str, list[StatementRow]],
+    schema: Schema | None = None,
+) -> dict[tuple[str, str], int]:
+    """标准科目 → 取数行页码：与 values_from_rows 同序取首个出现的行，供异常项标注出处。"""
+    schema = schema or load_accounts()
+    pages: dict[tuple[str, str], int] = {}
+    for account, row, _exact, _periods in _resolved_rows(rows_by_kind, schema):
+        pages.setdefault((account.statement, account.code), row.page)
+    return pages
 
 def _pick(values, kind: str, code: str, period: str) -> Decimal | None:
     return values.get(kind, {}).get(code, {}).get(period)
@@ -208,7 +226,7 @@ def compute_metrics(
                 value = _pct(_div(pick("income", "net_profit"), pick("income", "revenue_total")))
             elif metric.code == "roe":
                 value = _pct(
-                    _div(pick("income", "net_profit_attributable"), _average(values, "balance", "total_equity"))
+                    _div(pick("income", "net_profit_attributable"), _average(values, "balance", "equity_attributable_holders"))
                 )
             elif metric.code == "roa":
                 value = _pct(_div(pick("income", "net_profit"), _average(values, "balance", "total_assets")))

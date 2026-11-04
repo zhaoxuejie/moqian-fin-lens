@@ -1,5 +1,5 @@
-version: "1.0.4"
-updated_at: "2026-10-31"
+version: "1.0.5"
+updated_at: "2026-11-03"
 note: "标准科目 Schema：code 一经发布不重命名，新增科目走版本号 PATCH 递增"
 
 accounts:
@@ -751,7 +751,7 @@ metric_requirements:
   net_profit_deducted: [net_profit_deducted]
   gross_margin: [revenue_total, cost_of_sales]
   net_margin: [net_profit, revenue_total]
-  roe: [net_profit_attributable, total_equity]
+  roe: [net_profit_attributable, equity_attributable_holders]
   roa: [net_profit, total_assets]
   operating_cash_flow: [ocf_net]
   cash_content: [ocf_net, net_profit]

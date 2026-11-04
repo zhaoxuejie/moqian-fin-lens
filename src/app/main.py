@@ -31,6 +31,7 @@ from export.xlsx import render_xlsx
 from jobs.manager import Job, JobManager, RateLimiter
 from ops.runlog import append_run, should_alert
 from parse import PdfDoc
+from parse.identity import IDENTITY_PAGES, identify_report
 from traceability.service import trace_entry
 from store.db import Database
 from store.repo import SessionRepository, cleanup_temp_files
@@ -313,6 +314,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         try:
             with PdfDoc(str(temp_path)) as doc:
                 page_count = doc.page_count
+                head_pages = [doc.page_text(number) for number in range(1, min(page_count, IDENTITY_PAGES) + 1)]
         except Exception as exc:
             temp_path.unlink(missing_ok=True)
             raise AppError(ErrorCode.PARSE_FAILED, "PDF 无法打开", {"filename": filename}) from exc
@@ -325,20 +327,35 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             )
 
         session_id = str(form.get("session_id") or f"s_{uuid.uuid4().hex[:8]}")
-        report_type = "annual" if "年度" in filename else "semi"
+        # 公司与期次以正文为准（前 10 页的代码 / 简称 / 页眉年度），正文识别不到才回退文件名
+        identity = identify_report(head_pages)
+        report_type = identity.report_type or ("semi" if "半年度" in filename else "annual")
+        if report_type == "semi":
+            temp_path.unlink(missing_ok=True)
+            raise AppError(
+                ErrorCode.UNSUPPORTED_REPORT_TYPE,
+                "暂不支持半年度报告",
+                {"report_type": "semi", "year": identity.year},
+            )
         match = re.search(r"(20\d{2})", filename)
-        period = match.group(1) if match else "unknown"
+        period = identity.year or (match.group(1) if match else "unknown")
         code_match = re.match(r"^(\d{6})", filename)
-        stock_code = code_match.group(1) if code_match else ""
+        stock_code = identity.stock_code or (code_match.group(1) if code_match else "")
         company = re.sub(r"^\d{6}[_-]", "", filename.rsplit(".", 1)[0])
         company = re.sub(r"[_-]?20\d{2}年?年度报告$", "", company).strip() or filename.rsplit(".", 1)[0]
+        company = identity.short_name or company
 
         existing_session: SessionData | None = None
         if form.get("session_id"):
             existing_session = app.state.sessions.get(session_id) or app.state.repo.load(session_id)
             if existing_session is None:
                 raise AppError(ErrorCode.SESSION_NOT_FOUND, "会话不存在", {"session_id": session_id})
-            if company_key(existing_session.company_name) != company_key(company):
+            # 两边都有证券代码时按代码判断（简称可能改名），否则退回比较归一后的公司名
+            if existing_session.stock_code and stock_code:
+                same_company = existing_session.stock_code == stock_code
+            else:
+                same_company = company_key(existing_session.company_name) == company_key(company)
+            if not same_company:
                 raise AppError(
                     ErrorCode.SESSION_MISMATCH,
                     "与已有会话不是同一公司",

@@ -27,7 +27,7 @@ def dashboard_session():
 
     from anomaly.rules import detect
     from dashboard.session import FilingData, SessionData
-    from metrics import check_statements, compute_metrics, values_from_rows
+    from metrics import check_statements, compute_metrics, pages_from_rows, values_from_rows
     from parse.table import CellValue, StatementRow
 
     def row(label, current, previous=None):
@@ -50,6 +50,7 @@ def dashboard_session():
         "balance": [
             row("资产总计", "2000", "1800"),
             row("负债合计", "1200", "1100"),
+            row("归属于母公司所有者权益合计", "760", "740"),
             row("所有者权益合计", "800", "700"),
             row("应收账款", "300", "150"),
             row("存货", "400", "250"),
@@ -60,7 +61,7 @@ def dashboard_session():
     values = values_from_rows(rows)
     metrics = compute_metrics(values)
     checks = check_statements(values)
-    anomalies = detect(values, {item.code: item for item in metrics}, checks)
+    anomalies = detect(values, {item.code: item for item in metrics}, checks, pages_from_rows(rows))
     filing = FilingData(
         filing_id="f_01",
         period="2024",

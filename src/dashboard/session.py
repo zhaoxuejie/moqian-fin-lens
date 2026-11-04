@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 
 from anomaly.rules import AnomalyItem, detect
-from metrics import MetricResult, check_statements, compute_metrics, values_from_rows
+from metrics import MetricResult, check_statements, compute_metrics, pages_from_rows, values_from_rows
 from parse import PdfDoc, locate_statements
 from parse.normalize import normalize
 from parse.table import CellValue, StatementRow, extract_statement_rows
@@ -353,7 +353,7 @@ def build_filing(pdf_path: str | Path, period: str, filing_id: str = "f_01") -> 
     values = values_from_rows(rows)
     metrics = compute_metrics(values)
     checks = check_statements(values)
-    anomalies = detect(values, {item.code: item for item in metrics}, checks)
+    anomalies = detect(values, {item.code: item for item in metrics}, checks, pages_from_rows(rows))
 
     return FilingData(
         filing_id=filing_id,

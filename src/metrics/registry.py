@@ -39,10 +39,10 @@ METRICS: tuple[MetricDef, ...] = (
     MetricDef("net_margin", "净利率", "%", ("net_profit", "revenue_total"), "净利润 ÷ 营业总收入 × 100"),
     MetricDef(
         "roe",
-        "加权平均净资产收益率",
+        "净资产收益率（ROE）",
         "%",
-        ("net_profit_attributable", "total_equity"),
-        "归母净利润 ÷ 平均所有者权益 × 100",
+        ("net_profit_attributable", "equity_attributable_holders"),
+        "归母净利润 ÷ 平均归属于母公司所有者权益 × 100",
     ),
     MetricDef("roa", "总资产收益率", "%", ("net_profit", "total_assets"), "净利润 ÷ 平均总资产 × 100"),
     MetricDef("operating_cash_flow", "经营活动现金流净额", "元", ("ocf_net",), "取合并现金流量表「经营活动产生的现金流量净额」"),

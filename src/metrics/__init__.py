@@ -3,6 +3,7 @@ from metrics.compute import (
     MetricResult,
     check_statements,
     compute_metrics,
+    pages_from_rows,
     values_from_rows,
 )
 from metrics.registry import METRIC_BY_CODE, METRICS, MetricDef
@@ -15,5 +16,6 @@ __all__ = [
     "MetricResult",
     "check_statements",
     "compute_metrics",
+    "pages_from_rows",
     "values_from_rows",
 ]

@@ -91,7 +91,7 @@ def build_chart_set(filings: list[FilingData]) -> list[dict[str, object]]:
             [
                 _series("净资产收益率", "line", "%", _roe, mark_line=15.0, mark_label="15% 参考"),
             ],
-            "加权平均净资产收益率 = 归母净利润 ÷ 平均所有者权益 × 100；上期栏需更早一期数据",
+            "净资产收益率 = 归母净利润 ÷ 平均归属于母公司所有者权益 × 100；上期栏需更早一期数据",
         ),
         _chart(
             "c5",
@@ -351,7 +351,7 @@ def _dupont_check(filing: FilingData) -> str | None:
     diff = calculated - roe
     if abs(diff) <= 0.5:
         return None
-    return f"三因子乘积 {calculated:.1f}% 与披露 ROE {roe:.1f}% 偏差 {diff:+.1f}pct（口径差异）"
+    return f"三因子乘积 {calculated:.1f}% 与 ROE {roe:.1f}% 偏差 {diff:+.1f}pct（口径差异）"
 
 
 def _free_cash_flow(filing: FilingData, column: str) -> float | None:
