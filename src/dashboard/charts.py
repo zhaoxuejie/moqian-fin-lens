@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Callable
 
 from dashboard.session import FilingData
+from metrics.compute import top_line
 
 Point = tuple[FilingData, str]
 Accessor = Callable[[FilingData, str], float | None]
@@ -34,16 +35,16 @@ def build_chart_set(filings: list[FilingData]) -> list[dict[str, object]]:
             x,
             points,
             [
-                _series("营业总收入", "bar", "元", lambda f, c: _raw(f, "income", "revenue_total", c)),
+                _series("营业总收入", "bar", "元", _top_line),
                 _series(
                     "营收增速",
                     "line",
                     "%",
-                    lambda f, c: None if c != "current" else _growth(f, "income", "revenue_total"),
+                    lambda f, c: None if c != "current" else _top_line_growth(f),
                     yaxis=1,
                 ),
             ],
-            "营业总收入取合并利润表；增速按报告上期比较列计算",
+            "营业总收入取合并利润表（未列示时用营业收入）；增速按报告上期比较列计算",
         ),
         _chart(
             "c2",
@@ -118,7 +119,7 @@ def build_chart_set(filings: list[FilingData]) -> list[dict[str, object]]:
                     "营收增速",
                     "line",
                     "%",
-                    lambda f, c: None if c != "current" else _growth(f, "income", "revenue_total"),
+                    lambda f, c: None if c != "current" else _top_line_growth(f),
                 ),
                 _series(
                     "应收增速",
@@ -265,6 +266,19 @@ def _raw(filing: FilingData, statement: str, code: str, column: str = "current")
     return None if value is None else float(value)
 
 
+def _top_line(filing: FilingData, column: str) -> float | None:
+    """营业总收入；利润表没有单列这一行时用营业收入（与指标层 top_line 同一口径）。"""
+    value = top_line(filing.values, column)
+    return None if value is None else float(value)
+
+
+def _top_line_growth(filing: FilingData) -> float | None:
+    current, previous = _top_line(filing, "current"), _top_line(filing, "previous")
+    if current is None or previous is None or previous <= 0:
+        return None
+    return (current - previous) / previous * 100
+
+
 def _metric(filing: FilingData, code: str) -> float | None:
     item = filing.metrics_by_code.get(code)
     return None if item is None or item.value is None else float(item.value)
@@ -287,7 +301,7 @@ def _growth(filing: FilingData, statement: str, code: str) -> float | None:
 
 
 def _gross_margin(filing: FilingData, column: str) -> float | None:
-    revenue = _raw(filing, "income", "revenue_total", column)
+    revenue = _top_line(filing, column)
     cost = _raw(filing, "income", "cost_of_sales", column)
     if revenue is None or cost is None or revenue == 0:
         return None
@@ -295,7 +309,7 @@ def _gross_margin(filing: FilingData, column: str) -> float | None:
 
 
 def _net_margin(filing: FilingData, column: str) -> float | None:
-    revenue = _raw(filing, "income", "revenue_total", column)
+    revenue = _top_line(filing, column)
     profit = _raw(filing, "income", "net_profit", column)
     if revenue is None or profit is None or revenue == 0:
         return None
@@ -303,7 +317,7 @@ def _net_margin(filing: FilingData, column: str) -> float | None:
 
 
 def _expense_ratio(filing: FilingData, column: str) -> float | None:
-    revenue = _raw(filing, "income", "revenue_total", column)
+    revenue = _top_line(filing, column)
     parts = [
         _raw(filing, "income", code, column)
         for code in ("selling_expenses", "admin_expenses", "finance_expenses")
@@ -323,7 +337,7 @@ def _roe(filing: FilingData, column: str) -> float | None:
 def _dupont_turnover(filing: FilingData, column: str) -> float | None:
     if column != "current":
         return None
-    revenue = _raw(filing, "income", "revenue_total")
+    revenue = _top_line(filing, "current")
     assets = _average(filing, "balance", "total_assets")
     if revenue is None or assets in (None, 0):
         return None

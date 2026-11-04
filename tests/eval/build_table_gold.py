@@ -17,6 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from parse import PdfDoc  # noqa: E402
+from parse.normalize import detect_unit  # noqa: E402
 from schema import load_accounts  # noqa: E402
 
 EVAL_DIR = Path(__file__).resolve().parent
@@ -48,6 +49,8 @@ def main() -> int:
         with PdfDoc(pdf) as doc:
             for kind in ("income", "balance", "cashflow"):
                 start = gold["statements"][kind]["start"]
+                # 金额单位印在表头，取起始页的「单位：…」；读不到按元（TASK-023）
+                unit = detect_unit(doc.page_text(start)) or "元"
                 for page in range(start, start + 4):
                     if page > doc.page_count or picked >= PER_REPORT:
                         continue
@@ -67,6 +70,7 @@ def main() -> int:
                                 "label": label,
                                 "current": match.group("current"),
                                 "previous": match.group("previous"),
+                                "unit": unit,
                                 "source": "line-based",
                             }
                         )

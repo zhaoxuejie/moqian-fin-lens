@@ -107,9 +107,9 @@
   {
     "report": "002230_科大讯飞_2024年年度报告",
     "code": "interest_bearing_debt",
-    "expected": null,
+    "expected": "4982637018.90",
     "unit": "元",
-    "missing_reason": "原文未披露：bonds_payable"
+    "missing_reason": null
   },
   {
     "report": "002230_科大讯飞_2024年年度报告",
@@ -247,9 +247,9 @@
   {
     "report": "002230_科大讯飞_2025年年度报告",
     "code": "interest_bearing_debt",
-    "expected": null,
+    "expected": "3031793940.09",
     "unit": "元",
-    "missing_reason": "原文未披露：bonds_payable"
+    "missing_reason": null
   },
   {
     "report": "002230_科大讯飞_2025年年度报告",
@@ -310,16 +310,16 @@
   {
     "report": "002415_海康威视_2024年年度报告",
     "code": "gross_margin",
-    "expected": null,
+    "expected": "43.83094982620833424708442985",
     "unit": "%",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2024年年度报告",
     "code": "net_margin",
-    "expected": null,
+    "expected": "14.20719763869969405916476708",
     "unit": "%",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2024年年度报告",
@@ -359,9 +359,9 @@
   {
     "report": "002415_海康威视_2024年年度报告",
     "code": "ar_turnover_days",
-    "expected": null,
+    "expected": "145.4678282310750268217173136",
     "unit": "天",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2024年年度报告",
@@ -387,9 +387,9 @@
   {
     "report": "002415_海康威视_2024年年度报告",
     "code": "interest_bearing_debt",
-    "expected": null,
+    "expected": "6151080812.62",
     "unit": "元",
-    "missing_reason": "原文未披露：bonds_payable"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2024年年度报告",
@@ -401,16 +401,16 @@
   {
     "report": "002415_海康威视_2024年年度报告",
     "code": "expense_ratio",
-    "expected": null,
+    "expected": "16.25196487522388305013690808",
     "unit": "%",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2024年年度报告",
     "code": "revenue_growth",
-    "expected": null,
+    "expected": "3.530675990924939069690308556",
     "unit": "%",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2024年年度报告",
@@ -450,16 +450,16 @@
   {
     "report": "002415_海康威视_2025年年度报告",
     "code": "gross_margin",
-    "expected": null,
+    "expected": "45.87760310222200558135222387",
     "unit": "%",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2025年年度报告",
     "code": "net_margin",
-    "expected": null,
+    "expected": "16.68362656501023068415968386",
     "unit": "%",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2025年年度报告",
@@ -499,9 +499,9 @@
   {
     "report": "002415_海康威视_2025年年度报告",
     "code": "ar_turnover_days",
-    "expected": null,
+    "expected": "133.6034169755049835662843102",
     "unit": "天",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2025年年度报告",
@@ -527,9 +527,9 @@
   {
     "report": "002415_海康威视_2025年年度报告",
     "code": "interest_bearing_debt",
-    "expected": null,
+    "expected": "3896431051.33",
     "unit": "元",
-    "missing_reason": "原文未披露：bonds_payable"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2025年年度报告",
@@ -541,16 +541,16 @@
   {
     "report": "002415_海康威视_2025年年度报告",
     "code": "expense_ratio",
-    "expected": null,
+    "expected": "16.01677938514270137625070503",
     "unit": "%",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2025年年度报告",
     "code": "revenue_growth",
-    "expected": null,
+    "expected": "0.01326653546137036202475618331",
     "unit": "%",
-    "missing_reason": "原文未披露：revenue_total"
+    "missing_reason": null
   },
   {
     "report": "002415_海康威视_2025年年度报告",
@@ -886,7 +886,7 @@
     "code": "roe",
     "expected": null,
     "unit": "%",
-    "missing_reason": "原文未披露：net_profit_attributable、total_equity"
+    "missing_reason": "原文未披露：net_profit_attributable、equity_attributable_holders"
   },
   {
     "report": "688111_金山办公_2024年年度报告",
@@ -1026,7 +1026,7 @@
     "code": "roe",
     "expected": null,
     "unit": "%",
-    "missing_reason": "原文未披露：net_profit_attributable、total_equity"
+    "missing_reason": "原文未披露：net_profit_attributable、equity_attributable_holders"
   },
   {
     "report": "688111_金山办公_2025年年度报告",
@@ -1122,14 +1122,14 @@
   {
     "report": "688981_中芯国际_2024年年度报告",
     "code": "revenue_total",
-    "expected": "57795570",
+    "expected": "57795570000",
     "unit": "元",
     "missing_reason": null
   },
   {
     "report": "688981_中芯国际_2024年年度报告",
     "code": "revenue",
-    "expected": "57795570",
+    "expected": "57795570000",
     "unit": "元",
     "missing_reason": null
   },
@@ -1166,7 +1166,7 @@
     "code": "roe",
     "expected": null,
     "unit": "%",
-    "missing_reason": "原文未披露：net_profit_attributable、total_equity"
+    "missing_reason": "原文未披露：net_profit_attributable"
   },
   {
     "report": "688981_中芯国际_2024年年度报告",
@@ -1178,7 +1178,7 @@
   {
     "report": "688981_中芯国际_2024年年度报告",
     "code": "operating_cash_flow",
-    "expected": "22658629",
+    "expected": "22658629000",
     "unit": "元",
     "missing_reason": null
   },
@@ -1192,7 +1192,7 @@
   {
     "report": "688981_中芯国际_2024年年度报告",
     "code": "accounts_receivable",
-    "expected": "2922670",
+    "expected": "2922670000",
     "unit": "元",
     "missing_reason": null
   },
@@ -1206,7 +1206,7 @@
   {
     "report": "688981_中芯国际_2024年年度报告",
     "code": "inventory",
-    "expected": "21267282",
+    "expected": "21267282000",
     "unit": "元",
     "missing_reason": null
   },
@@ -1227,9 +1227,9 @@
   {
     "report": "688981_中芯国际_2024年年度报告",
     "code": "interest_bearing_debt",
-    "expected": null,
+    "expected": "58855877000",
     "unit": "元",
-    "missing_reason": "原文未披露：bonds_payable"
+    "missing_reason": null
   },
   {
     "report": "688981_中芯国际_2024年年度报告",
@@ -1262,14 +1262,14 @@
   {
     "report": "688981_中芯国际_2025年年度报告",
     "code": "revenue_total",
-    "expected": "67323192",
+    "expected": "67323192000",
     "unit": "元",
     "missing_reason": null
   },
   {
     "report": "688981_中芯国际_2025年年度报告",
     "code": "revenue",
-    "expected": "67323192",
+    "expected": "67323192000",
     "unit": "元",
     "missing_reason": null
   },
@@ -1306,7 +1306,7 @@
     "code": "roe",
     "expected": null,
     "unit": "%",
-    "missing_reason": "原文未披露：net_profit_attributable、total_equity"
+    "missing_reason": "原文未披露：net_profit_attributable"
   },
   {
     "report": "688981_中芯国际_2025年年度报告",
@@ -1318,7 +1318,7 @@
   {
     "report": "688981_中芯国际_2025年年度报告",
     "code": "operating_cash_flow",
-    "expected": "20080979",
+    "expected": "20080979000",
     "unit": "元",
     "missing_reason": null
   },
@@ -1332,7 +1332,7 @@
   {
     "report": "688981_中芯国际_2025年年度报告",
     "code": "accounts_receivable",
-    "expected": "6167839",
+    "expected": "6167839000",
     "unit": "元",
     "missing_reason": null
   },
@@ -1367,9 +1367,9 @@
   {
     "report": "688981_中芯国际_2025年年度报告",
     "code": "interest_bearing_debt",
-    "expected": null,
+    "expected": "3452046000",
     "unit": "元",
-    "missing_reason": "原文未披露：long_term_borrowings、bonds_payable"
+    "missing_reason": null
   },
   {
     "report": "688981_中芯国际_2025年年度报告",

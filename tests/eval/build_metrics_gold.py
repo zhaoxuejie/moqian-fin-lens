@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 from align import normalize_label  # noqa: E402
 from metrics import METRICS, compute_metrics  # noqa: E402
 from parse import PdfDoc  # noqa: E402
-from parse.normalize import normalize  # noqa: E402
+from parse.normalize import detect_unit, normalize  # noqa: E402
 from schema import load_accounts  # noqa: E402
 
 EVAL_DIR = Path(__file__).resolve().parent
@@ -75,9 +75,12 @@ def main() -> int:
         if pdf is None:
             continue
         pages: list[str] = []
+        units: dict[str, str] = {}
         with PdfDoc(pdf) as doc:
             for kind in ("income", "balance", "cashflow"):
                 start = gold["statements"][kind]["start"]
+                # 金额单位印在表头，取起始页的「单位：…」；读不到按元（TASK-023）
+                units[kind] = detect_unit(doc.page_text(start)) or "元"
                 for page in range(start, start + 4):
                     if page <= doc.page_count:
                         pages.append(doc.page_text(page))
@@ -85,7 +88,7 @@ def main() -> int:
         raw_values = build_values(pages, schema)
         values = {
             kind: {
-                code: {period: normalize(text).value for period, text in periods.items()}
+                code: {period: normalize(text, units.get(kind, "元")).value for period, text in periods.items()}
                 for code, periods in codes.items()
             }
             for kind, codes in raw_values.items()

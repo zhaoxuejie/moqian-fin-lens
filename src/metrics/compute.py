@@ -173,6 +173,14 @@ def _def_missing(metric: MetricDef, income: dict[str, Decimal]) -> str | None:
     return "原文未披露：" + "、".join(missing)
 
 
+def top_line(values: Mapping[str, dict[str, dict[str, Decimal]]], period: str = "current") -> Decimal | None:
+    """营业总收入；利润表没有单列这一行时用营业收入（两者此时相等）。"""
+    income = values.get("income", {})
+    if "revenue_total" in income:
+        return income["revenue_total"].get(period)
+    return income.get("revenue", {}).get(period)
+
+
 def _growth(current: Decimal | None, previous: Decimal | None) -> tuple[Decimal | None, str | None]:
     if current is None or previous is None:
         return None, "基期数据缺失"
@@ -200,7 +208,15 @@ def compute_metrics(
     results: list[MetricResult] = []
 
     for metric in METRICS:
-        missing_codes = [code for code in metric.requires if not present(code)]
+        fallback = dict(metric.fallbacks)
+
+        def available(code: str) -> bool:
+            return present(code) or (code in fallback and present(fallback[code]))
+
+        if metric.any_of:
+            missing_codes = [] if any(available(code) for code in metric.requires) else list(metric.requires)
+        else:
+            missing_codes = [code for code in metric.requires if not available(code)]
         missing: str | None = (
             None if not missing_codes else "原文未披露：" + "、".join(missing_codes)
         )
@@ -219,11 +235,11 @@ def compute_metrics(
             elif metric.code == "operating_cash_flow":
                 value = pick("cashflow", "ocf_net")
             elif metric.code == "gross_margin":
-                revenue = pick("income", "revenue_total")
+                revenue = top_line(values)
                 cost = pick("income", "cost_of_sales")
                 value = _pct(_div(None if revenue is None or cost is None else revenue - cost, revenue))
             elif metric.code == "net_margin":
-                value = _pct(_div(pick("income", "net_profit"), pick("income", "revenue_total")))
+                value = _pct(_div(pick("income", "net_profit"), top_line(values)))
             elif metric.code == "roe":
                 value = _pct(
                     _div(pick("income", "net_profit_attributable"), _average(values, "balance", "equity_attributable_holders"))
@@ -236,9 +252,7 @@ def compute_metrics(
             elif metric.code == "accounts_receivable":
                 value = pick("balance", "accounts_receivable")
             elif metric.code == "ar_turnover_days":
-                turnover = _div(
-                    pick("income", "revenue_total"), _average(values, "balance", "accounts_receivable")
-                )
+                turnover = _div(top_line(values), _average(values, "balance", "accounts_receivable"))
                 value = None if turnover in (None, ZERO) else Decimal(365) / turnover
             elif metric.code == "inventory":
                 value = pick("balance", "inventory")
@@ -266,12 +280,9 @@ def compute_metrics(
                     ),
                     ZERO,
                 )
-                value = _pct(_div(expense, pick("income", "revenue_total")))
+                value = _pct(_div(expense, top_line(values)))
             elif metric.code == "revenue_growth":
-                value, note = _growth(
-                    pick("income", "revenue_total"),
-                    _pick(values, "income", "revenue_total", "previous"),
-                )
+                value, note = _growth(top_line(values), top_line(values, "previous"))
             elif metric.code == "net_profit_growth":
                 value, note = _growth(
                     pick("income", "net_profit_deducted"),
@@ -284,7 +295,16 @@ def compute_metrics(
         yoy = None
         yoy_unit = None
         yoy_note = None
-        if metric.unit == "元" and metric.requires:
+        if metric.any_of:
+            # 合计类指标的同比按合计算，不能只看第一个依赖科目
+            def total(period: str) -> Decimal | None:
+                parts = [_pick(values, "balance", code, period) for code in metric.requires]
+                known = [part for part in parts if part is not None]
+                return sum(known, ZERO) if known else None
+
+            yoy, yoy_note = _growth(total("current"), total("previous"))
+            yoy_unit = "%"
+        elif metric.unit == "元" and metric.requires:
             code = metric.requires[0]
             yoy, yoy_note = _growth(
                 pick("income", code) or pick("balance", code) or pick("cashflow", code),

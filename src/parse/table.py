@@ -6,7 +6,7 @@ from decimal import Decimal
 from typing import Iterable, Sequence
 
 from core.errors import AppError
-from parse.normalize import normalize
+from parse.normalize import detect_unit, normalize
 
 NUMERIC = re.compile(r"^[\(（]?[-－—]?[\d,，]+(?:\.\d+)?[\)）]?$")
 ROW_TOLERANCE = 4.0
@@ -140,6 +140,7 @@ def _assign_cells(
     numeric_words: Sequence[Word],
     centers: dict[str, float] | None,
     page: int,
+    unit: str = "元",
 ) -> list[CellValue]:
     cells: list[CellValue] = []
     if centers:
@@ -152,7 +153,7 @@ def _assign_cells(
                         best = word
             if best is not None:
                 try:
-                    parsed = normalize(best.text)
+                    parsed = normalize(best.text, unit)
                 except AppError:
                     continue
                 cells.append(
@@ -169,7 +170,7 @@ def _assign_cells(
 
     for order, word in enumerate(sorted(numeric_words, key=lambda item: item.x0)[:2]):
         try:
-            parsed = normalize(word.text)
+            parsed = normalize(word.text, unit)
         except AppError:
             continue
         cells.append(
@@ -184,7 +185,7 @@ def _assign_cells(
     return cells
 
 
-def build_rows(words: Sequence[Word], page: int) -> list[StatementRow]:
+def build_rows(words: Sequence[Word], page: int, unit: str = "元") -> list[StatementRow]:
     """把单页的词块还原成带期间列的科目行（纯函数，便于单测）。"""
     result: list[StatementRow] = []
 
@@ -207,7 +208,7 @@ def build_rows(words: Sequence[Word], page: int) -> list[StatementRow]:
                 label = ""
 
             numeric_words = [word for word in row_words if is_value_token(word.text)]
-            cells = _assign_cells(numeric_words, centers or None, page)
+            cells = _assign_cells(numeric_words, centers or None, page, unit)
 
             if not label and not cells:
                 continue
@@ -271,7 +272,9 @@ def extract_words(pdf_path: str, pages: Iterable[int]) -> dict[int, list[Word]]:
     return result
 
 
-def _rows_from_table(table: Sequence[Sequence[str | None]], page: int) -> list[StatementRow]:
+def _rows_from_table(
+    table: Sequence[Sequence[str | None]], page: int, unit: str = "元"
+) -> list[StatementRow]:
     """把 pdfplumber 的一张表还原成科目行：表头定位期间列，左列取科目名。"""
     grid = [["" if cell is None else str(cell).strip() for cell in row] for row in table]
     if not grid:
@@ -315,7 +318,7 @@ def _rows_from_table(table: Sequence[Sequence[str | None]], page: int) -> list[S
             if not is_value_token(text):
                 continue
             try:
-                parsed = normalize(text)
+                parsed = normalize(text, unit)
             except AppError:
                 continue
             cells.append(CellValue(text, parsed.value, period, page, (0.0, 0.0, 0.0, 0.0)))
@@ -364,16 +367,39 @@ def _rows_from_table(table: Sequence[Sequence[str | None]], page: int) -> list[S
     return merged
 
 
+def statement_units(
+    pages: Sequence[str],
+    page_ranges: dict[str, tuple[int, int]],
+) -> dict[str, str]:
+    """每张表的金额单位：取页范围内第一处「单位：…」，读不到按元。
+
+    单元格里的数字不带单位，单位只印在表头；不读这一行，千元报表的金额会小 1000 倍。
+    """
+    units: dict[str, str] = {}
+    for kind, (start, end) in page_ranges.items():
+        found = None
+        for page_number in range(start, end + 1):
+            if 1 <= page_number <= len(pages):
+                found = detect_unit(pages[page_number - 1])
+                if found:
+                    break
+        units[kind] = found or "元"
+    return units
+
+
 def extract_statement_rows(
     pdf_path: str,
     page_ranges: dict[str, tuple[int, int]],
+    units: dict[str, str] | None = None,
 ) -> dict[str, list[StatementRow]]:
-    """按三表页范围抽取行：pdfplumber 表格 API 为主，坐标聚类兜底。"""
+    """按三表页范围抽取行：pdfplumber 表格 API 为主，坐标聚类兜底；金额按各表表头单位换算成元。"""
     import pdfplumber
 
+    units = units or {}
     result: dict[str, list[StatementRow]] = {}
     with pdfplumber.open(pdf_path) as pdf:
         for kind, (start, end) in page_ranges.items():
+            unit = units.get(kind, "元")
             rows: list[StatementRow] = []
             for page_number in range(start, end + 1):
                 if page_number < 1 or page_number > len(pdf.pages):
@@ -381,7 +407,7 @@ def extract_statement_rows(
                 page = pdf.pages[page_number - 1]
                 tables = page.extract_tables()
                 for table in tables:
-                    rows.extend(_rows_from_table(table, page_number))
+                    rows.extend(_rows_from_table(table, page_number, unit))
             if not rows:
                 words = [
                     Word(item["text"], float(item["x0"]), float(item["top"]), float(item["x1"]), float(item["bottom"]))
@@ -389,7 +415,7 @@ def extract_statement_rows(
                     if 1 <= page_number <= len(pdf.pages)
                     for item in pdf.pages[page_number - 1].extract_words()
                 ]
-                rows = build_rows(words, start)
+                rows = build_rows(words, start, unit)
             result[kind] = _merge_cross_page_rows(rows)
     return result
 

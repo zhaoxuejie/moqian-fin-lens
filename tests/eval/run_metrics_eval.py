@@ -14,12 +14,20 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from metrics import check_statements, compute_metrics, values_from_rows  # noqa: E402
-from parse.table import extract_statement_rows  # noqa: E402
+from parse import PdfDoc  # noqa: E402
+from parse.table import extract_statement_rows, statement_units  # noqa: E402
 
 EVAL_DIR = Path(__file__).resolve().parent
 GOLD_DIR = EVAL_DIR / "gold"
 PDF_DIR = EVAL_DIR / "pdf"
 GOLD_FILE = GOLD_DIR / "metrics-200.json"
+
+
+def _units(pdf: Path, ranges: dict[str, tuple[int, int]]) -> dict[str, str]:
+    """与产品同一口径读各表表头单位（TASK-023）。"""
+    with PdfDoc(str(pdf)) as doc:
+        pages = [doc.page_text(number) for number in range(1, doc.page_count + 1)]
+    return statement_units(pages, ranges)
 
 
 def main() -> int:
@@ -49,7 +57,7 @@ def main() -> int:
             kind: (starts[kind], (ordered[ordered.index(starts[kind]) + 1] - 1) if ordered.index(starts[kind]) + 1 < len(ordered) else starts[kind] + 2)
             for kind in ("income", "balance", "cashflow")
         }
-        rows = extract_statement_rows(str(pdf), ranges)
+        rows = extract_statement_rows(str(pdf), ranges, _units(pdf, ranges))
         values = values_from_rows(rows)
         results = {item.code: item for item in compute_metrics(values)}
 

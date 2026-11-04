@@ -1,0 +1,62 @@
+........................................................................ [ 24%]
+........................................................................ [ 48%]
+........................................................................ [ 72%]
+........................................................................ [ 96%]
+..........                                                               [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.11/site-packages/fastapi/testclient.py:1
+  <repo>/.venv/lib/python3.11/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.11.8-final-0 _______________
+
+Name                           Stmts   Miss  Cover   Missing
+------------------------------------------------------------
+src/align/__init__.py              2      0   100%
+src/align/matcher.py              65      0   100%
+src/anomaly/__init__.py            0      0   100%
+src/anomaly/rules.py              69      1    99%   55
+src/app/__init__.py                0      0   100%
+src/app/main.py                  323     32    90%   71, 88-99, 104, 298, 318-320, 352, 357, 371, 426, 435-458, 507-509, 523-524, 557, 571, 589, 602-603
+src/core/__init__.py               0      0   100%
+src/core/config.py                34      1    97%   59
+src/core/context.py                4      0   100%
+src/core/errors.py                31      0   100%
+src/core/logging.py               40      3    92%   27, 35-36
+src/core/response.py              10      0   100%
+src/dashboard/__init__.py          0      0   100%
+src/dashboard/build.py            19      1    95%   29
+src/dashboard/charts.py          180      8    96%   26, 238, 250, 256, 278, 307, 315, 327
+src/dashboard/compare.py          45      4    91%   18, 45-46, 54
+src/dashboard/persistence.py      26      3    88%   171, 184-185
+src/dashboard/session.py         250     40    84%   89, 98, 107, 162-163, 165, 180, 251, 262, 271-272, 274, 301-329, 397-398
+src/dashboard/summary.py          54      1    98%   15
+src/export/__init__.py             0      0   100%
+src/export/guard.py               10      0   100%
+src/export/markdown.py            67      1    99%   78
+src/export/xlsx.py                54      0   100%
+src/jobs/__init__.py               0      0   100%
+src/jobs/manager.py              130     13    90%   56, 89-105
+src/metrics/__init__.py            3      0   100%
+src/metrics/compute.py           227     11    95%   153, 155, 165, 170-173, 343, 359, 377-378
+src/metrics/registry.py           15      0   100%
+src/parse/__init__.py              5      0   100%
+src/parse/identity.py             38      0   100%
+src/parse/labels.py               28      0   100%
+src/parse/locate.py               91      4    96%   57, 77, 153, 166
+src/parse/normalize.py            65      0   100%
+src/parse/pdfdoc.py               47      0   100%
+src/parse/table.py               241     58    76%   77-79, 93, 101-109, 147-169, 174-175, 196, 208, 214, 218-236, 254-272, 281, 311, 322-323, 328, 330, 406, 412-418, 428-438
+src/schema/__init__.py             2      0   100%
+src/schema/loader.py              92      0   100%
+src/store/__init__.py              0      0   100%
+src/store/db.py                   67      7    90%   82-88
+src/store/migrations.py            4      0   100%
+src/store/repo.py                 73      9    88%   30-34, 68, 107, 114-115
+src/traceability/__init__.py       1      0   100%
+src/traceability/service.py       58      4    93%   20, 51, 71, 90
+------------------------------------------------------------
+TOTAL                           2470    201    92%
+298 passed, 1 warning in 461.41s (0:07:41)

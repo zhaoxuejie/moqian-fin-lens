@@ -51,9 +51,12 @@ def _metric_trace(session: SessionData, entry_id: str, filing=None) -> dict[str,
         raise AppError(ErrorCode.NOT_FOUND, "指标不存在", {"entry_id": entry_id})
     definition = METRIC_BY_CODE.get(code)
     requires = definition.requires if definition else ()
+    fallbacks = dict(definition.fallbacks) if definition else {}
+    # 依赖科目未列示时按替代科目找出处（如没有营业总收入时找营业收入那一行）
+    candidates = [code for required in requires for code in (required, fallbacks.get(required)) if code]
     page = None
     snippet = ""
-    for account_code in requires:
+    for account_code in candidates:
         for kind, rows in filing.rows.items():
             for row in rows:
                 account = _resolve_row(row)

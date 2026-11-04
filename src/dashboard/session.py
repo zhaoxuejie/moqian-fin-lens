@@ -9,8 +9,8 @@ from pathlib import Path
 from anomaly.rules import AnomalyItem, detect
 from metrics import MetricResult, check_statements, compute_metrics, pages_from_rows, values_from_rows
 from parse import PdfDoc, locate_statements
-from parse.normalize import normalize
-from parse.table import CellValue, StatementRow, extract_statement_rows
+from parse.normalize import detect_unit, normalize
+from parse.table import CellValue, StatementRow, extract_statement_rows, statement_units
 
 
 @dataclass
@@ -128,46 +128,55 @@ def filter_rows_by_statement(rows_by_kind: dict[str, list[StatementRow]]) -> dic
 
 
 DEDUCTED_LABEL = "扣除非经常性损益"
-DEDUCTED_AMOUNT = re.compile(r"\(?-?[\d,]+\.\d{2}\)?")
+# 科目名可能折行，字与字之间允许空白；「扣除非经常性损益」到「净利润」之间不能夹数字
+DEDUCTED_PATTERN = re.compile(r"扣\s*除\s*非\s*经\s*常\s*性\s*损\s*益[^\d]{0,20}?净\s*利\s*润")
+# 金额：带千分位的整数或小数（千元报表常是整数），或两位小数
+UNIT_NOTE = re.compile(r"^[（(](?:人民币)?(百万元|千元|万元|亿元|元)[)）]$")
+DEDUCTED_AMOUNT = re.compile(r"^\(?-?(?:\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+\.\d{2})\)?$")
 
 
 def _add_deducted_fallback(rows: dict[str, list[StatementRow]], pages: list[str]) -> dict[str, list[StatementRow]]:
-    """扣非净利润通常披露在「主要财务指标」而非三表页，缺省时全文兜底抓取一次。"""
+    """扣非净利润通常披露在「主要财务指标」而非三表页，缺省时全文兜底抓取一次。
+
+    数字之间的空白就是分隔符，不能先去空白再找数：千元报表的金额是整数，
+    去掉空白后「2,645,419 3,269,518」会粘成一串，只能靠小数点断开，就会读错。
+    """
     if any("扣除非经常性损益" in row.label for row in rows.get("income", [])):
         return rows
     for index, text in enumerate(pages, start=1):
-        flat = re.sub(r"\s+", "", text)
-        position = flat.find(DEDUCTED_LABEL)
-        if position == -1:
-            continue
-        window = flat[position:position + 160]
-        label_end = window.find("净利润")
-        if label_end == -1:
-            continue
-        tail = window[label_end + len("净利润"):]
-        amounts = DEDUCTED_AMOUNT.findall(tail)
-        if len(amounts) < 2:
-            continue
-        try:
-            current = normalize(amounts[0]).value
-            previous = normalize(amounts[1]).value
-        except Exception:
-            continue
-        if current is None:
-            continue
-        cells = [CellValue(amounts[0], current, "current", index, (0.0, 0.0, 0.0, 0.0))]
-        if previous is not None:
-            cells.append(CellValue(amounts[1], previous, "previous", index, (0.0, 0.0, 0.0, 0.0)))
-        rows.setdefault("income", []).append(
-            StatementRow(
-                label="归属于上市公司股东的扣除非经常性损益的净利润",
-                page=index,
-                snippet=window[:200],
-                cells=tuple(cells),
-                is_missing=False,
+        spaced = re.sub(r"\s+", " ", text)
+        for match in DEDUCTED_PATTERN.finditer(spaced):
+            tokens = spaced[match.end():match.end() + 120].split()
+            # 科目名后面可能跟着单位说明「（元）」「（千元）」，它比页面单位行更准
+            label_unit = None
+            if tokens and UNIT_NOTE.match(tokens[0]):
+                label_unit = UNIT_NOTE.match(tokens.pop(0)).group(1)
+            if len(tokens) < 2 or not all(DEDUCTED_AMOUNT.match(token) for token in tokens[:2]):
+                continue  # 叙述里的「扣除非经常性损益后的净利润孰低」之类，后面不是两个金额
+            amounts = tokens[:2]
+            # 「主要会计数据」一节有自己的单位行（中芯国际是千元），读不到按元
+            unit = label_unit or detect_unit(text) or "元"
+            try:
+                current = normalize(amounts[0], unit).value
+                previous = normalize(amounts[1], unit).value
+            except Exception:
+                continue
+            if current is None:
+                continue
+            cells = [CellValue(amounts[0], current, "current", index, (0.0, 0.0, 0.0, 0.0))]
+            if previous is not None:
+                cells.append(CellValue(amounts[1], previous, "previous", index, (0.0, 0.0, 0.0, 0.0)))
+            window = spaced[match.start():match.end() + 120]
+            rows.setdefault("income", []).append(
+                StatementRow(
+                    label="归属于上市公司股东的扣除非经常性损益的净利润",
+                    page=index,
+                    snippet=window[:200],
+                    cells=tuple(cells),
+                    is_missing=False,
+                )
             )
-        )
-        return rows
+            return rows
     return rows
 
 
@@ -226,9 +235,16 @@ ROW_LINE = re.compile(
 )
 
 
-def _recover_first_rows(rows: dict[str, list[StatementRow]], pages: list[str], ranges: dict[str, tuple[int, int]]) -> dict[str, list[StatementRow]]:
+def _recover_first_rows(
+    rows: dict[str, list[StatementRow]],
+    pages: list[str],
+    ranges: dict[str, tuple[int, int]],
+    units: dict[str, str] | None = None,
+) -> dict[str, list[StatementRow]]:
     """报表首行被并进表头时，用起始页文本把锚点科目补回第一行。"""
+    units = units or {}
     for kind, (start, _end) in ranges.items():
+        unit = units.get(kind, "元")
         items = rows.get(kind, [])
         anchors = FIRST_ROW_ANCHORS.get(kind, ())
         if not items or not anchors:
@@ -250,8 +266,8 @@ def _recover_first_rows(rows: dict[str, list[StatementRow]], pages: list[str], r
                 if not match or not any(anchor in match.group("label") for anchor in anchors):
                     continue
                 try:
-                    current = normalize(match.group("current")).value
-                    previous = normalize(match.group("previous")).value
+                    current = normalize(match.group("current"), unit).value
+                    previous = normalize(match.group("previous"), unit).value
                 except Exception:
                     continue
                 if current is None:
@@ -347,9 +363,10 @@ def build_filing(pdf_path: str | Path, period: str, filing_id: str = "f_01") -> 
         for kind in starts
     }
 
-    rows = extract_statement_rows(path, ranges)
+    units = statement_units(pages, ranges)
+    rows = extract_statement_rows(path, ranges, units)
     rows = _add_deducted_fallback(rows, pages)
-    rows = _recover_first_rows(rows, pages, ranges)
+    rows = _recover_first_rows(rows, pages, ranges, units)
     values = values_from_rows(rows)
     metrics = compute_metrics(values)
     checks = check_statements(values)

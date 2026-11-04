@@ -1,5 +1,5 @@
-version: "1.0.5"
-updated_at: "2026-11-03"
+version: "1.0.6"
+updated_at: "2026-11-04"
 note: "标准科目 Schema：code 一经发布不重命名，新增科目走版本号 PATCH 递增"
 
 accounts:
@@ -331,12 +331,12 @@ accounts:
   - code: total_equity
     label: 所有者权益合计
     statement: balance
-    aliases: [所有者权益合计, 股东权益合计]
+    aliases: [所有者权益合计, 股东权益合计, 所有者权益（或股东权益）合计]
     required: true
   - code: equity_attributable_holders
     label: 归属于母公司所有者权益合计
     statement: balance
-    aliases: [归属于母公司所有者权益合计, 归属于母公司股东权益合计]
+    aliases: [归属于母公司所有者权益合计, 归属于母公司股东权益合计, 归属于母公司所有者权益（或股东权益）合计]
     required: false
   - code: minority_equity
     label: 少数股东权益
@@ -346,7 +346,7 @@ accounts:
   - code: total_liabilities_and_equity
     label: 负债和所有者权益总计
     statement: balance
-    aliases: [负债和所有者权益总计, 负债和股东权益总计]
+    aliases: [负债和所有者权益总计, 负债和股东权益总计, 负债和所有者权益（或股东权益）总计]
     required: true
 
   # ---------- 现金流量表 ----------

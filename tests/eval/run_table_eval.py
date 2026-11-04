@@ -18,7 +18,8 @@ import re  # noqa: E402
 
 from align import normalize_label  # noqa: E402
 from parse.normalize import normalize  # noqa: E402
-from parse.table import extract_statement_rows  # noqa: E402
+from parse import PdfDoc  # noqa: E402
+from parse.table import extract_statement_rows, statement_units  # noqa: E402
 
 EVAL_DIR = Path(__file__).resolve().parent
 GOLD_DIR = EVAL_DIR / "gold"
@@ -33,10 +34,17 @@ def canonical(label: str) -> str:
     return NOTE.sub("", normalize_label(label)).strip()
 
 
-def _expected(raw: str) -> Decimal:
-    result = normalize(raw)
+def _expected(raw: str, unit: str = "元") -> Decimal:
+    result = normalize(raw, unit)
     assert result.value is not None
     return result.value
+
+
+def _units(pdf: Path, ranges: dict[str, tuple[int, int]]) -> dict[str, str]:
+    """与产品同一口径读各表表头单位（TASK-023）。"""
+    with PdfDoc(str(pdf)) as doc:
+        pages = [doc.page_text(number) for number in range(1, doc.page_count + 1)]
+    return statement_units(pages, ranges)
 
 
 def main() -> int:
@@ -62,7 +70,7 @@ def main() -> int:
             kind: (gold["statements"][kind]["start"], gold["statements"][kind]["start"] + 2)
             for kind in ("income", "balance", "cashflow")
         }
-        rows = extract_statement_rows(str(pdf), ranges)
+        rows = extract_statement_rows(str(pdf), ranges, _units(pdf, ranges))
         index: dict[tuple[int, str], list] = {}
         for kind_rows in rows.values():
             for row in kind_rows:
@@ -78,9 +86,9 @@ def main() -> int:
                 continue
             row = candidates[0]
             actual = {cell.period: cell.value for cell in row.cells}
-            ok = actual.get("current") == _expected(str(case["current"]))
+            ok = actual.get("current") == _expected(str(case["current"]), case.get("unit", "元"))
             if ok and actual.get("previous") is not None:
-                ok = actual["previous"] == _expected(str(case["previous"]))
+                ok = actual["previous"] == _expected(str(case["previous"]), case.get("unit", "元"))
             if ok:
                 matched += 1
             else:

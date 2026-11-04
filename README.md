@@ -11,10 +11,10 @@ moqian-fin-lens parses A-share annual report PDFs into structured statements, 20
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue)
-![Tests](https://img.shields.io/badge/tests-274%20passing-brightgreen)
-![Coverage](https://img.shields.io/badge/coverage-91.46%25-brightgreen)
+![Tests](https://img.shields.io/badge/tests-298%20passing-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-91.86%25-brightgreen)
 
-当前版本：v0.4.1（宣称与实现一致性修补，见 [CHANGELOG](CHANGELOG.md)）
+当前版本：v0.4.2（数值正确性修补，见 [CHANGELOG](CHANGELOG.md)）
 
 ## 界面
 
@@ -79,8 +79,8 @@ pytest --cov                          # 覆盖率门槛 80%
 
 | 场景 | 结果 |
 | ---- | ---- |
-| 新克隆仓库（没有评估集 PDF） | 255 通过、19 跳过，覆盖率 83.71% |
-| 放入评估集 10 份年报后 | 274 通过，覆盖率 91.46%（徽章数字） |
+| 新克隆仓库（没有评估集 PDF） | 276 通过、22 跳过，覆盖率 84.25% |
+| 放入评估集 10 份年报后 | 298 通过，覆盖率 91.86%（徽章数字；输出存档见 `tests/eval/reports/pytest-full.txt`） |
 
 评估集是 5 家公司 2024、2025 两年的年报原文，体积大且涉及版权，不入库。下载地址见 [`tests/eval/pdf/00_财报来源与校验清单.md`](tests/eval/pdf/00_财报来源与校验清单.md)，按「代码_简称/代码_简称_年份年年度报告.pdf」放进 `tests/eval/pdf/`。
 
@@ -105,7 +105,7 @@ docker compose exec app python -c "import urllib.request; print(urllib.request.u
 - **解析**：pypdfium2（文本层）、pdfplumber（表格与坐标）、openpyxl（导出）
 - **前端**：原生 JS + ECharts 5（本地打包，无 CDN 依赖）
 - **存储**：SQLite（WAL），只存结构化结果与溯源片段，原件解析后即删除
-- **质量**：274 项测试、覆盖率 91.46%（含评估集 PDF）；以文档驱动开发（PRD → 架构 / ADR → 接口契约 → 任务卡）
+- **质量**：298 项测试、覆盖率 91.86%（含评估集 PDF）；以文档驱动开发（PRD → 架构 / ADR → 接口契约 → 任务卡）
 
 详细设计见 [`docs/architecture.md`](docs/architecture.md)、[`docs/prd.md`](docs/prd.md)、[`docs/api-contract.md`](docs/api-contract.md)。
 

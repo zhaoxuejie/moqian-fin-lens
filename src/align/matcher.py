@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import difflib
+import re
 from dataclasses import dataclass
 from typing import Iterable, Sequence
 
@@ -8,6 +9,9 @@ from schema import Schema, load_accounts
 
 PREFIXES = ("其中：", "其中:", "减：", "减:", "加：", "加:")
 UNIT_SUFFIXES = ("（人民币元）", "(人民币元)", "（元）", "(元)", "（万元）", "(万元)")
+# 上交所报表的写法：「1.归属于母公司股东的净利润（净亏损以"-"号填列）」
+ARABIC_NUMBERING = re.compile(r"^\d+\s*[\.．、]\s*")
+FILL_NOTE = re.compile(r"\s*[（(][^（()）]*填\s*列\s*[)）]$")
 
 
 @dataclass(frozen=True)
@@ -31,6 +35,8 @@ class Match:
 
 def normalize_label(text: str) -> str:
     value = text.strip()
+    value = ARABIC_NUMBERING.sub("", value)
+    value = FILL_NOTE.sub("", value).strip()
     for suffix in UNIT_SUFFIXES:
         if value.endswith(suffix):
             value = value[: -len(suffix)].strip()

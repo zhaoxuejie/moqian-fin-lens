@@ -47,6 +47,14 @@ _FULLWIDTH.update(
     }
 )
 _NUMBER = re.compile(r"^\d+(?:\.\d+)?$")
+# 报表表头的单位行：「单位：元」「单位：千元 币种：人民币」「单位：人民币千元」
+_UNIT_LINE = re.compile(r"单位\s*[:：]\s*(?:人民币)?\s*(百万元|千元|万元|亿元|元)")
+
+
+def detect_unit(text: str) -> str | None:
+    """从页面文本里读出第一处「单位：…」，读不到返回 None（由调用方决定默认值）。"""
+    match = _UNIT_LINE.search(text or "")
+    return match.group(1) if match else None
 
 
 @dataclass(frozen=True)

@@ -1,0 +1,27 @@
+002230_科大讯飞_2024年年度报告  ROE=3.22
+002230_科大讯飞_2025年年度报告  ROE=4.59
+002415_海康威视_2024年年度报告  ROE=15.26
+  OK  ocf_declining                      P.[163]  展示行页码 [163]
+002415_海康威视_2025年年度报告  ROE=17.31
+002475_立讯精密_2024年年度报告  ROE=21.28
+  OK  ar_growth_exceeds_revenue          P.[122, 126]  展示行页码 [122, 126]
+  OK  ocf_declining                      P.[130]  展示行页码 [130]
+  OK  gross_margin_declining             P.[126, 127]  展示行页码 [126, 127]
+  OK  debt_fast_growth                   P.[123, 124]  展示行页码 [123, 124]
+002475_立讯精密_2025年年度报告  ROE=21.52
+  OK  ar_growth_exceeds_revenue          P.[116, 120]  展示行页码 [116, 120]
+  OK  cash_content_below_one             P.[122, 124]  展示行页码 [122, 124]
+  OK  ocf_declining                      P.[124]  展示行页码 [124]
+  OK  debt_fast_growth                   P.[117, 118]  展示行页码 [117, 118]
+688111_金山办公_2024年年度报告  ROE=15.44
+688111_金山办公_2025年年度报告  ROE=15.17
+  OK  ar_growth_exceeds_revenue          P.[105, 109]  展示行页码 [105, 109]
+688981_中芯国际_2024年年度报告  ROE=2.54
+  OK  ocf_declining                      P.[122]  展示行页码 [122]
+  OK  gross_margin_declining             P.[120]  展示行页码 [120]
+688981_中芯国际_2025年年度报告  ROE=3.37
+  OK  ar_growth_exceeds_revenue          P.[124, 127]  展示行页码 [124, 127]
+  OK  ocf_declining                      P.[129]  展示行页码 [129]
+
+异常项 14 条：带页码 14/14，页码与展示行一致 14/14
+ROE 可算出 10/10 份
