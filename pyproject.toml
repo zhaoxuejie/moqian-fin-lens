@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "moqian-fin-lens"
-version = "0.4.1"
+version = "0.4.2"
 description = "A-share financial report parser: extract core metrics and visualize fundamentals."
 readme = "README.md"
 requires-python = ">=3.11"
