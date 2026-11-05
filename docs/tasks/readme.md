@@ -40,7 +40,7 @@
 | TASK-021 | 财务视图图表重构（11 图） | v1.0 | TASK-020 | P0 | ✅ done | [task-021-charts-redesign.md](task-021-charts-redesign.md) |
 | TASK-022 | 宣称与实现一致性修补（PATCH） | v1.0 | TASK-021 | P0 | ✅ done | [task-022-claim-consistency-patch.md](task-022-claim-consistency-patch.md) |
 | TASK-023 | 数值正确性修补（PATCH） | v1.0 | TASK-022 | P0 | ✅ done | [task-023-number-correctness-patch.md](task-023-number-correctness-patch.md) |
-| TASK-024 | 评测交叉核对断言 | v1.0 | TASK-023 | P1 | ⬜ todo | [task-024-eval-cross-check-assertions.md](task-024-eval-cross-check-assertions.md) |
+| TASK-024 | 评测交叉核对断言 | v1.0 | TASK-023 | P1 | ✅ done | [task-024-eval-cross-check-assertions.md](task-024-eval-cross-check-assertions.md) |
 
 ## 规则
 1. 任务存储模式：**一个任务单独一个文件**，不把多个任务混在同一个文件。
